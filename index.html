@@ -42,20 +42,28 @@ var createNode = function() {
   })
 }
 
+var pathForRelationship = function(relationship) {
+  var path = {
+    x1: relationship.start.attr("cx"),
+    y1: relationship.start.attr("cy"),
+    x2: relationship.end.attr("cx"),
+    y2: relationship.end.attr("cy"),
+  };
+  return "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2;
+}
 
 var drawRelationships = function() {
-  for (var i = 0; i < relationships.length; i++) {
-    var relationship = relationships[i];
-    var path = {
-      x1: relationship.start.attr("cx"),
-      y1: relationship.start.attr("cy"),
-      x2: relationship.end.attr("cx"),
-      y2: relationship.end.attr("cy"),
-    };
-    svg.append("svg:path").attr("d", "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2)
-      .style("stroke", "black")
-      .style("stroke-width", 2);
-  }
+  var arrows = svg.selectAll(".arrow").data(relationships);
+  
+  arrows.enter()
+    .append("svg:path")
+    .attr("class", "arrow")
+    .attr("d", pathForRelationship)
+    .style("stroke", "black")
+    .style("stroke-width", 2);
+    
+  arrows.transition()
+    .attr("d", pathForRelationship)
 }
 
 var createRelationship = function() {
@@ -81,6 +89,7 @@ function move(){
     dragTarget
         .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
         .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"))});
+     drawRelationships();   
 };
 
 </script>
