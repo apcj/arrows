@@ -14,13 +14,16 @@
 
 <script type="text/javascript">
 
+// A maximum of 2 objects can be selected at any time
+var selectedObjects = [];
+
+var relationships = [];
+
 var svg = d3.select("#canvas")
     .append("svg:svg")
     .attr("width", 1024)
     .attr("height", 768);
 
-// A maximum of 2 objects can be selected at any time
-var selectedObjects = [];
 
 var createNode = function() {
   var node = svg.append("svg:circle")
@@ -39,20 +42,34 @@ var createNode = function() {
   })
 }
 
+
+var drawRelationships = function() {
+  for (var i = 0; i < relationships.length; i++) {
+    var relationship = relationships[i];
+    var path = {
+      x1: relationship.start.attr("cx"),
+      y1: relationship.start.attr("cy"),
+      x2: relationship.end.attr("cx"),
+      y2: relationship.end.attr("cy"),
+    };
+    svg.append("svg:path").attr("d", "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2)
+      .style("stroke", "black")
+      .style("stroke-width", 2);
+  }
+}
+
 var createRelationship = function() {
   if (selectedObjects.length == 2) {
-    var path = {
-      x1: selectedObjects[0].attr("cx"),
-      y1: selectedObjects[0].attr("cy"),
-      x2: selectedObjects[1].attr("cx"),
-      y2: selectedObjects[1].attr("cy"),
-    }
+    relationships.push({ 
+      type: "KNOWS", 
+      start: selectedObjects[0], 
+      end: selectedObjects[1]
+    });
   }
-  svg.append("svg:path").attr("d", "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2)
-    .style("stroke", "black")
-    .style("stroke-width", 2);
-  // console.log(path);
+  drawRelationships();
 }
+
+
 
 createNode();
 d3.select("#button-newnode").on("click", createNode);
