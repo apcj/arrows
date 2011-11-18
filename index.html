@@ -8,6 +8,8 @@
 
 <h1>Arrow Tool</h1>
 <button id="button-newnode">Create Node</button>
+<button id="button-newrelationship">Create Relationship</button>
+
 <div id="canvas"></div>
 
 <script type="text/javascript">
@@ -16,6 +18,9 @@ var svg = d3.select("#canvas")
     .append("svg:svg")
     .attr("width", 1024)
     .attr("height", 768);
+
+// A maximum of 2 objects can be selected at any time
+var selectedObjects = [];
 
 var createNode = function() {
   var node = svg.append("svg:circle")
@@ -26,16 +31,35 @@ var createNode = function() {
       .call(d3.behavior.drag().on("drag", move));
       
   node.on("click", function() {
-    console.log(node);
+    selectedObjects.push(node);
+    if (selectedObjects.length > 2) {
+      selectedObjects.shift();
+    }
+    console.log(selectedObjects);
   })
+}
+
+var createRelationship = function() {
+  if (selectedObjects.length == 2) {
+    var path = {
+      x1: selectedObjects[0].attr("cx"),
+      y1: selectedObjects[0].attr("cy"),
+      x2: selectedObjects[1].attr("cx"),
+      y2: selectedObjects[1].attr("cy"),
+    }
+  }
+  svg.append("svg:path").attr("d", "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2)
+    .style("stroke", "black")
+    .style("stroke-width", 2);
+  // console.log(path);
 }
 
 createNode();
 d3.select("#button-newnode").on("click", createNode);
+d3.select("#button-newrelationship").on("click", createRelationship);
     
     
 function move(){
-    // this.parentNode.appendChild(this);
     var dragTarget = d3.select(this);
     dragTarget
         .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
