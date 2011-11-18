@@ -24,7 +24,17 @@ var svg = d3.select("#canvas")
     .attr("width", 1024)
     .attr("height", 768);
 
-
+svg.append("svg:defs").append("svg:marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+        
 var createNode = function() {
   var node = svg.append("svg:circle")
       .attr("cx", 50)
@@ -44,12 +54,19 @@ var createNode = function() {
 
 var pathForRelationship = function(relationship) {
   var path = {
-    x1: relationship.start.attr("cx"),
-    y1: relationship.start.attr("cy"),
-    x2: relationship.end.attr("cx"),
-    y2: relationship.end.attr("cy"),
+    x1: Number(relationship.start.attr("cx")),
+    y1: Number(relationship.start.attr("cy")),
+    x2: Number(relationship.end.attr("cx")),
+    y2: Number(relationship.end.attr("cy")),
   };
-  return "M" + path.x1 + " " + path.y1 + "L" + path.x2 + " " + path.y2;
+  var dx = path.x2 - path.x1;
+  var dy = path.y2 - path.y1;
+  var totalPathLength = Math.sqrt(dx * dx + dy * dy);
+  var radiusFraction = 40 / totalPathLength;
+  var ex = dx * radiusFraction;
+  var ey = dy * radiusFraction;
+  
+  return "M" + (path.x1 + ex) + " " + (path.y1 + ey) + "L" + (path.x2 - ex) + " " + (path.y2 - ey);
 }
 
 var drawRelationships = function() {
@@ -60,7 +77,8 @@ var drawRelationships = function() {
     .attr("class", "arrow")
     .attr("d", pathForRelationship)
     .style("stroke", "black")
-    .style("stroke-width", 2);
+    .style("stroke-width", 2)
+    .attr("marker-end", "url(#arrowhead)");
     
   arrows.transition()
     .attr("d", pathForRelationship)
