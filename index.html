@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+<script type="text/javascript" src="lib/d3.js"></script>
 <title>Arrow Tool</title>
 </head>
 <body>  
@@ -18,12 +18,16 @@ var svg = d3.select("#canvas")
     .attr("height", 768);
 
 var createNode = function() {
-  svg.append("svg:circle")
+  var node = svg.append("svg:circle")
       .attr("cx", 50)
       .attr("cy", 140)
       .attr("r", 40)
       .attr("fill", "blue")
       .call(d3.behavior.drag().on("drag", move));
+      
+  node.on("click", function() {
+    console.log(node);
+  })
 }
 
 createNode();
@@ -31,7 +35,7 @@ d3.select("#button-newnode").on("click", createNode);
     
     
 function move(){
-    this.parentNode.appendChild(this);
+    // this.parentNode.appendChild(this);
     var dragTarget = d3.select(this);
     dragTarget
         .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
