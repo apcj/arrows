@@ -74,6 +74,7 @@ var drawRelationships = function() {
   
   arrows.enter()
     .append("svg:path")
+    .attr("id", "relationship0")
     .attr("class", "arrow")
     .attr("d", pathForRelationship)
     .style("stroke", "black")
@@ -82,6 +83,18 @@ var drawRelationships = function() {
     
   arrows.transition()
     .attr("d", pathForRelationship)
+    
+  var relationshipTypes = svg.selectAll(".relationshipType").data(relationships);
+  
+  relationshipTypes.enter()
+    .append("svg:text")
+    .attr("class", "relationshipType")
+    .append("svg:textPath")
+    .attr("xlink:href", "#relationship0")
+    .append("svg:tspan")
+    .text(function(relationship) { return relationship.type; });
+
+  relationshipTypes.transition().call(function(d) { console.log(d.select("textpath")); });
 }
 
 var createRelationship = function() {
