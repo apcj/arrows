@@ -27,13 +27,13 @@ var svg = d3.select("#canvas")
 svg.append("svg:defs").append("svg:marker")
     .attr("id", "arrowhead")
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", -1.5)
+    .attr("refX", 10)
+    .attr("refY", 0)
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
     .attr("orient", "auto")
   .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
+    .attr("d", "M0,-5 L10,0 L0,5");
         
 var createNode = function() {
   var node = svg.append("svg:circle")
