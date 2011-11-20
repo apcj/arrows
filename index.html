@@ -69,6 +69,32 @@ var pathForRelationship = function(relationship) {
   return "M" + (path.x1 + ex) + " " + (path.y1 + ey) + "L" + (path.x2 - ex) + " " + (path.y2 - ey);
 }
 
+var relationshipAngle = function(relationship) {
+  var path = {
+    x1: Number(relationship.start.attr("cx")),
+    y1: Number(relationship.start.attr("cy")),
+    x2: Number(relationship.end.attr("cx")),
+    y2: Number(relationship.end.attr("cy")),
+  };
+  var dx = path.x2 - path.x1;
+  var dy = path.y2 - path.y1;
+  return Math.atan2(dy, dx) * 180 / Math.PI;
+}
+
+var startPosition = function(relationship) {
+  return {
+    x: Number(relationship.start.attr("cx")),
+    y: Number(relationship.start.attr("cy"))
+  }
+}
+
+var rotateAndTranslate = function(angleFunction, positionFunction) {
+  return function(d) {
+    var p = positionFunction(d);
+    return "translate(" + p.x + "," + p.y +"), rotate(" + angleFunction(d) + ")";
+  }
+}
+
 var drawRelationships = function() {
   var arrows = svg.selectAll(".arrow").data(relationships);
   
@@ -87,14 +113,16 @@ var drawRelationships = function() {
   var relationshipTypes = svg.selectAll(".relationshipType").data(relationships);
   
   relationshipTypes.enter()
-    .append("svg:text")
+    .append("svg:g")
     .attr("class", "relationshipType")
-    .append("svg:textPath")
-    .attr("xlink:href", "#relationship0")
-    .append("svg:tspan")
+    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
+    .append("svg:text")
+    .attr("x", 43)
+    .attr("y", -3)
     .text(function(relationship) { return relationship.type; });
 
-  relationshipTypes.transition().call(function(d) { console.log(d.select("textpath")); });
+  relationshipTypes.transition()
+    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition));
 }
 
 var createRelationship = function() {
