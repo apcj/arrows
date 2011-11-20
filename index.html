@@ -14,6 +14,8 @@
 
 <script type="text/javascript">
 
+var radius = 40;
+
 // A maximum of 2 objects can be selected at any time
 var selectedObjects = [];
 
@@ -39,7 +41,7 @@ var createNode = function() {
   var node = svg.append("svg:circle")
       .attr("cx", 50)
       .attr("cy", 140)
-      .attr("r", 40)
+      .attr("r", radius)
       .attr("fill", "blue")
       .call(d3.behavior.drag().on("drag", move));
       
@@ -52,33 +54,24 @@ var createNode = function() {
   })
 }
 
+var displacement = function(relationship) {
+  return {
+    dx: Number(relationship.end.attr("cx")) - Number(relationship.start.attr("cx")),
+    dy: Number(relationship.end.attr("cy")) - Number(relationship.start.attr("cy"))
+  }
+}
+
 var pathForRelationship = function(relationship) {
-  var path = {
-    x1: Number(relationship.start.attr("cx")),
-    y1: Number(relationship.start.attr("cy")),
-    x2: Number(relationship.end.attr("cx")),
-    y2: Number(relationship.end.attr("cy")),
-  };
-  var dx = path.x2 - path.x1;
-  var dy = path.y2 - path.y1;
-  var totalPathLength = Math.sqrt(dx * dx + dy * dy);
-  var radiusFraction = 40 / totalPathLength;
-  var ex = dx * radiusFraction;
-  var ey = dy * radiusFraction;
+  var m = displacement(relationship);
+  var totalPathLength = Math.sqrt(m.dx * m.dx + m.dy * m.dy);
   
-  return "M" + (path.x1 + ex) + " " + (path.y1 + ey) + "L" + (path.x2 - ex) + " " + (path.y2 - ey);
+  return "M" + radius + " " + 0 + "L" + (totalPathLength - radius) + " " + 0;
 }
 
 var relationshipAngle = function(relationship) {
-  var path = {
-    x1: Number(relationship.start.attr("cx")),
-    y1: Number(relationship.start.attr("cy")),
-    x2: Number(relationship.end.attr("cx")),
-    y2: Number(relationship.end.attr("cy")),
-  };
-  var dx = path.x2 - path.x1;
-  var dy = path.y2 - path.y1;
-  return Math.atan2(dy, dx) * 180 / Math.PI;
+  var m = displacement(relationship);
+
+  return Math.atan2(m.dy, m.dx) * 180 / Math.PI;
 }
 
 var startPosition = function(relationship) {
@@ -95,34 +88,35 @@ var rotateAndTranslate = function(angleFunction, positionFunction) {
   }
 }
 
-var drawRelationships = function() {
-  var arrows = svg.selectAll(".arrow").data(relationships);
-  
-  arrows.enter()
-    .append("svg:path")
-    .attr("id", "relationship0")
-    .attr("class", "arrow")
+var addArrow = function(group) {
+  group.append("svg:path")
     .attr("d", pathForRelationship)
     .style("stroke", "black")
     .style("stroke-width", 2)
     .attr("marker-end", "url(#arrowhead)");
-    
-  arrows.transition()
-    .attr("d", pathForRelationship)
-    
-  var relationshipTypes = svg.selectAll(".relationshipType").data(relationships);
-  
-  relationshipTypes.enter()
-    .append("svg:g")
-    .attr("class", "relationshipType")
-    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
-    .append("svg:text")
+}
+
+var addLabel = function(group) {
+  group.append("svg:text")
     .attr("x", 43)
     .attr("y", -3)
     .text(function(relationship) { return relationship.type; });
+}
 
-  relationshipTypes.transition()
-    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition));
+var drawRelationships = function() {
+  var connections = svg.selectAll(".arrow").data(relationships);
+  
+  connections.enter()
+    .append("svg:g")
+    .attr("class", "arrow")
+    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
+    .call(addArrow)
+    .call(addLabel);
+    
+  connections.transition()
+    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
+    .select("path")
+    .attr("d", pathForRelationship);
 }
 
 var createRelationship = function() {
