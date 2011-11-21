@@ -7,6 +7,9 @@
 <body>  
 
 <h1>Arrow Tool</h1>
+<p>
+  <a id="exportlink" target="_blank">Export SVG</a>
+</p>
 <button id="button-newnode">Create Node</button>
 <button id="button-newrelationship">Create Relationship</button>
 
@@ -84,7 +87,7 @@ var startPosition = function(relationship) {
 var rotateAndTranslate = function(angleFunction, positionFunction) {
   return function(d) {
     var p = positionFunction(d);
-    return "translate(" + p.x + "," + p.y +"), rotate(" + angleFunction(d) + ")";
+    return "translate(" + p.x + "," + p.y +") rotate(" + angleFunction(d) + ")";
   }
 }
 
@@ -130,11 +133,17 @@ var createRelationship = function() {
   drawRelationships();
 }
 
-
+var exportSvg = function() {
+  d3.select("#exportlink")
+    .attr("href", "data:image/svg+xml;base64," + 
+      btoa("<svg xmlns=\"http://www.w3.org/2000/svg\"" +
+        document.getElementById("canvas").innerHTML.substring(4)));
+}
 
 createNode();
 d3.select("#button-newnode").on("click", createNode);
 d3.select("#button-newrelationship").on("click", createRelationship);
+d3.select("#exportlink").on("click", exportSvg);
     
     
 function move(){
