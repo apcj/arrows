@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="lib/d3.js"></script>
-<title>Arrow Tool</title>
+  <script type="text/javascript" src="lib/d3.js"></script>
+  <script type="text/javascript" src="graph-diagram.js"></script>
+  <link rel="stylesheet" href="graph-diagram.css" type="text/css">
+  <title>Arrow Tool</title>
 </head>
 <body>  
 
@@ -22,88 +24,31 @@ var radius = 40;
 // A maximum of 2 objects can be selected at any time
 var selectedObjects = [];
 
-var relationships = [];
+var graphModel = {
+  nodes: {
+    0: { id: 0, x: 50, y: 140 }
+  },
+  relationships: [],
+  internalScale: 1,
+  externalScale: 1
+};
 
 var svg = d3.select("#canvas")
-    .append("svg:svg")
-    .attr("width", 1024)
-    .attr("height", 768);
+  .append("svg:svg")
+  .attr("width", 1024)
+  .attr("height", 768);
 
-svg.append("svg:defs").append("svg:marker")
-    .attr("id", "arrowhead")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 10)
-    .attr("refY", 0)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5 L10,0 L0,5");
-        
+function draw()
+{
+  bind(graphModel, svg.data([graphModel]));
+  svg.selectAll(".graph-diagram-node")
+    .call(d3.behavior.drag().on("drag", move));
+}
+
 var createNode = function() {
-  var node = svg.append("svg:circle")
-      .attr("cx", 50)
-      .attr("cy", 140)
-      .attr("r", radius)
-      .attr("fill", "blue")
-      .call(d3.behavior.drag().on("drag", move));
-      
-  node.on("click", function() {
-    selectedObjects.push(node);
-    if (selectedObjects.length > 2) {
-      selectedObjects.shift();
-    }
-    console.log(selectedObjects);
-  })
-}
-
-var displacement = function(relationship) {
-  return {
-    dx: Number(relationship.end.attr("cx")) - Number(relationship.start.attr("cx")),
-    dy: Number(relationship.end.attr("cy")) - Number(relationship.start.attr("cy"))
-  }
-}
-
-var pathForRelationship = function(relationship) {
-  var m = displacement(relationship);
-  var totalPathLength = Math.sqrt(m.dx * m.dx + m.dy * m.dy);
-  
-  return "M" + radius + " " + 0 + "L" + (totalPathLength - radius) + " " + 0;
-}
-
-var relationshipAngle = function(relationship) {
-  var m = displacement(relationship);
-
-  return Math.atan2(m.dy, m.dx) * 180 / Math.PI;
-}
-
-var startPosition = function(relationship) {
-  return {
-    x: Number(relationship.start.attr("cx")),
-    y: Number(relationship.start.attr("cy"))
-  }
-}
-
-var rotateAndTranslate = function(angleFunction, positionFunction) {
-  return function(d) {
-    var p = positionFunction(d);
-    return "translate(" + p.x + "," + p.y +") rotate(" + angleFunction(d) + ")";
-  }
-}
-
-var addArrow = function(group) {
-  group.append("svg:path")
-    .attr("d", pathForRelationship)
-    .style("stroke", "black")
-    .style("stroke-width", 2)
-    .attr("marker-end", "url(#arrowhead)");
-}
-
-var addLabel = function(group) {
-  group.append("svg:text")
-    .attr("x", 43)
-    .attr("y", -3)
-    .text(function(relationship) { return relationship.type; });
+  var nodeId = d3.values(graphModel.nodes ).length;
+  graphModel.nodes[nodeId] = { id: nodeId, x: 100, y: 240 };
+  draw();
 }
 
 var drawRelationships = function() {
@@ -140,18 +85,19 @@ var exportSvg = function() {
         document.getElementById("canvas").innerHTML.substring(4)));
 }
 
-createNode();
+draw();
+
 d3.select("#button-newnode").on("click", createNode);
 d3.select("#button-newrelationship").on("click", createRelationship);
 d3.select("#exportlink").on("click", exportSvg);
     
     
 function move(){
-    var dragTarget = d3.select(this);
-    dragTarget
-        .attr("cx", function(){return d3.event.dx + parseInt(dragTarget.attr("cx"))})
-        .attr("cy", function(){return d3.event.dy + parseInt(dragTarget.attr("cy"))});
-     drawRelationships();   
+  var dragTarget = d3.select(this);
+  var node = dragTarget[0][0].__data__;
+  node.x += d3.event.dx;
+  node.y += d3.event.dy;
+  draw();
 };
 
 </script>
