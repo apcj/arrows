@@ -12,7 +12,6 @@
 <p>
   <a id="exportlink" target="_blank">Export SVG</a>
 </p>
-<button id="button-newnode">Create Node</button>
 <button id="button-newrelationship">Create Relationship</button>
 
 <div id="canvas"></div>
@@ -42,13 +41,14 @@ function draw()
 {
   bind(graphModel, svg.data([graphModel]));
   svg.selectAll(".graph-diagram-node")
-    .call(d3.behavior.drag().on("drag", move));
+    .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd));
 }
 
-var createNode = function() {
+var createNode = function ( x, y ) {
   var nodeId = d3.values(graphModel.nodes ).length;
-  graphModel.nodes[nodeId] = { id: nodeId, x: 100, y: 240 };
-  draw();
+  var node = { id: nodeId, x: x, y: y };
+  graphModel.nodes[nodeId] = node;
+  return node;
 }
 
 var createRelationship = function() {
@@ -72,17 +72,33 @@ var exportSvg = function() {
 
 draw();
 
-d3.select("#button-newnode").on("click", createNode);
 d3.select("#button-newrelationship").on("click", createRelationship);
 d3.select("#exportlink").on("click", exportSvg);
     
-    
-function move(){
+var newNode = null;
+
+function drag(){
+  var shiftKey = window.event.shiftKey;
   var dragTarget = d3.select(this);
   var node = dragTarget[0][0].__data__;
+  if (!newNode & shiftKey) {
+    newNode = createNode(node.x, node.y);
+    graphModel.relationships.push({
+      label: "KNOWS",
+      start: node,
+      end: newNode
+    });
+  }
+  if (newNode) {
+    node = newNode;
+  }
   node.x += d3.event.dx;
   node.y += d3.event.dy;
   draw();
+}
+
+function dragEnd(){
+  newNode = null;
 };
 
 </script>
