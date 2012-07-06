@@ -1,3 +1,7 @@
+body {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
 circle.graph-diagram-node, path.graph-diagram-relationship {
     stroke: black;
     stroke-width: 8px;

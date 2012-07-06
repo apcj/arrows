@@ -51,31 +51,16 @@ var createNode = function() {
   draw();
 }
 
-var drawRelationships = function() {
-  var connections = svg.selectAll(".arrow").data(relationships);
-  
-  connections.enter()
-    .append("svg:g")
-    .attr("class", "arrow")
-    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
-    .call(addArrow)
-    .call(addLabel);
-    
-  connections.transition()
-    .attr("transform", rotateAndTranslate(relationshipAngle, startPosition))
-    .select("path")
-    .attr("d", pathForRelationship);
-}
-
 var createRelationship = function() {
+  selectedObjects = [ graphModel.nodes[0], graphModel.nodes[1] ];
   if (selectedObjects.length == 2) {
-    relationships.push({ 
-      type: "KNOWS", 
+    graphModel.relationships.push({
+      label: "KNOWS",
       start: selectedObjects[0], 
       end: selectedObjects[1]
     });
   }
-  drawRelationships();
+  draw();
 }
 
 var exportSvg = function() {

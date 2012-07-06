@@ -77,7 +77,7 @@
             .attr("class", nodeClasses)
             .attr("r", radius);
 
-        nodes.transition()
+        nodes
             .attr("cx", cx)
             .attr("cy", cy);
 
@@ -129,30 +129,38 @@
         }
 
         var relationshipGroup = view.selectAll("g.graph-diagram-relationship")
-            .data(graph.relationships)
-            .enter().append("svg:g")
-            .attr("class", relationshipClasses)
+            .data(graph.relationships);
+
+        relationshipGroup.enter().append("svg:g")
+            .attr("class", relationshipClasses);
+
+        relationshipGroup
             .attr("transform", translateToStartNodeCenterAndRotateToRelationshipAngle);
 
         function singleton(d) {
             return [d];
         }
 
-        relationshipGroup.selectAll("path.graph-diagram-relationship")
-            .data(singleton)
-            .enter().append("svg:path")
-            .attr("class", relationshipClasses)
+        var relationshipPath = relationshipGroup.selectAll("path.graph-diagram-relationship")
+            .data(singleton);
+
+        relationshipPath.enter().append("svg:path")
+            .attr("class", relationshipClasses);
+
+        relationshipPath
             .attr("d", horizontalArrow);
 
         function relationshipWithLabel(d) {
             return [d].filter(label);
         }
 
-        relationshipGroup.selectAll("text.graph-diagram-relationship-label")
-            .data(relationshipWithLabel)
-            .enter()
-            .append("svg:text")
-            .attr("class", "graph-diagram-relationship-label")
+        var relationshipLabel = relationshipGroup.selectAll("text.graph-diagram-relationship-label")
+            .data(relationshipWithLabel);
+
+        relationshipLabel.enter().append("svg:text")
+            .attr("class", "graph-diagram-relationship-label");
+
+        relationshipLabel
             .attr("x", midwayBetweenStartAndEnd)
             .attr("y", 0 )
             .text(label);
