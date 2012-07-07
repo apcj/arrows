@@ -12,16 +12,10 @@
 <p>
   <a id="exportlink" target="_blank">Export SVG</a>
 </p>
-<button id="button-newrelationship">Create Relationship</button>
 
 <div id="canvas"></div>
 
 <script type="text/javascript">
-
-var radius = 40;
-
-// A maximum of 2 objects can be selected at any time
-var selectedObjects = [];
 
 var graphModel = {
   nodes: {
@@ -51,16 +45,14 @@ var createNode = function ( x, y ) {
   return node;
 }
 
-var createRelationship = function() {
-  selectedObjects = [ graphModel.nodes[0], graphModel.nodes[1] ];
-  if (selectedObjects.length == 2) {
-    graphModel.relationships.push({
-      label: "KNOWS",
-      start: selectedObjects[0], 
-      end: selectedObjects[1]
-    });
-  }
-  draw();
+var createRelationship = function(start, end) {
+  var relationship = {
+    label: "KNOWS",
+    start: start,
+    end: end
+  };
+  graphModel.relationships.push(relationship);
+  return relationship;
 }
 
 var exportSvg = function() {
@@ -124,12 +116,7 @@ function drag(){
   var node = dragTarget[0][0].__data__;
   if (!newNode & shiftKey) {
     newNode = createNode(node.x, node.y);
-    newRelationship = {
-      label: "KNOWS",
-      start: node,
-      end: newNode
-    };
-    graphModel.relationships.push(newRelationship);
+    newRelationship = createRelationship(node, newNode);
   }
   if (newNode) {
     var connectionNode = findClosestOverlappingNode(newNode);
