@@ -76,6 +76,47 @@ d3.select("#button-newrelationship").on("click", createRelationship);
 d3.select("#exportlink").on("click", exportSvg);
     
 var newNode = null;
+var newRelationship = null;
+
+function findClosestOverlappingNode(node) {
+
+  function cx(d) {
+    return d.x * graphModel.internalScale;
+  }
+  function cy(d) {
+    return d.y * graphModel.internalScale;
+  }
+
+  function centre(node) {
+    return {
+      x: cx(node),
+      y: cy(node)
+    };
+  }
+
+  function distance(startPoint, endPoint) {
+    var dx = endPoint.x - startPoint.x;
+    var dy = endPoint.y - startPoint.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  var closestNode = null;
+  var closestDistance = Number.MAX_VALUE;
+
+  var allNodes = d3.values(graphModel.nodes);
+
+  for (i = 0; i < allNodes.length; i++) {
+    var candidateNode = allNodes[i];
+    if (candidateNode !== node) {
+      var candidateDistance = distance(centre(node), centre(candidateNode));
+      if (candidateDistance < 50 && candidateDistance < closestDistance) {
+        closestNode = candidateNode;
+        closestDistance = candidateDistance;
+      }
+    }
+  }
+  return closestNode;
+}
 
 function drag(){
   var shiftKey = window.event.shiftKey;
@@ -83,13 +124,20 @@ function drag(){
   var node = dragTarget[0][0].__data__;
   if (!newNode & shiftKey) {
     newNode = createNode(node.x, node.y);
-    graphModel.relationships.push({
+    newRelationship = {
       label: "KNOWS",
       start: node,
       end: newNode
-    });
+    };
+    graphModel.relationships.push(newRelationship);
   }
   if (newNode) {
+    var connectionNode = findClosestOverlappingNode(newNode);
+    if (connectionNode) {
+      newRelationship.end = connectionNode
+    } else {
+      newRelationship.end = newNode;
+    }
     node = newNode;
   }
   node.x += d3.event.dx;
@@ -97,9 +145,13 @@ function drag(){
   draw();
 }
 
-function dragEnd(){
+function dragEnd() {
+  if (newNode && newRelationship && newRelationship.end !== newNode) {
+    delete graphModel.nodes[newNode.id];
+  }
   newNode = null;
-};
+  draw();
+}
 
 </script>
    

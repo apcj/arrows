@@ -73,6 +73,8 @@
         var nodes = view.selectAll("circle.graph-diagram-node")
             .data(d3.values(graph.nodes));
 
+        nodes.exit().remove();
+
         nodes.enter().append("svg:circle")
             .attr("class", nodeClasses)
             .attr("r", radius);
