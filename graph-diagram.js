@@ -1,4 +1,68 @@
-    function bind(graph, view) {
+gd = {};
+
+(function() {
+
+    var Node = function() {
+        var position = {};
+
+        this.x = function(x) {
+            if (arguments.length == 1) {
+                position.x = x;
+                return this;
+            }
+            return position.x;
+        };
+        this.y = function(y) {
+            if (arguments.length == 1) {
+                position.y = y;
+                return this;
+            }
+            return position.y;
+        };
+    };
+
+    gd.model = function() {
+        var nodes = {},
+            relationships = [],
+            nodeIdGenerator = 0;
+
+        var model = {};
+
+        model.createNode = function() {
+            var nodeId = nodeIdGenerator++;
+            var node = new Node();
+            node.id = nodeId;
+            nodes[nodeId] = node;
+            return node;
+        }
+
+        model.createRelationship = function(start, end) {
+            var relationship = {
+                label: "KNOWS",
+                start: start,
+                end: end
+            };
+            relationships.push(relationship);
+            return relationship;
+        }
+
+        model.nodeList = function() {
+            var list = [];
+            for (var nodeId in nodes) {
+                list.push(nodes[nodeId]);
+            }
+            return list;
+        }
+
+        model.relationshipList = function() {
+            return relationships;
+        }
+
+        return model;
+    }
+})();
+
+function bind(graph, view) {
         var radius = 50;
         var strokeWidth = 8;
         var nodeStartMargin = 20;
