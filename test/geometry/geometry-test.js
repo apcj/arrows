@@ -27,23 +27,38 @@ suite.addBatch({
         }
     },
     "inter-node angle": {
-        "distance is difference in x value when y values match": function() {
+        "east is zero degrees": function() {
             var model = gd.model();
-            var node1 = model.createNode().x(3).y(42);
-            var node2 = model.createNode().x(8).y(42);
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(10).y(0);
             assert.equal(node1.angleTo(node2), 0);
         },
-        "distance is difference in y value when x values match": function() {
+        "north is 90 degrees": function() {
             var model = gd.model();
-            var node1 = model.createNode().x(42).y(3);
-            var node2 = model.createNode().x(42).y(8);
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(0).y(10);
             assert.equal(node1.angleTo(node2), 90);
         },
-        "uses pythagoras": function() {
+        "south-east is 45 degrees": function() {
             var model = gd.model();
-            var node1 = model.createNode().x(5).y(0);
-            var node2 = model.createNode().x(0).y(5);
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(10).y(10);
+            assert.equal(node1.angleTo(node2), 45);
+        },
+        "south-west is 135 degrees": function() {
+            var model = gd.model();
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(-10).y(10);
             assert.equal(node1.angleTo(node2), 135);
+        }
+    },
+    "relative node position": {
+        "node with smaller x coordinate is on the left": function()  {
+            var model = gd.model();
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(10).y(0);
+            assert.isTrue(node1.isLeftOf(node2));
+            assert.isFalse(node2.isLeftOf(node1));
         }
     }
 });

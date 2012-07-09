@@ -42,6 +42,10 @@ gd = {};
                 var dy = node.y() - this.y();
                 return Math.atan2(dy, dx) * 180 / Math.PI
             }
+
+            this.isLeftOf = function(node) {
+                return this.x() < node.x();
+            }
         };
 
         model.createNode = function() {
@@ -186,17 +190,22 @@ function bind(graph, view) {
 
         function horizontalArrow(d) {
             var length = d.start.distanceTo(d.end);
-            return ["M", radius + nodeStartMargin, 0,
-                "L", length - (radius + nodeEndMargin), 0 ].join(" ");
+            var side = d.end.isLeftOf(d.start) ? -1 : 1;
+            return ["M", side * (radius + nodeStartMargin), 0,
+                "L", side * (length - (radius + nodeEndMargin)), 0 ].join(" ");
         }
 
         function midwayBetweenStartAndEnd(d) {
             var length = d.start.distanceTo(d.end);
-            return length / 2;
+            var side = d.end.isLeftOf(d.start) ? -1 : 1;
+            return side * length / 2;
         }
 
         function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
             var angle = d.start.angleTo(d.end);
+            if (d.end.isLeftOf(d.start)) {
+                angle += 180;
+            }
             var startX = d.start.x() * graph.internalScale();
             var startY = d.start.y() * graph.internalScale();
             return "translate(" + startX + "," + startY + ") rotate(" + angle + ")";
