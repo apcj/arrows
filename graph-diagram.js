@@ -22,6 +22,7 @@ gd = {};
                 }
                 return position.x;
             };
+
             this.y = function(y) {
                 if (arguments.length == 1) {
                     position.y = y;
@@ -29,10 +30,17 @@ gd = {};
                 }
                 return position.y;
             };
+
             this.distanceTo = function(node) {
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
                 return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            this.angleTo = function(node) {
+                var dx = node.x() - this.x();
+                var dy = node.y() - this.y();
+                return Math.atan2(dy, dx) * 180 / Math.PI
             }
         };
 
@@ -176,13 +184,6 @@ function bind(graph, view) {
             .attr("y", cy)
             .text(label);
 
-        function centre(node) {
-            return {
-                x: cx(node),
-                y: cy(node)
-            };
-        }
-
         function horizontalArrow(d) {
             var length = d.start.distanceTo(d.end);
             return ["M", radius + nodeStartMargin, 0,
@@ -195,10 +196,10 @@ function bind(graph, view) {
         }
 
         function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
-            var startPoint = centre(d.start);
-            var endPoint = centre(d.end);
-            var angle = Math.atan2(endPoint.y - startPoint.y, endPoint.x - startPoint.x) * 180 / Math.PI;
-            return "translate(" + startPoint.x + "," + startPoint.y + ") rotate(" + angle + ")";
+            var angle = d.start.angleTo(d.end);
+            var startX = d.start.x() * graph.internalScale();
+            var startY = d.start.y() * graph.internalScale();
+            return "translate(" + startX + "," + startY + ") rotate(" + angle + ")";
         }
 
         function relationshipClasses(d) {
