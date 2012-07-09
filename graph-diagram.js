@@ -183,20 +183,14 @@ function bind(graph, view) {
             };
         }
 
-        function distance(startPoint, endPoint) {
-            var dx = endPoint.x - startPoint.x;
-            var dy = endPoint.y - startPoint.y;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-
         function horizontalArrow(d) {
-            var length = distance(centre(d.start), centre(d.end));
+            var length = d.start.distanceTo(d.end);
             return ["M", radius + nodeStartMargin, 0,
                 "L", length - (radius + nodeEndMargin), 0 ].join(" ");
         }
 
         function midwayBetweenStartAndEnd(d) {
-            var length = distance(centre(d.start), centre(d.end));
+            var length = d.start.distanceTo(d.end);
             return length / 2;
         }
 
