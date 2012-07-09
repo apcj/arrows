@@ -24,7 +24,9 @@ gd = {};
     gd.model = function() {
         var nodes = {},
             relationships = [],
-            nodeIdGenerator = 0;
+            nodeIdGenerator = 0,
+            internalScale = 1,
+            externalScale = 1;
 
         var model = {};
 
@@ -34,6 +36,10 @@ gd = {};
             node.id = nodeId;
             nodes[nodeId] = node;
             return node;
+        }
+
+        model.deleteNode = function(node) {
+            delete nodes[node.id];
         }
 
         model.createRelationship = function(start, end) {
@@ -58,6 +64,14 @@ gd = {};
             return relationships;
         }
 
+        model.internalScale = function() {
+            return internalScale;
+        }
+
+        model.externalScale = function() {
+            return externalScale;
+        }
+
         return model;
     }
 })();
@@ -69,15 +83,15 @@ function bind(graph, view) {
         var nodeEndMargin = 40;
 
         function cx(d) {
-            return d.x * graph.internalScale;
+            return d.x() * graph.internalScale();
         }
         function cy(d) {
-            return d.y * graph.internalScale;
+            return d.y() * graph.internalScale();
         }
 
         function smallestContainingBox(graph) {
-            var cxList = d3.values(graph.nodes).map(cx);
-            var cyList = d3.values(graph.nodes).map(cy);
+            var cxList = graph.nodeList().map(cx);
+            var cyList = graph.nodeList().map(cy);
 
             var bounds = {
                 xMin:Math.min.apply(Math, cxList) - radius - strokeWidth,
@@ -94,11 +108,11 @@ function bind(graph, view) {
         }
 
         function width(graph) {
-            return smallestContainingBox(graph).width * graph.externalScale;
+            return smallestContainingBox(graph).width * graph.externalScale();
         }
 
         function height(graph) {
-            return smallestContainingBox(graph).height * graph.externalScale;
+            return smallestContainingBox(graph).height * graph.externalScale();
         }
 
         function label(d) {
@@ -107,9 +121,6 @@ function bind(graph, view) {
 
         view
             .attr("class", "graphdiagram");
-//            .attr("width", width)
-//            .attr("height", height)
-//            .attr("viewBox", viewBox);
 
         var definitions = view.selectAll("defs")
             .data([{}])
@@ -135,7 +146,7 @@ function bind(graph, view) {
         }
 
         var nodes = view.selectAll("circle.graph-diagram-node")
-            .data(d3.values(graph.nodes));
+            .data(d3.values(graph.nodeList()));
 
         nodes.exit().remove();
 
@@ -195,7 +206,7 @@ function bind(graph, view) {
         }
 
         var relationshipGroup = view.selectAll("g.graph-diagram-relationship")
-            .data(graph.relationships);
+            .data(graph.relationshipList());
 
         relationshipGroup.enter().append("svg:g")
             .attr("class", relationshipClasses);

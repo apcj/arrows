@@ -30,6 +30,16 @@ suite.addBatch({
             assert.includes(model.relationshipList(), newRelationship);
         }
     },
+    "delete node": {
+        "deleting a node removes it from the node list": function() {
+            var model = gd.model();
+            var newNode = model.createNode();
+            assert.includes(model.nodeList(), newNode);
+            model.deleteNode(newNode);
+            assert.equal(model.nodeList().length, 0);
+            assert.isEmpty(model.nodeList())
+        }
+    },
     "node position": {
         "nodes store x and y coordinates": function() {
             var model = gd.model();

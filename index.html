@@ -17,14 +17,8 @@
 
 <script type="text/javascript">
 
-var graphModel = {
-  nodes: {
-    0: { id: 0, x: 50, y: 140 }
-  },
-  relationships: [],
-  internalScale: 1,
-  externalScale: 1
-};
+var graphModel = gd.model();
+graphModel.createNode().x(50).y(140);
 
 var svg = d3.select("#canvas")
   .append("svg:svg")
@@ -38,23 +32,6 @@ function draw()
     .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd));
 }
 
-var createNode = function ( x, y ) {
-  var nodeId = d3.values(graphModel.nodes ).length;
-  var node = { id: nodeId, x: x, y: y };
-  graphModel.nodes[nodeId] = node;
-  return node;
-}
-
-var createRelationship = function(start, end) {
-  var relationship = {
-    label: "KNOWS",
-    start: start,
-    end: end
-  };
-  graphModel.relationships.push(relationship);
-  return relationship;
-}
-
 var exportSvg = function() {
   d3.select("#exportlink")
     .attr("href", "data:image/svg+xml;base64," + 
@@ -64,7 +41,6 @@ var exportSvg = function() {
 
 draw();
 
-d3.select("#button-newrelationship").on("click", createRelationship);
 d3.select("#exportlink").on("click", exportSvg);
     
 var newNode = null;
@@ -73,10 +49,10 @@ var newRelationship = null;
 function findClosestOverlappingNode(node) {
 
   function cx(d) {
-    return d.x * graphModel.internalScale;
+    return d.x() * graphModel.internalScale();
   }
   function cy(d) {
-    return d.y * graphModel.internalScale;
+    return d.y() * graphModel.internalScale();
   }
 
   function centre(node) {
@@ -95,7 +71,7 @@ function findClosestOverlappingNode(node) {
   var closestNode = null;
   var closestDistance = Number.MAX_VALUE;
 
-  var allNodes = d3.values(graphModel.nodes);
+  var allNodes = graphModel.nodeList();
 
   for (i = 0; i < allNodes.length; i++) {
     var candidateNode = allNodes[i];
@@ -115,8 +91,8 @@ function drag(){
   var dragTarget = d3.select(this);
   var node = dragTarget[0][0].__data__;
   if (!newNode & shiftKey) {
-    newNode = createNode(node.x, node.y);
-    newRelationship = createRelationship(node, newNode);
+    newNode = graphModel.createNode().x(node.x()).y(node.y());
+    newRelationship = graphModel.createRelationship(node, newNode);
   }
   if (newNode) {
     var connectionNode = findClosestOverlappingNode(newNode);
@@ -127,14 +103,14 @@ function drag(){
     }
     node = newNode;
   }
-  node.x += d3.event.dx;
-  node.y += d3.event.dy;
+  node.x(node.x() + d3.event.dx);
+  node.y(node.y() + d3.event.dy);
   draw();
 }
 
 function dragEnd() {
   if (newNode && newRelationship && newRelationship.end !== newNode) {
-    delete graphModel.nodes[newNode.id];
+    graphModel.deleteNode(newNode);
   }
   newNode = null;
   draw();
