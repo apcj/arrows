@@ -2,26 +2,8 @@ gd = {};
 
 (function() {
 
-    var Node = function() {
-        var position = {};
-
-        this.x = function(x) {
-            if (arguments.length == 1) {
-                position.x = x;
-                return this;
-            }
-            return position.x;
-        };
-        this.y = function(y) {
-            if (arguments.length == 1) {
-                position.y = y;
-                return this;
-            }
-            return position.y;
-        };
-    };
-
     gd.model = function() {
+
         var nodes = {},
             relationships = [],
             nodeIdGenerator = 0,
@@ -29,6 +11,30 @@ gd = {};
             externalScale = 1;
 
         var model = {};
+
+        var Node = function() {
+            var position = {};
+
+            this.x = function(x) {
+                if (arguments.length == 1) {
+                    position.x = x;
+                    return this;
+                }
+                return position.x;
+            };
+            this.y = function(y) {
+                if (arguments.length == 1) {
+                    position.y = y;
+                    return this;
+                }
+                return position.y;
+            };
+            this.distanceTo = function(node) {
+                var dx = node.x() - this.x();
+                var dy = node.y() - this.y();
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+        };
 
         model.createNode = function() {
             var nodeId = nodeIdGenerator++;

@@ -48,26 +48,6 @@ var newRelationship = null;
 
 function findClosestOverlappingNode(node) {
 
-  function cx(d) {
-    return d.x() * graphModel.internalScale();
-  }
-  function cy(d) {
-    return d.y() * graphModel.internalScale();
-  }
-
-  function centre(node) {
-    return {
-      x: cx(node),
-      y: cy(node)
-    };
-  }
-
-  function distance(startPoint, endPoint) {
-    var dx = endPoint.x - startPoint.x;
-    var dy = endPoint.y - startPoint.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
   var closestNode = null;
   var closestDistance = Number.MAX_VALUE;
 
@@ -76,7 +56,7 @@ function findClosestOverlappingNode(node) {
   for (i = 0; i < allNodes.length; i++) {
     var candidateNode = allNodes[i];
     if (candidateNode !== node) {
-      var candidateDistance = distance(centre(node), centre(candidateNode));
+      var candidateDistance = node.distanceTo(candidateNode) * graphModel.internalScale();
       if (candidateDistance < 50 && candidateDistance < closestDistance) {
         closestNode = candidateNode;
         closestDistance = candidateDistance;
