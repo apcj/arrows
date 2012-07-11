@@ -4,6 +4,7 @@
   <script type="text/javascript" src="lib/d3.js"></script>
   <script type="text/javascript" src="graph-diagram.js"></script>
   <link rel="stylesheet" href="graph-diagram.css" type="text/css">
+  <link rel="stylesheet" href="graph-editor.css" type="text/css">
   <title>Arrow Tool</title>
 </head>
 <body>  
@@ -12,6 +13,8 @@
 <p>
   <a id="exportlink" target="_blank">Export SVG</a>
 </p>
+
+<!--<input id="node_name_editor" class="editor-field">-->
 
 <div id="canvas"></div>
 
@@ -29,7 +32,8 @@ function draw()
 {
   bind(graphModel, svg.data([graphModel]));
   svg.selectAll(".graph-diagram-node")
-    .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd));
+    .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd))
+          .on("dblclick", editNode);
 }
 
 var exportSvg = function() {
@@ -94,6 +98,30 @@ function dragEnd() {
   }
   newNode = null;
   draw();
+}
+
+function editNode() {
+  var node = this.__data__;
+  var field = svg.append("svg:foreignObject")
+          .attr("x", node.x() - 50)
+          .attr("y", node.y() - 50)
+          .attr("height", 100)
+          .attr("width", 100)
+          .append("xhtml:body")
+          .append("input")
+          .attr("class", "editor-field")
+          .style("width", 100 + "px");
+
+  field.node().value = node.label || "";
+  field.node().select();
+  field.on("keypress", function() {
+    var e = d3.event;
+    if (e.which == 10 || e.which == 13) {
+      node.label = field.node().value;
+      field.remove();
+      draw();
+    }
+  })
 }
 
 </script>

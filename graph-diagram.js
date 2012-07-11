@@ -180,10 +180,15 @@ function bind(graph, view) {
             return "graph-diagram-bound-variable " + d.class;
         }
 
-        view.selectAll("text.graph-diagram-bound-variable")
-            .data(d3.values(graph.nodes).filter(label))
-            .enter().append("svg:text")
-            .attr("class", boundVariableClasses)
+        var boundVariables = view.selectAll("text.graph-diagram-bound-variable")
+            .data(d3.values(graph.nodeList()).filter(label));
+
+        boundVariables.exit().remove();
+
+        boundVariables.enter().append("svg:text")
+            .attr("class", boundVariableClasses);
+
+        boundVariables
             .attr("x", cx)
             .attr("y", cy)
             .text(label);
