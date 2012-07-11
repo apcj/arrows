@@ -37,6 +37,15 @@ gd = {};
                 return Math.sqrt(dx * dx + dy * dy);
             }
 
+            this.midwayTo = function(node) {
+                var dx = node.x() - this.x();
+                var dy = node.y() - this.y();
+                return {
+                    x: this.x() + dx / 2,
+                    y: this.y() + dy / 2
+                };
+            }
+
             this.angleTo = function(node) {
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
