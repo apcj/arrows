@@ -11,7 +11,7 @@
 
 <h1>Arrow Tool</h1>
 <p>
-  <a id="exportlink" target="_blank">Export SVG</a>
+  <button id="exportButton">Export SVG</button>
 </p>
 
 <!--<input id="node_name_editor" class="editor-field">-->
@@ -38,17 +38,8 @@ function draw()
           .on("dblclick", editRelationship);
 }
 
-var exportSvg = function() {
-  d3.select("#exportlink")
-    .attr("href", "data:image/svg+xml;base64," + 
-      btoa("<svg xmlns=\"http://www.w3.org/2000/svg\"" +
-        document.getElementById("canvas").innerHTML.substring(4)));
-}
-
 draw();
 
-d3.select("#exportlink").on("click", exportSvg);
-    
 var newNode = null;
 var newRelationship = null;
 
@@ -150,6 +141,19 @@ function editRelationship() {
     }
   })
 }
+
+var exportSvg = function() {
+  d3.xhr("graph-diagram.css", function(d) {
+    var css = d.responseText;
+    var rawSvg = document.getElementById("canvas").innerHTML;
+    var styleTag = "<style type=\"text/css\"><![CDATA[" + css + "]]></style>";
+    var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\">";
+    var modifiedSvg = rawSvg.replace(/<svg [^>]*>/, svgStartTag + styleTag);
+    window.open("data:image/svg+xml;base64," + btoa(modifiedSvg));
+  });
+}
+
+d3.select("#exportButton").on("click", exportSvg);
 
 </script>
    
