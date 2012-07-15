@@ -35,7 +35,7 @@ gd = {};
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
                 return Math.sqrt(dx * dx + dy * dy);
-            }
+            };
 
             this.midwayTo = function(node) {
                 var dx = node.x() - this.x();
@@ -44,13 +44,13 @@ gd = {};
                     x: this.x() + dx / 2,
                     y: this.y() + dy / 2
                 };
-            }
+            };
 
             this.angleTo = function(node) {
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
                 return Math.atan2(dy, dx) * 180 / Math.PI
-            }
+            };
 
             this.isLeftOf = function(node) {
                 return this.x() < node.x();
@@ -63,11 +63,11 @@ gd = {};
             node.id = nodeId;
             nodes[nodeId] = node;
             return node;
-        }
+        };
 
         model.deleteNode = function(node) {
             delete nodes[node.id];
-        }
+        };
 
         model.createRelationship = function(start, end) {
             var relationship = {
@@ -77,7 +77,7 @@ gd = {};
             };
             relationships.push(relationship);
             return relationship;
-        }
+        };
 
         model.nodeList = function() {
             var list = [];
@@ -85,29 +85,44 @@ gd = {};
                 list.push(nodes[nodeId]);
             }
             return list;
-        }
+        };
 
         model.relationshipList = function() {
             return relationships;
-        }
+        };
 
         model.internalScale = function() {
             return internalScale;
-        }
+        };
 
         model.externalScale = function() {
             return externalScale;
-        }
+        };
 
         return model;
+    };
+
+    gd.horizontalArrowOutline = function(start, end) {
+        var shaftRadius = 4;
+        var headRadius = 15;
+        var headLength = 30;
+        var shoulder = start < end ? end - headLength : end + headLength;
+        return ["M", start, shaftRadius,
+            "L", shoulder, shaftRadius,
+            "L", shoulder, headRadius,
+            "L", end, 0,
+            "L", shoulder, -headRadius,
+            "L", shoulder, -shaftRadius,
+            "L", start, -shaftRadius,
+            "Z"].join(" ");
     }
 })();
 
 function bind(graph, view) {
         var radius = 50;
         var strokeWidth = 8;
-        var nodeStartMargin = 20;
-        var nodeEndMargin = 40;
+        var nodeStartMargin = 15;
+        var nodeEndMargin = 15;
 
         function cx(d) {
             return d.x() * graph.internalScale();
@@ -149,25 +164,6 @@ function bind(graph, view) {
         view
             .attr("class", "graphdiagram");
 
-        var definitions = view.selectAll("defs")
-            .data([{}])
-            .enter().append("svg:defs");
-
-        var marker = definitions.selectAll("marker")
-            .data(["normal", "highlight", "lowlight"])
-            .enter().append("svg:marker")
-            .attr("id", function(d) { return "graph-diagram-arrowhead-" + d; } )
-            .attr("viewBox", "0 0 10 10")
-            .attr("refX", "5")
-            .attr("refY", "5")
-            .attr("markerUnits", "strokeWidth")
-            .attr("markerWidth", "6")
-            .attr("markerHeight", "9")
-            .attr("orient", "auto")
-            .append("svg:path")
-            .attr("class", function(d) { return "graph-diagram-arrowhead-" + d; })
-            .attr("d", "M 0 0 L 10 5 L 0 10 z");
-
         function nodeClasses(d) {
             return "graph-diagram-node graph-diagram-node-id-" + d.id + " " + d.class;
         }
@@ -205,8 +201,9 @@ function bind(graph, view) {
         function horizontalArrow(d) {
             var length = d.start.distanceTo(d.end);
             var side = d.end.isLeftOf(d.start) ? -1 : 1;
-            return ["M", side * (radius + nodeStartMargin), 0,
-                "L", side * (length - (radius + nodeEndMargin)), 0 ].join(" ");
+            return gd.horizontalArrowOutline(
+                side * (radius + nodeStartMargin),
+                side * (length - (radius + nodeEndMargin)));
         }
 
         function midwayBetweenStartAndEnd(d) {

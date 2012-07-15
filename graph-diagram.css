@@ -2,41 +2,30 @@ body, svg {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 }
 
-circle.graph-diagram-node, path.graph-diagram-relationship {
+circle.graph-diagram-node {
     stroke: black;
     stroke-width: 8px;
     fill: white;
 }
 
-circle.graph-diagram-node.highlight, path.graph-diagram-relationship.highlight {
+circle.graph-diagram-node.highlight {
     stroke: blue;
 }
 
-circle.graph-diagram-node.lowlight, path.graph-diagram-relationship.lowlight {
+circle.graph-diagram-node.lowlight {
     stroke: #555;
 }
 
-path.graph-diagram-relationship {
-    marker-end: url(#graph-diagram-arrowhead-normal);
-}
-
-path.graph-diagram-relationship.highlight {
-    marker-end: url(#graph-diagram-arrowhead-highlight);
-}
-
-path.graph-diagram-relationship.lowlight {
-    marker-end: url(#graph-diagram-arrowhead-lowlight);
-}
-
-path.graph-diagram-arrowhead-normal, text.graph-diagram-bound-variable, text.graph-diagram-relationship-label {
+path.graph-diagram-relationship, text.graph-diagram-bound-variable, text.graph-diagram-relationship-label {
+    stroke: none;
     fill: black;
 }
 
-path.graph-diagram-arrowhead-highlight, text.graph-diagram-bound-variable.highlight, text.graph-diagram-relationship-label.highlight {
+path.graph-diagram-relationship.highlight, text.graph-diagram-bound-variable.highlight, text.graph-diagram-relationship-label.highlight {
     fill: blue;
 }
 
-path.graph-diagram-arrowhead-lowlight, text.graph-diagram-bound-variable.lowlight, text.graph-diagram-relationship-label.lowlight {
+path.graph-diagram-relationship.lowlight, text.graph-diagram-bound-variable.lowlight, text.graph-diagram-relationship-label.lowlight {
     fill: #555;
 }
 
