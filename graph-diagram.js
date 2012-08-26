@@ -102,6 +102,23 @@ gd = {};
         return model;
     };
 
+    gd.markup = function() {
+
+        var markup = {};
+
+        markup.parse = function(selection) {
+            var model = gd.model();
+
+            selection.selectAll(".graph-diagram-node").each(function () {
+                model.createNode();
+            });
+
+            return model;
+        };
+
+        return markup;
+    }();
+
     gd.horizontalArrowOutline = function(start, end) {
         var shaftRadius = 4;
         var headRadius = 15;
