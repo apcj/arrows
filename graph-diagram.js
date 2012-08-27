@@ -17,7 +17,7 @@ gd = {};
 
             this.x = function(x) {
                 if (arguments.length == 1) {
-                    position.x = x;
+                    position.x = Number(x);
                     return this;
                 }
                 return position.x;
@@ -25,7 +25,7 @@ gd = {};
 
             this.y = function(y) {
                 if (arguments.length == 1) {
-                    position.y = y;
+                    position.y = Number(y);
                     return this;
                 }
                 return position.y;
@@ -57,8 +57,8 @@ gd = {};
             }
         };
 
-        model.createNode = function() {
-            var nodeId = nodeIdGenerator++;
+        model.createNode = function(optionalNodeId) {
+            var nodeId = optionalNodeId || nodeIdGenerator++;
             var node = new Node();
             node.id = nodeId;
             nodes[nodeId] = node;
@@ -110,7 +110,11 @@ gd = {};
             var model = gd.model();
 
             selection.selectAll(".graph-diagram-node").each(function () {
-                model.createNode();
+                var nodeMarkup = d3.select(this);
+                var id = nodeMarkup.attr("data-node-id");
+                var node = model.createNode(id);
+                node.x(nodeMarkup.attr("data-x"));
+                node.y(nodeMarkup.attr("data-y"));
             });
 
             return model;
