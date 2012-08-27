@@ -87,6 +87,10 @@ gd = {};
             return list;
         };
 
+        model.lookupNode = function(nodeId) {
+            return nodes[nodeId];
+        };
+
         model.relationshipList = function() {
             return relationships;
         };
@@ -115,6 +119,13 @@ gd = {};
                 var node = model.createNode(id);
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
+            });
+
+            selection.selectAll(".graph-diagram-relationship").each(function () {
+                var relationshipMarkup = d3.select(this);
+                var fromId = relationshipMarkup.attr("data-from");
+                var toId = relationshipMarkup.attr("data-to");
+                var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
             });
 
             return model;

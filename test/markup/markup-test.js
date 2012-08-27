@@ -48,7 +48,36 @@ suite.addBatch({
                 assert.equal(node.y(), 34);
             },
             "no relationships": function(model) {
-                assert.equal(0, model.relationshipList().length);
+                assert.equal(model.relationshipList().length, 0);
+            }
+        },
+        "markup with two nodes and one relationship": {
+            topic: function(markup) {
+                markup.append("li")
+                    .attr("class", "graph-diagram-node")
+                    .attr("data-node-id", "node_A")
+                    .attr("data-x", "12")
+                    .attr("data-y", "34");
+                markup.append("li")
+                    .attr("class", "graph-diagram-node")
+                    .attr("data-node-id", "node_B")
+                    .attr("data-x", "56")
+                    .attr("data-y", "78");
+                markup.append("li")
+                    .attr("class", "graph-diagram-relationship")
+                    .attr("data-from", "node_A")
+                    .attr("data-to", "node_B");
+
+                return gd.markup.parse(markup);
+            },
+            "one relationship": function(model) {
+                assert.equal(model.relationshipList().length, 1);
+            },
+            "from A": function(model) {
+                assert.equal(model.relationshipList()[0].start.id, "node_A");
+            },
+            "to B": function(model) {
+                assert.equal(model.relationshipList()[0].end.id, "node_B");
             }
         }
     }
