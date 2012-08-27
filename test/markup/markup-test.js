@@ -80,6 +80,65 @@ suite.addBatch({
                 assert.equal(model.relationshipList()[0].end.id, "node_B");
             }
         }
+    },
+    "format markup": {
+        "empty model": {
+            topic: function() {
+                var markup = d3.select("body").append("div");
+                var model = gd.model();
+                gd.markup.format(model, markup);
+                var ul = markup.select("ul.graph-diagram-markup");
+                return markup;
+            },
+            "empty ul": function(markup) {
+                var ul = markup.select("ul.graph-diagram-markup");
+                assert.equal(ul[0].length, 1);
+                assert.equal(ul.selectAll("li")[0].length, 0);
+            }
+        },
+        "one node": {
+            topic: function() {
+                var model = gd.model();
+                model.createNode("node_A").x(12).y(34);
+
+                var markup = d3.select("body").append("div");
+                gd.markup.format(model, markup);
+                return markup.select("ul.graph-diagram-markup")
+                    .selectAll("li.graph-diagram-node");
+            },
+            "one node li": function(nodes) {
+                assert.equal(nodes[0].length, 1);
+            },
+            "with node id attribute": function(nodes) {
+                assert.equal(nodes.attr("data-node-id"), "node_A");
+            },
+            "with coordinates attributes": function(nodes) {
+                assert.equal(nodes.attr("data-x"), "12");
+                assert.equal(nodes.attr("data-y"), "34");
+            }
+        },
+        "two nodes and one relationship": {
+            topic: function() {
+                var model = gd.model();
+                var nodeA = model.createNode("node_A");
+                var nodeB = model.createNode("node_B");
+                model.createRelationship(nodeA, nodeB);
+
+                var markup = d3.select("body").append("div");
+                gd.markup.format(model, markup);
+                return markup.select("ul.graph-diagram-markup")
+                    .selectAll("li.graph-diagram-relationship");;
+            },
+            "one relationship li": function(relationships) {
+                assert.equal(relationships[0].length, 1);
+            },
+            "from A": function(relationships) {
+                assert.equal(relationships.attr("data-from"), "node_A");
+            },
+            "to B": function(relationships) {
+                assert.equal(relationships.attr("data-to"), "node_B");
+            }
+        }
     }
 });
 

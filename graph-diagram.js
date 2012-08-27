@@ -131,6 +131,26 @@ gd = {};
             return model;
         };
 
+        markup.format = function(model, container) {
+            var ul = container.append("ul")
+                .attr("class", "graph-diagram-markup");
+
+            model.nodeList().forEach(function(node) {
+                ul.append("li")
+                    .attr("class", "graph-diagram-node")
+                    .attr("data-node-id", node.id)
+                    .attr("data-x", node.x())
+                    .attr("data-y", node.y());
+            });
+
+            model.relationshipList().forEach(function(relationship) {
+                ul.append("li")
+                    .attr("class", "graph-diagram-relationship")
+                    .attr("data-from", relationship.start.id)
+                    .attr("data-to", relationship.end.id);
+            });
+        };
+
         return markup;
     }();
 
