@@ -139,6 +139,9 @@ gd = {};
                 var node = model.createNode(id);
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
+                nodeMarkup.select("span.graph-diagram-in-node-caption" ).each(function(d) {
+                    node.label(d3.select(this).text());
+                });
             });
 
             selection.selectAll(".graph-diagram-relationship").each(function () {
@@ -146,6 +149,9 @@ gd = {};
                 var fromId = relationshipMarkup.attr("data-from");
                 var toId = relationshipMarkup.attr("data-to");
                 var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
+                relationshipMarkup.select("span.graph-diagram-relationship-type" ).each(function(d) {
+                    relationship.label(d3.select(this).text());
+                });
             });
 
             return model;
@@ -156,18 +162,30 @@ gd = {};
                 .attr("class", "graph-diagram-markup");
 
             model.nodeList().forEach(function(node) {
-                ul.append("li")
+                var li = ul.append("li")
                     .attr("class", "graph-diagram-node")
                     .attr("data-node-id", node.id)
                     .attr("data-x", node.x())
                     .attr("data-y", node.y());
+
+                if (node.label()) {
+                    li.append("span")
+                        .attr("class", "graph-diagram-in-node-caption")
+                        .text(node.label());
+                }
             });
 
             model.relationshipList().forEach(function(relationship) {
-                ul.append("li")
+                var li = ul.append("li")
                     .attr("class", "graph-diagram-relationship")
                     .attr("data-from", relationship.start.id)
                     .attr("data-to", relationship.end.id);
+
+                if (relationship.label()) {
+                    li.append("span")
+                        .attr("class", "graph-diagram-relationship-type")
+                        .text(relationship.label());
+                }
             });
         };
 
