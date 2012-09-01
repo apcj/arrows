@@ -11,11 +11,18 @@
 
 <h1>Arrow Tool</h1>
 <p>
-  <button id="exportButton">Export SVG</button>
+  <button id="exportMarkupButton">Export Markup</button>
+  <button id="exportSvgButton">Export SVG</button>
 </p>
 
 <!--<input id="node_name_editor" class="editor-field">-->
 
+<div id="glass-pane" class="modal-appear"></div>
+<div id="modal-container" class="modal-appear">
+  <div id="modal-dialog">
+    <pre class="code">Some text</pre>
+  </div>
+</div>
 <div id="canvas"></div>
 
 <script type="text/javascript">
@@ -142,6 +149,24 @@ function editRelationship() {
   })
 }
 
+var exportMarkup = function() {
+    var container = d3.select("body" ).append("div");
+    gd.markup.format(graphModel, container);
+    var markup = container.node().innerHTML;
+    markup = markup.replace(/<li/g, "\n  <li").replace(/<\/ul/, "\n</ul");
+
+    container.remove();
+    d3.selectAll(".modal-appear")
+        .style("display", "block")
+        .select("pre.code")
+        .text(markup);
+};
+
+var hideGlassPane = function() {
+  d3.selectAll(".modal-appear")
+          .style("display", "none");
+};
+
 var exportSvg = function() {
   d3.xhr("graph-diagram.css", function(d) {
     var css = d.responseText;
@@ -151,9 +176,12 @@ var exportSvg = function() {
     var modifiedSvg = rawSvg.replace(/<svg [^>]*>/, svgStartTag + styleTag);
     window.open("data:image/svg+xml;base64," + btoa(modifiedSvg));
   });
-}
+};
 
-d3.select("#exportButton").on("click", exportSvg);
+d3.select("#exportMarkupButton").on("click", exportMarkup);
+d3.select("#exportSvgButton").on("click", exportSvg);
+d3.select("#modal-container").on("click", hideGlassPane);
+d3.select("#modal-dialog").on("click", function() { d3.event.stopPropagation(); });
 
 </script>
    
