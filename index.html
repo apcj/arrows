@@ -57,7 +57,7 @@ function findClosestOverlappingNode(node) {
 
   var allNodes = graphModel.nodeList();
 
-  for (i = 0; i < allNodes.length; i++) {
+  for (var i = 0; i < allNodes.length; i++) {
     var candidateNode = allNodes[i];
     if (candidateNode !== node) {
       var candidateDistance = node.distanceTo(candidateNode) * graphModel.internalScale();
