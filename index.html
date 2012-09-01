@@ -74,7 +74,7 @@ function drag(){
   var shiftKey = window.event.shiftKey;
   var dragTarget = d3.select(this);
   var node = dragTarget[0][0].__data__;
-  if (!newNode & shiftKey) {
+  if (!newNode && shiftKey) {
     newNode = graphModel.createNode().x(node.x()).y(node.y());
     newRelationship = graphModel.createRelationship(node, newNode);
   }
