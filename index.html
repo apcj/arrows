@@ -112,12 +112,12 @@ function editNode() {
           .attr("class", "editor-field")
           .style("width", 100 + "px");
 
-  field.node().value = node.label || "";
+  field.node().value = node.label() || "";
   field.node().select();
   field.on("keypress", function() {
     var e = d3.event;
     if (e.which == 10 || e.which == 13) {
-      node.label = field.node().value;
+      node.label(field.node().value);
       field.remove();
       draw();
     }
@@ -137,12 +137,12 @@ function editRelationship() {
           .attr("class", "editor-field")
           .style("width", 100 + "px");
 
-  field.node().value = relationship.label || "";
+  field.node().value = relationship.label() || "";
   field.node().select();
   field.on("keypress", function() {
     var e = d3.event;
     if (e.which == 10 || e.which == 13) {
-      relationship.label = field.node().value;
+      relationship.label(field.node().value);
       field.remove();
       draw();
     }

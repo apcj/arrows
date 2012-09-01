@@ -14,6 +14,7 @@ gd = {};
 
         var Node = function() {
             var position = {};
+            var label;
 
             this.x = function(x) {
                 if (arguments.length == 1) {
@@ -54,7 +55,30 @@ gd = {};
 
             this.isLeftOf = function(node) {
                 return this.x() < node.x();
-            }
+            };
+
+            this.label = function(labelText) {
+                if (arguments.length == 1) {
+                    label = labelText;
+                    return this;
+                }
+                return label;
+            };
+        };
+
+        var Relationship = function(start, end, labelText) {
+            var label = labelText;
+
+            this.label = function(labelText) {
+                if (arguments.length == 1) {
+                    label = labelText;
+                    return this;
+                }
+                return label;
+            };
+
+            this.start = start;
+            this.end = end;
         };
 
         model.createNode = function(optionalNodeId) {
@@ -70,11 +94,7 @@ gd = {};
         };
 
         model.createRelationship = function(start, end) {
-            var relationship = {
-                label: "KNOWS",
-                start: start,
-                end: end
-            };
+            var relationship = new Relationship(start, end, "KNOWS");
             relationships.push(relationship);
             return relationship;
         };
@@ -210,7 +230,7 @@ function bind(graph, view) {
         }
 
         function label(d) {
-            return d.label;
+            return d.label();
         }
 
         view
