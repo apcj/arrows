@@ -153,7 +153,11 @@ var exportMarkup = function() {
     var container = d3.select("body" ).append("div");
     gd.markup.format(graphModel, container);
     var markup = container.node().innerHTML;
-    markup = markup.replace(/<li/g, "\n  <li").replace(/<\/ul/, "\n</ul");
+    markup = markup
+            .replace(/<li/g, "\n  <li")
+            .replace(/<span/g, "\n    <span")
+            .replace(/<\/span><\/li/g, "</span>\n  <li")
+            .replace(/<\/ul/, "\n</ul");
 
     container.remove();
     d3.selectAll(".modal-appear")
