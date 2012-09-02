@@ -32,10 +32,23 @@ gd = {};
                 return position.y;
             };
 
+            this.ex = function() {
+                return position.x * internalScale;
+            };
+
+            this.ey = function() {
+                return position.y * internalScale;
+            };
+
             this.distanceTo = function(node) {
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
-                return Math.sqrt(dx * dx + dy * dy);
+                return Math.sqrt(dx * dx + dy * dy) * internalScale;
+            };
+
+            this.drag = function(dx, dy) {
+                position.x += dx / internalScale;
+                position.y += dy / internalScale;
             };
 
             this.midwayTo = function(node) {
@@ -122,7 +135,11 @@ gd = {};
             return relationships;
         };
 
-        model.internalScale = function() {
+        model.internalScale = function(newScale) {
+            if (arguments.length == 1) {
+                internalScale = newScale;
+                return this;
+            }
             return internalScale;
         };
 
@@ -146,7 +163,7 @@ gd = {};
                 var node = model.createNode(id);
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
-                nodeMarkup.select("span.graph-diagram-in-node-caption" ).each(function(d) {
+                nodeMarkup.select("span.graph-diagram-in-node-caption" ).each(function() {
                     node.label(d3.select(this).text());
                 });
             });
@@ -156,7 +173,7 @@ gd = {};
                 var fromId = relationshipMarkup.attr("data-from");
                 var toId = relationshipMarkup.attr("data-to");
                 var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
-                relationshipMarkup.select("span.graph-diagram-relationship-type" ).each(function(d) {
+                relationshipMarkup.select("span.graph-diagram-relationship-type" ).each(function() {
                     relationship.label(d3.select(this).text());
                 });
             });
@@ -222,10 +239,10 @@ function bind(graph, view) {
         var nodeEndMargin = 15;
 
         function cx(d) {
-            return d.x() * graph.internalScale();
+            return d.ex();
         }
         function cy(d) {
-            return d.y() * graph.internalScale();
+            return d.ey();
         }
 
         function smallestContainingBox(graph) {
@@ -314,9 +331,7 @@ function bind(graph, view) {
             if (d.end.isLeftOf(d.start)) {
                 angle += 180;
             }
-            var startX = d.start.x() * graph.internalScale();
-            var startY = d.start.y() * graph.internalScale();
-            return "translate(" + startX + "," + startY + ") rotate(" + angle + ")";
+            return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
         }
 
         function relationshipClasses(d) {

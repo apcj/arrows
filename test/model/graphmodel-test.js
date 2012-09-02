@@ -47,8 +47,40 @@ suite.addBatch({
             assert.isUndefined(node.x());
             assert.isUndefined(node.y());
             node.x(12).y(34);
-            assert.equal(12, node.x());
-            assert.equal(34, node.y());
+            assert.equal(node.x(), 12);
+            assert.equal(node.y(), 34);
+        }
+    },
+    "internal scale": {
+        "exposed via ex and ey properties": function() {
+            var model = gd.model();
+            var node = model.createNode().x(12).y(34);
+            assert.equal(node.ex(), 12);
+            assert.equal(node.ey(), 34);
+            model.internalScale(2);
+            assert.equal(node.ex(), 24);
+            assert.equal(node.ey(), 68);
+        },
+        "used in drag position update": function() {
+            var model = gd.model().internalScale(2);
+            var node = model.createNode().x(0).y(0);
+            assert.equal(node.ex(), 0);
+            assert.equal(node.ey(), 0);
+            assert.equal(node.x(), 0);
+            assert.equal(node.y(), 0);
+            node.drag(24, 68);
+            assert.equal(node.x(), 12);
+            assert.equal(node.y(), 34);
+            assert.equal(node.ex(), 24);
+            assert.equal(node.ey(), 68);
+        },
+        "used in distance calculation": function() {
+            var model = gd.model();
+            var node1 = model.createNode().x(0).y(0);
+            var node2 = model.createNode().x(0).y(10);
+            assert.equal(node1.distanceTo(node2), 10);
+            model.internalScale(2);
+            assert.equal(node1.distanceTo(node2), 20);
         }
     }
 });

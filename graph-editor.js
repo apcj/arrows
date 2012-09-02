@@ -3,7 +3,6 @@
     var graphModel;
     if (localStorage.getItem("graph-diagram-markup")) {
         graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
-        console.log(graphModel.nodeList());
     } else {
         graphModel = gd.model();
         graphModel.createNode().x( 50 ).y( 140 );
@@ -78,8 +77,7 @@
             }
             node = newNode;
         }
-        node.x( node.x() + d3.event.dx );
-        node.y( node.y() + d3.event.dy );
+        node.drag(d3.event.dx, d3.event.dy);
         draw();
     }
 
@@ -209,6 +207,12 @@
         } );
     };
 
+    function changeInternalScale() {
+        graphModel.internalScale(d3.select("#internalScale").node().value);
+        draw();
+    }
+
+    d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
     d3.select( "#modal-container" ).on( "click", useMarkupFromMarkupEditor );
