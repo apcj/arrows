@@ -26,7 +26,7 @@
     margin-right: auto;
     background-color: white;
     border-radius: 30px;
-    padding: 100px;
+    padding: 50px;
     text-align: left;
     overflow: auto;
 }
@@ -38,4 +38,11 @@ input.editor-field {
 
 body {
     margin: 0px;
+}
+
+textarea.code {
+    width: 100%;
+    border: none;
+    font-family: Menlo, monospace;
+    font-size: 10pt;
 }

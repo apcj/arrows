@@ -6,7 +6,7 @@ gd = {};
 
         var nodes = {},
             relationships = [],
-            nodeIdGenerator = 0,
+            highestId = 0,
             internalScale = 1,
             externalScale = 1;
 
@@ -81,8 +81,15 @@ gd = {};
             this.end = end;
         };
 
+        function generateNodeId() {
+            while (nodes[highestId]) {
+                highestId++;
+            }
+            return highestId;
+        }
+
         model.createNode = function(optionalNodeId) {
-            var nodeId = optionalNodeId || nodeIdGenerator++;
+            var nodeId = optionalNodeId || generateNodeId();
             var node = new Node();
             node.id = nodeId;
             nodes[nodeId] = node;
@@ -318,6 +325,8 @@ function bind(graph, view) {
 
         var relationshipGroup = view.selectAll("g.graph-diagram-relationship")
             .data(graph.relationshipList());
+
+        relationshipGroup.exit().remove();
 
         relationshipGroup.enter().append("svg:g")
             .attr("class", relationshipClasses);

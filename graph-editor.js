@@ -128,17 +128,26 @@
         markup = markup
             .replace(/<li/g, "\n  <li")
             .replace(/<span/g, "\n    <span")
-            .replace(/<\/span><\/li/g, "</span>\n  <li")
+            .replace(/<\/span><\/li/g, "</span>\n  </li")
             .replace(/<\/ul/, "\n</ul");
 
         container.remove();
         d3.selectAll(".modal-appear")
-            .style("display", "block")
-            .select("pre.code")
-            .text(markup);
+            .style("display", "block");
+
+        d3.select("textarea.code")
+            .attr("rows", markup.split("\n" ).length)
+            .node().value = markup;
     };
 
-    var hideGlassPane = function() {
+    var saveMarkup = function() {
+        var markup = d3.select("textarea.code").node().value;
+        var container = d3.select("body" ).append("div");
+        container.node().innerHTML = markup;
+        graphModel = gd.markup.parse(container);
+        container.remove();
+        draw();
+
         d3.selectAll(".modal-appear")
             .style("display", "none");
     };
@@ -156,6 +165,6 @@
 
     d3.select("#exportMarkupButton").on("click", exportMarkup);
     d3.select("#exportSvgButton").on("click", exportSvg);
-    d3.select("#modal-container").on("click", hideGlassPane);
+    d3.select("#modal-container").on("click", saveMarkup);
     d3.select("#modal-dialog").on("click", function() { d3.event.stopPropagation(); });
 })();
