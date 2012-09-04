@@ -178,7 +178,7 @@
     {
         var container = d3.select( "body" ).append( "div" );
         container.node().innerHTML = markup;
-        var model = gd.markup.parse( container );
+        var model = gd.markup.parse( container.select("ul.graph-diagram-markup") );
         container.remove();
         return model;
     }

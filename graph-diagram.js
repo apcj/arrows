@@ -137,13 +137,17 @@ gd = {};
 
         model.internalScale = function(newScale) {
             if (arguments.length == 1) {
-                internalScale = newScale;
+                internalScale = parseFloat(newScale);
                 return this;
             }
             return internalScale;
         };
 
-        model.externalScale = function() {
+        model.externalScale = function(newScale) {
+            if (arguments.length == 1) {
+                externalScale = parseFloat(newScale);
+                return this;
+            }
             return externalScale;
         };
 
@@ -156,6 +160,13 @@ gd = {};
 
         markup.parse = function(selection) {
             var model = gd.model();
+
+            if (selection.attr("data-internal-scale")) {
+                model.internalScale(selection.attr("data-internal-scale"));
+            }
+            if (selection.attr("data-external-scale")) {
+                model.externalScale(selection.attr("data-external-scale"));
+            }
 
             selection.selectAll(".graph-diagram-node").each(function () {
                 var nodeMarkup = d3.select(this);
@@ -183,7 +194,9 @@ gd = {};
 
         markup.format = function(model, container) {
             var ul = container.append("ul")
-                .attr("class", "graph-diagram-markup");
+                .attr("class", "graph-diagram-markup")
+                .attr("data-internal-scale", model.internalScale())
+                .attr("data-external-scale", model.externalScale());
 
             model.nodeList().forEach(function(node) {
                 var li = ul.append("li")

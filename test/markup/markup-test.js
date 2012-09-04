@@ -24,6 +24,19 @@ suite.addBatch({
                 assert.equal(model.relationshipList().length, 0);
             }
         },
+        "scales": {
+            topic: function(markup) {
+                markup.attr("data-internal-scale", 2.3);
+                markup.attr("data-external-scale", 4.5);
+                return gd.markup.parse(markup);
+            },
+            "internal scale": function(model) {
+                assert.strictEqual(model.internalScale(), 2.3);
+            },
+            "external scale": function(model) {
+                assert.strictEqual(model.externalScale(), 4.5);
+            }
+        },
         "markup with one node and no relationships": {
             topic: function(markup) {
                 markup.append("li")
@@ -107,6 +120,23 @@ suite.addBatch({
                 var ul = markup.select("ul.graph-diagram-markup");
                 assert.equal(ul[0].length, 1);
                 assert.equal(ul.selectAll("li")[0].length, 0);
+            }
+        },
+        "scales": {
+            topic: function() {
+                var model = gd.model();
+                model.internalScale(2.3);
+                model.externalScale(4.5);
+
+                var markup = d3.select("body").append("div");
+                gd.markup.format(model, markup);
+                return markup.select("ul.graph-diagram-markup");
+            },
+            "internal scale": function(ul) {
+                assert.equal(ul.attr("data-internal-scale"), 2.3);
+            },
+            "external scale": function(ul) {
+                assert.equal(ul.attr("data-external-scale"), 4.5);
             }
         },
         "one node": {
