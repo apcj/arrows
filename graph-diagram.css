@@ -30,12 +30,18 @@ path.graph-diagram-relationship.lowlight, text.graph-diagram-bound-variable.lowl
 }
 
 text.graph-diagram-bound-variable {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
     text-anchor: middle;
     alignment-baseline: central;
     font-size: 60px
 }
 
 text.graph-diagram-relationship-label {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
     text-anchor: middle;
     alignment-baseline: bottom;
     baseline-shift: 30%;
