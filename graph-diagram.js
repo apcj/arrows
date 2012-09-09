@@ -404,6 +404,8 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         var relationshipLabel = relationshipGroup.selectAll("text.graph-diagram-relationship-label")
             .data(relationshipWithLabel);
 
+        relationshipLabel.exit().remove();
+
         relationshipLabel.enter().append("svg:text")
             .attr("class", "graph-diagram-relationship-label")
             .call(relationshipBehaviour);
