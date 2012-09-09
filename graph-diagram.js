@@ -159,11 +159,15 @@ gd = {};
         var scaling = {};
 
         scaling.viewBox = function(viewDimensions, diagramExtent) {
+            var xScale = diagramExtent.width / viewDimensions.width;
+            var yScale = diagramExtent.height / viewDimensions.height;
+            var scaleFactor = xScale < 1 && yScale < 1 ? 1 : (xScale > yScale ? xScale : yScale);
+
             return {
-                x: ((diagramExtent.width - viewDimensions.width) / 2) + diagramExtent.x,
-                y: ((diagramExtent.height - viewDimensions.height) / 2) + diagramExtent.y,
-                width: viewDimensions.width,
-                height: viewDimensions.height
+                x: ((diagramExtent.width - viewDimensions.width * scaleFactor) / 2) + diagramExtent.x,
+                y: ((diagramExtent.height - viewDimensions.height * scaleFactor) / 2) + diagramExtent.y,
+                width: viewDimensions.width * scaleFactor,
+                height: viewDimensions.height * scaleFactor
             };
         };
 
