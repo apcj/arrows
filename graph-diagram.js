@@ -154,6 +154,22 @@ gd = {};
         return model;
     };
 
+    gd.scaling = function() {
+
+        var scaling = {};
+
+        scaling.viewBox = function(viewDimensions, diagramExtent) {
+            return {
+                x: ((diagramExtent.width - viewDimensions.width) / 2) + diagramExtent.x,
+                y: ((diagramExtent.height - viewDimensions.height) / 2) + diagramExtent.y,
+                width: viewDimensions.width,
+                height: viewDimensions.height
+            };
+        };
+
+        return scaling;
+    }();
+
     gd.markup = function() {
 
         var markup = {};
@@ -271,17 +287,8 @@ function bind(graph, view) {
             return { x: bounds.xMin, y: bounds.yMin, width: (bounds.xMax - bounds.xMin), height: (bounds.yMax - bounds.yMin) }
         }
 
-        function viewBox(graph) {
-            var box = smallestContainingBox(graph);
+        function spaceJoin(box) {
             return [box.x, box.y, box.width, box.height].join(" ");
-        }
-
-        function width(graph) {
-            return smallestContainingBox(graph).width * graph.externalScale();
-        }
-
-        function height(graph) {
-            return smallestContainingBox(graph).height * graph.externalScale();
         }
 
         function label(d) {
@@ -289,7 +296,8 @@ function bind(graph, view) {
         }
 
         view
-            .attr("class", "graphdiagram");
+            .attr("class", "graphdiagram")
+            .attr("viewBox", spaceJoin(gd.scaling.viewBox({ width: 1024, height: 768}, smallestContainingBox(graph))));
 
         function nodeClasses(d) {
             return "graph-diagram-node graph-diagram-node-id-" + d.id + " " + d.class;
