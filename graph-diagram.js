@@ -291,17 +291,24 @@ function bind(graph, view) {
             return { x: bounds.xMin, y: bounds.yMin, width: (bounds.xMax - bounds.xMin), height: (bounds.yMax - bounds.yMin) }
         }
 
-        function spaceJoin(box) {
-            return [box.x, box.y, box.width, box.height].join(" ");
-        }
-
         function label(d) {
             return d.label();
         }
 
+        function viewBox()
+        {
+            var svgElement = view.node();
+            var viewDimensions = {
+                width: svgElement.clientWidth,
+                height: svgElement.clientHeight
+            };
+            var diagramExtent = smallestContainingBox( graph );
+            var box = gd.scaling.viewBox( viewDimensions, diagramExtent );
+            return [box.x, box.y, box.width, box.height].join( " " );
+        }
+
         view
-            .attr("class", "graphdiagram")
-            .attr("viewBox", spaceJoin(gd.scaling.viewBox({ width: 1024, height: 768}, smallestContainingBox(graph))));
+            .attr("viewBox", viewBox());
 
         function nodeClasses(d) {
             return "graph-diagram-node graph-diagram-node-id-" + d.id + " " + d.class;

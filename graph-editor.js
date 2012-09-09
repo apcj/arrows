@@ -10,8 +10,7 @@
 
     var svg = d3.select("#canvas")
         .append("svg:svg")
-        .attr("width", 1024)
-        .attr("height", 768);
+        .attr("class", "graphdiagram");
 
     function draw()
     {
@@ -33,7 +32,6 @@
 
     function findClosestOverlappingNode( node )
     {
-
         var closestNode = null;
         var closestDistance = Number.MAX_VALUE;
 
@@ -211,7 +209,9 @@
         graphModel.internalScale(d3.select("#internalScale").node().value);
         draw();
     }
+    d3.select("#internalScale").node().value = graphModel.internalScale();
 
+    d3.select(window).on("resize", draw);
     d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
