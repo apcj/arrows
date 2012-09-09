@@ -265,7 +265,7 @@ gd = {};
     }
 })();
 
-function bind(graph, view) {
+function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         var radius = 50;
         var strokeWidth = 8;
         var nodeStartMargin = 15;
@@ -321,7 +321,8 @@ function bind(graph, view) {
 
         nodes.enter().append("svg:circle")
             .attr("class", nodeClasses)
-            .attr("r", radius);
+            .attr("r", radius)
+            .call(nodeBehaviour);
 
         nodes
             .attr("cx", cx)
@@ -337,7 +338,8 @@ function bind(graph, view) {
         boundVariables.exit().remove();
 
         boundVariables.enter().append("svg:text")
-            .attr("class", boundVariableClasses);
+            .attr("class", boundVariableClasses)
+            .call(nodeBehaviour);
 
         boundVariables
             .attr("x", cx)
@@ -389,7 +391,8 @@ function bind(graph, view) {
             .data(singleton);
 
         relationshipPath.enter().append("svg:path")
-            .attr("class", relationshipClasses);
+            .attr("class", relationshipClasses)
+            .call(relationshipBehaviour);
 
         relationshipPath
             .attr("d", horizontalArrow);
@@ -402,7 +405,8 @@ function bind(graph, view) {
             .data(relationshipWithLabel);
 
         relationshipLabel.enter().append("svg:text")
-            .attr("class", "graph-diagram-relationship-label");
+            .attr("class", "graph-diagram-relationship-label")
+            .call(relationshipBehaviour);
 
         relationshipLabel
             .attr("x", midwayBetweenStartAndEnd)

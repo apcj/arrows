@@ -14,12 +14,14 @@
 
     function draw()
     {
-        bind(graphModel, svg.data([graphModel]));
-        svg.selectAll(".graph-diagram-node")
-            .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd))
-            .on("dblclick", editNode);
-        svg.selectAll(".graph-diagram-relationship-label")
-            .on("dblclick", editRelationship);
+        bind(graphModel, svg.data([graphModel]), function(newNodes) {
+            newNodes
+                .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd))
+                .on("dblclick", editNode);
+        }, function(newRelationships) {
+            newRelationships
+                .on("dblclick", editRelationship);
+        });
     }
 
     function save( markup )
