@@ -79,8 +79,8 @@ gd = {};
             };
         };
 
-        var Relationship = function(start, end, labelText) {
-            var label = labelText;
+        var Relationship = function(start, end) {
+            var label;
 
             this.label = function(labelText) {
                 if (arguments.length == 1) {
@@ -114,7 +114,7 @@ gd = {};
         };
 
         model.createRelationship = function(start, end) {
-            var relationship = new Relationship(start, end, "KNOWS");
+            var relationship = new Relationship(start, end);
             relationships.push(relationship);
             return relationship;
         };
