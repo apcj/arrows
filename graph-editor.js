@@ -199,8 +199,8 @@
             var css = d.responseText;
             var rawSvg = document.getElementById( "canvas" ).innerHTML;
             var styleTag = "<style type=\"text/css\"><![CDATA[" + css + "]]></style>";
-            var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\">";
-            var modifiedSvg = rawSvg.replace( /<svg [^>]*>/, svgStartTag + styleTag );
+            var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\"";
+            var modifiedSvg = rawSvg.replace( /<svg( [^>]*>)/, svgStartTag + "$1" + styleTag );
             window.open( "data:image/svg+xml;base64," + btoa( modifiedSvg ) );
         } );
     };
