@@ -95,11 +95,12 @@
     function editNode()
     {
         var node = this.__data__;
-        var field = svg.append( "svg:foreignObject" )
-            .attr( "x", node.x() - 50 )
-            .attr( "y", node.y() - 50 )
+        var foreignObject = svg.append( "svg:foreignObject" )
+            .attr( "x", node.ex() - 50 )
+            .attr( "y", node.ey() - 50 )
             .attr( "height", 100 )
-            .attr( "width", 120 )
+            .attr( "width", 120 );
+        var field = foreignObject
             .append( "xhtml:body" )
             .append( "input" )
             .attr( "class", "editor-field" )
@@ -107,17 +108,28 @@
 
         field.node().value = node.label() || "";
         field.node().select();
-        field.on( "keypress", function ()
+
+        function saveChange()
+        {
+            node.label( field.node().value );
+            foreignObject.remove();
+            save( formatMarkup() );
+            draw();
+        }
+
+        function saveOnEnter()
         {
             var e = d3.event;
             if ( e.which == 10 || e.which == 13 )
             {
-                node.label( field.node().value );
-                field.remove();
-                save( formatMarkup() );
-                draw();
+                field.on("blur", null);
+                saveChange();
             }
-        } )
+        }
+
+        field
+            .on("blur", saveChange)
+            .on( "keypress", saveOnEnter );
     }
 
     function editRelationship()
