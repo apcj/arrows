@@ -1,0 +1,57 @@
+svg {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    background: black;
+}
+
+circle.graph-diagram-node {
+    stroke: white;
+    stroke-width: 8px;
+    fill: black;
+}
+
+circle.graph-diagram-node.highlight {
+    stroke: blue;
+}
+
+circle.graph-diagram-node.lowlight {
+    stroke: #555;
+}
+
+path.graph-diagram-relationship, text.graph-diagram-bound-variable, text.graph-diagram-relationship-label {
+    stroke: none;
+    fill: white;
+}
+
+path.graph-diagram-relationship.highlight, text.graph-diagram-bound-variable.highlight, text.graph-diagram-relationship-label.highlight {
+    fill: blue;
+}
+
+path.graph-diagram-relationship.lowlight, text.graph-diagram-bound-variable.lowlight, text.graph-diagram-relationship-label.lowlight {
+    fill: #555;
+}
+
+path.graph-diagram-property-outline {
+    stroke: white;
+    stroke-width: 3px;
+    fill: none;
+}
+
+text.graph-diagram-bound-variable {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    text-anchor: middle;
+    alignment-baseline: central;
+    font-size: 60px
+}
+
+text.graph-diagram-relationship-label {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    text-anchor: middle;
+    alignment-baseline: bottom;
+    baseline-shift: 30%;
+    font-size: 50px
+}
+

@@ -208,7 +208,7 @@
 
     var exportSvg = function ()
     {
-        d3.xhr( "graph-diagram.css", function ( d )
+        d3.xhr( "graph-diagram-inverted.css", function ( d )
         {
             var css = d.responseText;
             var rawSvg = document.getElementById( "canvas" ).innerHTML;
