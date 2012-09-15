@@ -1,6 +1,13 @@
 input.editor-field {
+    width: 300px;
     text-align: center;
     font-size: 60px;
+    border-style: none;
+}
+
+textarea.properties-editor {
+    width: 400px;
+    font-size: 30px;
 }
 
 body {
@@ -47,16 +54,29 @@ svg.graphdiagram {
     overflow: hidden;
 }
 
-#modal-dialog {
-    width: 800px;
+.modal-dialog {
     margin-top: 100px;
     margin-left: auto;
     margin-right: auto;
     background-color: white;
     border-radius: 30px;
     padding: 50px;
-    text-align: left;
     overflow: auto;
+}
+
+.modal-dialog.export-markup {
+    width: 800px;
+    text-align: left;
+}
+
+.modal-dialog.pop-up-editor {
+    display: none;
+    position: relative;
+    width: 800px;
+}
+
+p.button-row {
+    text-align: right;
 }
 
 textarea.code {

@@ -29,6 +29,12 @@ path.graph-diagram-relationship.lowlight, text.graph-diagram-bound-variable.lowl
     fill: #555;
 }
 
+path.graph-diagram-property-outline {
+    stroke: black;
+    stroke-width: 3px;
+    fill: none;
+}
+
 text.graph-diagram-bound-variable {
     user-select: none;
     -webkit-user-select: none;

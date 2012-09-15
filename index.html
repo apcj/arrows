@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="graph-editor.css" type="text/css">
   <title>Arrow Tool</title>
 </head>
-<body>  
+<body>
 
 <div class="tools">
   <button id="exportMarkupButton">Export Markup</button>
@@ -20,10 +20,37 @@
 
 <div id="glass-pane" class="modal-appear"></div>
 <div id="modal-container" class="modal-appear">
-  <div id="modal-dialog">
+  <div class="modal-dialog export-markup">
     <textarea class="code">Some text</textarea>
   </div>
+  <div class="modal-dialog pop-up-editor node">
+    <svg xmlns="http://www.w3.org/2000/svg" width="700" height="500" viewBox="-350 -100 700 500">
+      <circle class="graph-diagram-node graph-diagram-node-id-0 undefined" r="50" cx="-250" cy="0"></circle>
+      <circle class="graph-diagram-node graph-diagram-node-id-1 undefined" r="50" cx="250" cy="0"></circle>
+      <g class="graph-diagram-relationship undefined" transform="translate(-250,0) rotate(0)">
+        <path class="graph-diagram-relationship undefined"
+            d="M 65 4 L 405 4 L 405 15 L 435 0 L 405 -15 L 405 -4 L 65 -4 Z"></path>
+      </g>
+      <path class="graph-diagram-property-outline"
+            d="M 0 0 L 50 50 L 150 50 A 50 50 0 0 1 200 100 L 200 350 A 50 50 0 0 1 150 400 L -150 400 A 50 50 0 0 1 -200 350 L -200 100 A 50 50 0 0 1 -150 50 L -50 50 Z"></path>
+    </svg>
+    <input style="position: absolute; left: 300px; top: 70px"
+           id="node-variable-name" class="editor-field" value="KNOWS">
+
+    <p class="button-row">
+      <button>Delete Node</button>
+    </p>
+    <p>
+      <textarea class="properties-editor"></textarea>
+    </p>
+
+    <p class="button-row">
+      <button>Save</button>
+    </p>
+  </div>
 </div>
+
+
 <div id="canvas"></div>
 
 <script type="text/javascript" src="graph-editor.js"></script>

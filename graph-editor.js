@@ -230,7 +230,7 @@
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
     d3.select( "#modal-container" ).on( "click", useMarkupFromMarkupEditor );
-    d3.select( "#modal-dialog" ).on( "click", function ()
+    d3.select( ".modal-dialog" ).on( "click", function ()
     {
         d3.event.stopPropagation();
     } );
