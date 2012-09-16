@@ -10,7 +10,7 @@ suite.addBatch({
         topic: function() {
             var view = { width: 1000, height: 500 };
             var diagram = { width: 500, height: 250, x: 33, y: 66 };
-            return gd.scaling.viewBox(view, diagram);
+            return gd.scaling.centeredOrScaledViewBox(view, diagram);
         },
         "keep at natural scale": function(viewBox) {
             assert.equal(viewBox.width, 1000);
@@ -25,7 +25,7 @@ suite.addBatch({
         topic: function() {
             var view = { width: 1000, height: 500 };
             var diagram = { width: 2000, height: 500, x: 33, y: 66 };
-            return gd.scaling.viewBox(view, diagram);
+            return gd.scaling.centeredOrScaledViewBox(view, diagram);
         },
         "scaled down to fit": function(viewBox) {
             assert.equal(viewBox.width, 2000);
@@ -42,7 +42,7 @@ suite.addBatch({
         topic: function() {
             var view = { width: 1000, height: 500 };
             var diagram = { width: 500, height: 1000, x: 33, y: 66 };
-            return gd.scaling.viewBox(view, diagram);
+            return gd.scaling.centeredOrScaledViewBox(view, diagram);
         },
         "scaled down to fit": function(viewBox) {
             assert.equal(viewBox.width, 2000);
@@ -59,7 +59,7 @@ suite.addBatch({
         topic: function() {
             var view = { width: 1000, height: 500 };
             var diagram = { width: 4000, height: 1000, x: 33, y: 66 };
-            return gd.scaling.viewBox(view, diagram);
+            return gd.scaling.centeredOrScaledViewBox(view, diagram);
         },
         "scaled down to fit": function(viewBox) {
             assert.equal(viewBox.width, 4000);
@@ -76,7 +76,7 @@ suite.addBatch({
         topic: function() {
             var view = { width: 1000, height: 500 };
             var diagram = { width: 2000, height: 4000, x: 33, y: 66 };
-            return gd.scaling.viewBox(view, diagram);
+            return gd.scaling.centeredOrScaledViewBox(view, diagram);
         },
         "scaled down to fit": function(viewBox) {
             assert.equal(viewBox.width, 8000);

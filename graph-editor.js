@@ -22,6 +22,7 @@
             newRelationships
                 .on("dblclick", editRelationship);
         });
+        gd.scaling.centerOrScaleDiagramToFitSvg(graphModel, svg.data([graphModel]));
     }
 
     function save( markup )

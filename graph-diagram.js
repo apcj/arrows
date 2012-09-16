@@ -2,6 +2,13 @@ gd = {};
 
 (function() {
 
+    gd.parameters = {
+        radius: 50,
+        strokeWidth: 8,
+        nodeStartMargin: 15,
+        nodeEndMargin: 15
+    };
+
     gd.model = function() {
 
         var nodes = {},
@@ -158,7 +165,21 @@ gd = {};
 
         var scaling = {};
 
-        scaling.viewBox = function(viewDimensions, diagramExtent) {
+        function smallestContainingBox(graph) {
+            var cxList = graph.nodeList().map(function(d) { return d.ex(); });
+            var cyList = graph.nodeList().map(function(d) { return d.ey(); });
+
+            var bounds = {
+                xMin:Math.min.apply(Math, cxList) - gd.parameters.radius - gd.parameters.strokeWidth,
+                xMax:Math.max.apply(Math, cxList) + gd.parameters.radius + gd.parameters.strokeWidth,
+                yMin:Math.min.apply(Math, cyList) - gd.parameters.radius - gd.parameters.strokeWidth,
+                yMax:Math.max.apply(Math, cyList) + gd.parameters.radius + gd.parameters.strokeWidth
+            };
+            return { x: bounds.xMin, y: bounds.yMin,
+                width: (bounds.xMax - bounds.xMin), height: (bounds.yMax - bounds.yMin) }
+        }
+
+        scaling.centeredOrScaledViewBox = function(viewDimensions, diagramExtent) {
             var xScale = diagramExtent.width / viewDimensions.width;
             var yScale = diagramExtent.height / viewDimensions.height;
             var scaleFactor = xScale < 1 && yScale < 1 ? 1 : (xScale > yScale ? xScale : yScale);
@@ -169,6 +190,28 @@ gd = {};
                 width: viewDimensions.width * scaleFactor,
                 height: viewDimensions.height * scaleFactor
             };
+        };
+
+        scaling.centerOrScaleDiagramToFitSvg = function(graph, view) {
+            var svgElement = view.node();
+            var viewDimensions = {
+                width: svgElement.clientWidth,
+                height: svgElement.clientHeight
+            };
+            var diagramExtent = smallestContainingBox( graph );
+            var box = scaling.centeredOrScaledViewBox( viewDimensions, diagramExtent );
+
+            view
+                .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
+        };
+
+        scaling.sizeSvgToFitDiagram = function(graph, view) {
+            var box = smallestContainingBox( graph );
+
+            view
+                .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ))
+                .attr("width", box.width * graph.externalScale())
+                .attr("height", box.height * graph.externalScale());
         };
 
         return scaling;
@@ -266,10 +309,8 @@ gd = {};
 })();
 
 function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
-        var radius = 50;
-        var strokeWidth = 8;
-        var nodeStartMargin = 15;
-        var nodeEndMargin = 15;
+        nodeBehaviour = nodeBehaviour || function() {};
+        relationshipBehaviour = relationshipBehaviour || function() {};
 
         function cx(d) {
             return d.ex();
@@ -278,37 +319,9 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             return d.ey();
         }
 
-        function smallestContainingBox(graph) {
-            var cxList = graph.nodeList().map(cx);
-            var cyList = graph.nodeList().map(cy);
-
-            var bounds = {
-                xMin:Math.min.apply(Math, cxList) - radius - strokeWidth,
-                xMax:Math.max.apply(Math, cxList) + radius + strokeWidth,
-                yMin:Math.min.apply(Math, cyList) - radius - strokeWidth,
-                yMax:Math.max.apply(Math, cyList) + radius + strokeWidth
-            };
-            return { x: bounds.xMin, y: bounds.yMin, width: (bounds.xMax - bounds.xMin), height: (bounds.yMax - bounds.yMin) }
-        }
-
         function label(d) {
             return d.label();
         }
-
-        function viewBox()
-        {
-            var svgElement = view.node();
-            var viewDimensions = {
-                width: svgElement.clientWidth,
-                height: svgElement.clientHeight
-            };
-            var diagramExtent = smallestContainingBox( graph );
-            var box = gd.scaling.viewBox( viewDimensions, diagramExtent );
-            return [box.x, box.y, box.width, box.height].join( " " );
-        }
-
-        view
-            .attr("viewBox", viewBox());
 
         function nodeClasses(d) {
             return "graph-diagram-node graph-diagram-node-id-" + d.id + " " + d.class;
@@ -321,7 +334,7 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         nodes.enter().append("svg:circle")
             .attr("class", nodeClasses)
-            .attr("r", radius)
+            .attr("r", gd.parameters.radius)
             .call(nodeBehaviour);
 
         nodes
@@ -350,8 +363,8 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             var length = d.start.distanceTo(d.end);
             var side = d.end.isLeftOf(d.start) ? -1 : 1;
             return gd.horizontalArrowOutline(
-                side * (radius + nodeStartMargin),
-                side * (length - (radius + nodeEndMargin)));
+                side * (gd.parameters.radius + gd.parameters.nodeStartMargin),
+                side * (length - (gd.parameters.radius + gd.parameters.nodeEndMargin)));
         }
 
         function midwayBetweenStartAndEnd(d) {
