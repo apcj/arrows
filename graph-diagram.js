@@ -341,24 +341,6 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             .attr("cx", cx)
             .attr("cy", cy);
 
-        function boundVariableClasses(d) {
-            return "graph-diagram-bound-variable " + d.class;
-        }
-
-        var boundVariables = view.selectAll("text.graph-diagram-bound-variable")
-            .data(d3.values(graph.nodeList()).filter(label));
-
-        boundVariables.exit().remove();
-
-        boundVariables.enter().append("svg:text")
-            .attr("class", boundVariableClasses)
-            .call(nodeBehaviour);
-
-        boundVariables
-            .attr("x", cx)
-            .attr("y", cy)
-            .text(label);
-
         function horizontalArrow(d) {
             var length = d.start.distanceTo(d.end);
             var side = d.end.isLeftOf(d.start) ? -1 : 1;
@@ -427,4 +409,27 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             .attr("x", midwayBetweenStartAndEnd)
             .attr("y", 0 )
             .text(label);
-    }
+
+        function renderBoundVariables(className) {
+            function boundVariableClasses(d) {
+                return className + " " + d.class;
+            }
+
+            var boundVariables = view.selectAll("text." + className)
+                .data(d3.values(graph.nodeList()).filter(label));
+
+            boundVariables.exit().remove();
+
+            boundVariables.enter().append("svg:text")
+                .attr("class", boundVariableClasses)
+                .call(nodeBehaviour);
+
+            boundVariables
+                .attr("x", cx)
+                .attr("y", cy)
+                .text(label);
+        }
+
+        renderBoundVariables("graph-diagram-bound-variable-shadow");
+        renderBoundVariables("graph-diagram-bound-variable");
+}

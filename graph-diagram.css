@@ -35,13 +35,20 @@ path.graph-diagram-property-outline {
     fill: none;
 }
 
-text.graph-diagram-bound-variable {
+text.graph-diagram-bound-variable, text.graph-diagram-bound-variable-shadow {
     user-select: none;
     -webkit-user-select: none;
     cursor: default;
     text-anchor: middle;
     alignment-baseline: central;
-    font-size: 60px
+    font-size: 50px
+}
+
+text.graph-diagram-bound-variable-shadow {
+    fill: none;
+    stroke: white;
+    stroke-width: 20px;
+    stroke-linejoin: round;
 }
 
 text.graph-diagram-relationship-label {
