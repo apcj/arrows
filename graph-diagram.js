@@ -22,6 +22,17 @@ gd = {};
         var Node = function() {
             var position = {};
             var label;
+            var classes = [];
+
+            this.class = function(classesString) {
+                if (arguments.length == 1) {
+                    classes = classesString.split(" ").filter(function(className) {
+                        return className.length > 0 && className != "graph-diagram-node";
+                    });
+                    return this;
+                }
+                return ["graph-diagram-node"].concat(classes);
+            };
 
             this.x = function(x) {
                 if (arguments.length == 1) {
@@ -88,6 +99,17 @@ gd = {};
 
         var Relationship = function(start, end) {
             var label;
+            var classes = [];
+
+            this.class = function(classesString) {
+                if (arguments.length == 1) {
+                    classes = classesString.split(" ").filter(function(className) {
+                        return className.length > 0 && className != "graph-diagram-relationship";
+                    });
+                    return this;
+                }
+                return ["graph-diagram-relationship"].concat(classes);
+            };
 
             this.label = function(labelText) {
                 if (arguments.length == 1) {
@@ -235,6 +257,7 @@ gd = {};
                 var nodeMarkup = d3.select(this);
                 var id = nodeMarkup.attr("data-node-id");
                 var node = model.createNode(id);
+                node.class(nodeMarkup.attr("class") || "");
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
                 nodeMarkup.select("span.graph-diagram-in-node-caption" ).each(function() {
@@ -247,6 +270,7 @@ gd = {};
                 var fromId = relationshipMarkup.attr("data-from");
                 var toId = relationshipMarkup.attr("data-to");
                 var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
+                relationship.class(relationshipMarkup.attr("class") || "");
                 relationshipMarkup.select("span.graph-diagram-relationship-type" ).each(function() {
                     relationship.label(d3.select(this).text());
                 });
@@ -263,7 +287,7 @@ gd = {};
 
             model.nodeList().forEach(function(node) {
                 var li = ul.append("li")
-                    .attr("class", "graph-diagram-node")
+                    .attr("class", node.class().join(" "))
                     .attr("data-node-id", node.id)
                     .attr("data-x", node.x())
                     .attr("data-y", node.y());
@@ -277,7 +301,7 @@ gd = {};
 
             model.relationshipList().forEach(function(relationship) {
                 var li = ul.append("li")
-                    .attr("class", "graph-diagram-relationship")
+                    .attr("class", relationship.class().join(" "))
                     .attr("data-from", relationship.start.id)
                     .attr("data-to", relationship.end.id);
 
@@ -324,7 +348,7 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         }
 
         function nodeClasses(d) {
-            return "graph-diagram-node graph-diagram-node-id-" + d.id + " " + d.class;
+            return d.class().join(" ") + " " + "graph-diagram-node-id-" + d.id;
         }
 
         var nodes = view.selectAll("circle.graph-diagram-node")
@@ -364,7 +388,7 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         }
 
         function relationshipClasses(d) {
-            return "graph-diagram-relationship " + d.class;
+            return d.class().join(" ");
         }
 
         var relationshipGroup = view.selectAll("g.graph-diagram-relationship")
