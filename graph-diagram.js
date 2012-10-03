@@ -330,6 +330,21 @@ gd = {};
             "L", start, -shaftRadius,
             "Z"].join(" ");
     }
+
+    gd.speechBubblePath = function(width, height, margin, padding) {
+        return [
+            "M", 0, 0,
+            "L", margin + padding, margin,
+            "L", margin + width + padding, margin,
+            "A", padding, padding, 0, 0, 1, margin + width + padding * 2, margin + padding,
+            "L", margin + width + padding * 2, margin + height + padding,
+            "A", padding, padding, 0, 0, 1, margin + width + padding, margin + height + padding * 2,
+            "L", margin + padding, margin + height + padding * 2,
+            "A", padding, padding, 0, 0, 1, margin, margin + height + padding,
+            "L", margin, margin + padding,
+            "Z"
+        ].join(" ");
+    }
 })();
 
 function bind(graph, view, nodeBehaviour, relationshipBehaviour) {

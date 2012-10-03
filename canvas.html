@@ -2,6 +2,7 @@
 <html>
 <head>
   <script type="text/javascript" src="lib/d3.js"></script>
+  <script type="text/javascript" src="graph-diagram.js"></script>
   <title>Canvas Test</title>
 </head>
 <body>
@@ -56,6 +57,11 @@
         "A", padding, padding, 0, 0, 0, anchor.x - padding, anchor.y - height,
         "Z"
       ].join(" "))
+      .attr("fill", "none")
+      .attr("stroke", "black");
+
+  svg.append("svg:path")
+      .attr("d", gd.speechBubblePath(87, 42, 20, 10))
       .attr("fill", "none")
       .attr("stroke", "black");
 

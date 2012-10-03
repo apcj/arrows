@@ -1,7 +1,7 @@
 var vows = require("vows"),
     assert = require("assert");
 
-var suite = vows.describe("graph model");
+var suite = vows.describe("geometry");
 
 require("../../graph-diagram.js");
 
