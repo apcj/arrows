@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="lib/d3.js"></script>
+  <title>Canvas Test</title>
+</head>
+<body>
+
+<h1 style="display: none" id="the-heading">Hello Jim</h1>
+
+<canvas style="display: none" id="the-canvas">
+
+</canvas>
+
+<svg>
+
+</svg>
+
+<script>
+  var heading = d3.select("#the-heading");
+  var headingStyle = window.getComputedStyle(heading.node());
+
+  var canvas = document.getElementById("the-canvas");
+  var context = canvas.getContext("2d");
+  context.font = headingStyle.getPropertyValue("font")
+
+  var size = context.measureText(heading.text());
+  var height = 20;
+
+  var anchor = { x: 100, y: 100 };
+  var padding = 10;
+  var tail = 20;
+
+  var svg = d3.select("svg");
+  svg.append("svg:text")
+      .attr("font-size", headingStyle.getPropertyValue("font-size"))
+      .attr("font-family", headingStyle.getPropertyValue("font-family"))
+      .attr("font-weight", headingStyle.getPropertyValue("font-weight"))
+      .attr("x", anchor.x)
+      .attr("y", anchor.y)
+      .text(heading.text());
+
+  svg.append("svg:path")
+      .attr("d", [
+        "M", anchor.x - padding, anchor.y,
+        "L", anchor.x - tail, anchor.y + tail,
+        "L", anchor.x, anchor.y + padding,
+        "L", anchor.x + size.width / 2 - padding, anchor.y + padding,
+        "L", anchor.x + size.width / 2, anchor.y + padding + tail,
+        "L", anchor.x + size.width / 2 + padding, anchor.y + padding,
+        "L", anchor.x + size.width, anchor.y + padding,
+        "A", padding, padding, 0, 0, 0, anchor.x + size.width + padding, anchor.y,
+        "L", anchor.x + size.width + padding, anchor.y - height,
+        "A", padding, padding, 0, 0, 0, anchor.x + size.width, anchor.y - height - padding,
+        "L", anchor.x, anchor.y - padding - height,
+        "A", padding, padding, 0, 0, 0, anchor.x - padding, anchor.y - height,
+        "Z"
+      ].join(" "))
+      .attr("fill", "none")
+      .attr("stroke", "black");
+
+</script>
+
+</body>
+</html>
