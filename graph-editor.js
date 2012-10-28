@@ -96,41 +96,48 @@
     function editNode()
     {
         var node = this.__data__;
-        var foreignObject = svg.append( "svg:foreignObject" )
-            .attr( "x", node.ex() - 50 )
-            .attr( "y", node.ey() - 50 )
-            .attr( "height", 100 )
-            .attr( "width", 120 );
-        var field = foreignObject
-            .append( "xhtml:body" )
-            .append( "input" )
-            .attr( "class", "editor-field" )
-            .style( "width", 100 + "px" );
 
-        field.node().value = node.label() || "";
-        field.node().select();
+        var editor = d3.select(".pop-up-editor.node");
+
+        d3.selectAll(".modal-appear, .pop-up-editor.node")
+            .style("display", "block");
+
+        editor.select("path")
+            .attr("d", gd.speechBubblePath({ width: 500, height: 200},
+            gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding));
+
+        var labelField = editor.select(".label.editor-field");
+        labelField.node().value = node.label() || "";
+        labelField.node().select();
+
+        var propertiesField = editor.select(".properties-field");
+        propertiesField.node().value = node.properties().list().reduce(function(previous, property) {
+            return previous + property.key + ": " + property.value + "\n";
+        }, "");
 
         function saveChange()
         {
-            node.label( field.node().value );
-            foreignObject.remove();
+            node.label( labelField.node().value );
+            node.properties().clearAll();
+            propertiesField.node().value.split("\n").forEach(function(line) {
+                var tokens = line.split(/: */);
+                if (tokens.length === 2) {
+                    var key = tokens[0].trim();
+                    var value = tokens[1].trim();
+                    if (key.length > 0 && value.length > 0) {
+                        node.properties().set(key, value);
+                    }
+                }
+            });
             save( formatMarkup() );
             draw();
+            d3.selectAll(".modal-appear, .pop-up-editor.node")
+                .style("display", null);
         }
 
-        function saveOnEnter()
-        {
-            var e = d3.event;
-            if ( e.which == 10 || e.which == 13 )
-            {
-                field.on("blur", null);
-                saveChange();
-            }
-        }
-
-        field
-            .on("blur", saveChange)
-            .on( "keypress", saveOnEnter );
+        editor.select(".save-button")
+            .on("click", saveChange);
+        d3.select( "#modal-container" ).on( "click", saveChange );
     }
 
     function editRelationship()
@@ -178,8 +185,9 @@
 
     var exportMarkup = function ()
     {
-        d3.selectAll( ".modal-appear" )
-            .style( "display", "block" );
+        d3.selectAll(".modal-appear, .export-markup")
+            .style("display", "block");
+        d3.select( "#modal-container" ).on( "click", useMarkupFromMarkupEditor );
 
         var markup = formatMarkup();
         d3.select( "textarea.code" )
@@ -203,8 +211,8 @@
         save( markup );
         draw();
 
-        d3.selectAll( ".modal-appear" )
-            .style( "display", "none" );
+        d3.selectAll(".modal-appear, .export-markup")
+            .style("display", null);
     };
 
     var exportSvg = function ()
@@ -230,8 +238,7 @@
     d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
-    d3.select( "#modal-container" ).on( "click", useMarkupFromMarkupEditor );
-    d3.select( ".modal-dialog" ).on( "click", function ()
+    d3.selectAll( ".modal-dialog" ).on( "click", function ()
     {
         d3.event.stopPropagation();
     } );

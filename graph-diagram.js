@@ -115,12 +115,17 @@ gd = {};
             };
 
             this.set = function(key, value) {
-                if (!keys[key]) {
+                if (!values[key]) {
                     keys.push(key);
                 }
                 values[key] = value;
                 return this;
             };
+
+            this.clearAll = function() {
+                keys = [];
+                values = {};
+            }
         };
 
         var Relationship = function(start, end) {
