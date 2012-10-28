@@ -88,9 +88,11 @@ suite.addBatch({
             },
             "with properties": function(model) {
                 var node = model.nodeList()[0];
-                assert.deepEqual(node.properties().keys(), ["name", "location"]);
-                assert.equal(node.properties().get("name"), "Alistair");
-                assert.equal(node.properties().get("location"), "London");
+                assert.equal(node.properties().list().length, 2);
+                assert.equal(node.properties().list()[0].key, "name");
+                assert.equal(node.properties().list()[0].value, "Alistair");
+                assert.equal(node.properties().list()[1].key, "location");
+                assert.equal(node.properties().list()[1].value, "London");
             },
             "no relationships": function(model) {
                 assert.equal(model.relationshipList().length, 0);

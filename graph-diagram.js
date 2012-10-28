@@ -108,21 +108,19 @@ gd = {};
             var keys = [];
             var values = {};
 
-            this.keys = function() {
-                return keys;
+            this.list = function() {
+                return keys.map(function (key) {
+                    return { key: key, value: values[key] };
+                });
             };
 
             this.set = function(key, value) {
-                if (!keys[keys]) {
+                if (!keys[key]) {
                     keys.push(key);
                 }
                 values[key] = value;
                 return this;
             };
-
-            this.get = function(key) {
-                return values[key];
-            }
         };
 
         var Relationship = function(start, end) {
@@ -339,15 +337,15 @@ gd = {};
                         .text(node.label());
                 }
 
-                if (node.properties().keys().length > 0) {
+                if (node.properties().list().length > 0) {
                     var dl = li.append("dl")
                         .attr("class", "graph-diagram-properties");
 
-                    node.properties().keys().forEach(function(key) {
+                    node.properties().list().forEach(function(property) {
                         dl.append("dt")
-                            .text(key);
+                            .text(property.key);
                         dl.append("dd")
-                            .text(node.properties().get(key));
+                            .text(property.value);
                     });
                 }
             });
@@ -411,7 +409,7 @@ gd = {};
             var canvas = canvasSelection.node();
             var context = canvas.getContext("2d");
             context.font = "normal normal normal 50px/normal Gill Sans";
-            return { width: context.measureText(text).width, height: 50 };
+            return context.measureText(text).width;
         };
 
         return textDimensions;
@@ -431,6 +429,18 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         function label(d) {
             return d.label();
+        }
+
+        function hasProperties(d) {
+            return d.properties().list().length > 0;
+        }
+
+        function properties(d) {
+            return d.properties().list();
+        }
+
+        function propertyKeyValue( property ) {
+            return property.key + ": " + property.value;
         }
 
         function nodeClasses(d) {
@@ -544,7 +554,7 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         renderBoundVariables("graph-diagram-bound-variable");
 
         var speechBubbleGroup = view.selectAll("g.speech-bubble")
-            .data(d3.values(graph.nodeList()).filter(label));
+            .data(d3.values(graph.nodeList()).filter(hasProperties));
 
         speechBubbleGroup.exit().remove();
 
@@ -555,8 +565,16 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         function speechBubble(node)
         {
-            return gd.speechBubblePath( gd.textDimensions.measure(label(node)),
-                gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding );
+            var textSize = {
+                width: d3.max(node.properties().list(), function(property) {
+                    return gd.textDimensions.measure(propertyKeyValue(property));
+                }),
+                height: node.properties().list().length * 50
+            };
+
+            return gd.speechBubblePath( textSize,
+                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding
+            );
         }
 
         speechBubbleGroup
@@ -577,15 +595,17 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             .attr("d", speechBubble);
 
         var speechBubbleContent = speechBubbleGroup.selectAll("text.speech-bubble-content")
-            .data(singleton);
+            .data(properties);
 
         speechBubbleContent.exit().remove();
 
         speechBubbleContent.enter().append("svg:text")
             .attr("class", "speech-bubble-content")
-            .attr("x", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
-            .attr("y", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding + 25);
+            .attr("x", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding);
 
         speechBubbleContent
-            .text(label);
+            .attr("y", function(d, i) {
+                return i * 50 + gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding + 25
+            })
+            .text(propertyKeyValue);
 }
