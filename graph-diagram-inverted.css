@@ -17,7 +17,7 @@ circle.graph-diagram-node.lowlight {
     stroke: #555;
 }
 
-path.graph-diagram-relationship, text.graph-diagram-bound-variable, text.graph-diagram-relationship-label {
+path.graph-diagram-relationship, text.graph-diagram-bound-variable, text.graph-diagram-relationship-label, text.speech-bubble-content {
     stroke: none;
     fill: white;
 }
@@ -30,10 +30,18 @@ path.graph-diagram-relationship.lowlight, text.graph-diagram-bound-variable.lowl
     fill: #555;
 }
 
-path.graph-diagram-property-outline {
+path.graph-diagram-property-outline, path.speech-bubble-outline {
     stroke: white;
     stroke-width: 3px;
-    fill: none;
+    fill: black;
+}
+
+text.speech-bubble-content {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+    alignment-baseline: central;
+    font-size: 50px
 }
 
 text.graph-diagram-bound-variable, text.graph-diagram-bound-variable-shadow {
@@ -62,3 +70,6 @@ text.graph-diagram-relationship-label {
     font-size: 50px
 }
 
+#textMeasuringCanvas {
+    display: none;
+}

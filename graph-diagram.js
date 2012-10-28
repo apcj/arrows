@@ -6,7 +6,9 @@ gd = {};
         radius: 50,
         strokeWidth: 8,
         nodeStartMargin: 15,
-        nodeEndMargin: 15
+        nodeEndMargin: 15,
+        speechBubbleMargin: 20,
+        speechBubblePadding: 10
     };
 
     gd.model = function() {
@@ -329,9 +331,10 @@ gd = {};
             "L", shoulder, -shaftRadius,
             "L", start, -shaftRadius,
             "Z"].join(" ");
-    }
+    };
 
-    gd.speechBubblePath = function(width, height, margin, padding) {
+    gd.speechBubblePath = function(textSize, margin, padding) {
+        var width = textSize.width, height = textSize.height;
         return [
             "M", 0, 0,
             "L", margin + padding, margin,
@@ -344,7 +347,24 @@ gd = {};
             "L", margin, margin + padding,
             "Z"
         ].join(" ");
-    }
+    };
+
+    gd.textDimensions = function() {
+        var textDimensions = {};
+
+        textDimensions.measure = function(text) {
+            var canvasSelection = d3.select("#textMeasuringCanvas").data([this]);
+            canvasSelection.enter().append("canvas")
+                .attr("id", "textMeasuringCanvas");
+
+            var canvas = canvasSelection.node();
+            var context = canvas.getContext("2d");
+            context.font = "normal normal normal 50px/normal Gill Sans";
+            return { width: context.measureText(text).width, height: 50 };
+        };
+
+        return textDimensions;
+    }();
 })();
 
 function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
@@ -451,7 +471,7 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         function renderBoundVariables(className) {
             function boundVariableClasses(d) {
-                return className + " " + d.class;
+                return className + " " + d.class();
             }
 
             var boundVariables = view.selectAll("text." + className)
@@ -471,4 +491,50 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         renderBoundVariables("graph-diagram-bound-variable-shadow");
         renderBoundVariables("graph-diagram-bound-variable");
+
+        var speechBubbleGroup = view.selectAll("g.speech-bubble")
+            .data(d3.values(graph.nodeList()).filter(label));
+
+        speechBubbleGroup.exit().remove();
+
+        speechBubbleGroup.enter().append("svg:g")
+            .attr("class", "speech-bubble");
+
+        var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
+
+        function speechBubble(node)
+        {
+            return gd.speechBubblePath( gd.textDimensions.measure(label(node)),
+                gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding );
+        }
+
+        speechBubbleGroup
+            .attr("transform", function(node) {
+                return "translate(" + (node.ex() + diagonalRadius) + ","
+                    + (node.ey() + diagonalRadius) + ")";
+            } );
+
+        var speechBubbleOutline = speechBubbleGroup.selectAll("path.speech-bubble-outline")
+            .data(singleton);
+
+        speechBubbleOutline.exit().remove();
+
+        speechBubbleOutline.enter().append("svg:path")
+            .attr("class", "speech-bubble-outline");
+
+        speechBubbleOutline
+            .attr("d", speechBubble);
+
+        var speechBubbleContent = speechBubbleGroup.selectAll("text.speech-bubble-content")
+            .data(singleton);
+
+        speechBubbleContent.exit().remove();
+
+        speechBubbleContent.enter().append("svg:text")
+            .attr("class", "speech-bubble-content")
+            .attr("x", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
+            .attr("y", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding + 25);
+
+        speechBubbleContent
+            .text(label);
 }
