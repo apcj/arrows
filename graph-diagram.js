@@ -25,6 +25,7 @@ gd = {};
             var position = {};
             var label;
             var classes = [];
+            var properties = new Properties();
 
             this.class = function(classesString) {
                 if (arguments.length == 1) {
@@ -97,6 +98,31 @@ gd = {};
                 }
                 return label;
             };
+
+            this.properties = function() {
+                return properties;
+            };
+        };
+
+        var Properties = function() {
+            var keys = [];
+            var values = {};
+
+            this.keys = function() {
+                return keys;
+            };
+
+            this.set = function(key, value) {
+                if (!keys[keys]) {
+                    keys.push(key);
+                }
+                values[key] = value;
+                return this;
+            };
+
+            this.get = function(key) {
+                return values[key];
+            }
         };
 
         var Relationship = function(start, end) {
@@ -262,9 +288,20 @@ gd = {};
                 node.class(nodeMarkup.attr("class") || "");
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
-                nodeMarkup.select("span.graph-diagram-in-node-caption" ).each(function() {
+                nodeMarkup.select("span.graph-diagram-in-node-caption").each(function() {
                     node.label(d3.select(this).text());
                 });
+                nodeMarkup.select("dl.graph-diagram-properties").each(function() {
+                    var elements = d3.select(this).selectAll("dt, dd");
+                    var currentKey;
+                    elements.each(function() {
+                        if (this.nodeName.toLowerCase() === "dt") {
+                            currentKey = d3.select(this).text();
+                        } else if (currentKey && this.nodeName.toLowerCase() === "dd") {
+                            node.properties().set(currentKey, d3.select(this).text());
+                        }
+                    })
+                })
             });
 
             selection.selectAll(".graph-diagram-relationship").each(function () {
@@ -298,6 +335,18 @@ gd = {};
                     li.append("span")
                         .attr("class", "graph-diagram-in-node-caption")
                         .text(node.label());
+                }
+
+                if (node.properties().keys().length > 0) {
+                    var dl = li.append("dl")
+                        .attr("class", "graph-diagram-properties");
+
+                    node.properties().keys().forEach(function(key) {
+                        dl.append("dt")
+                            .text(key);
+                        dl.append("dd")
+                            .text(node.properties().get(key));
+                    });
                 }
             });
 

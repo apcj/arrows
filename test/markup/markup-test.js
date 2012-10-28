@@ -39,14 +39,30 @@ suite.addBatch({
         },
         "markup with one node and no relationships": {
             topic: function(markup) {
-                markup.append("li")
+                var li = markup.append("li")
                     .attr("class", "graph-diagram-node diagram-specific-class")
                     .attr("data-node-id", "node_A")
                     .attr("data-x", "12")
-                    .attr("data-y", "34")
-                    .append("span")
+                    .attr("data-y", "34");
+
+                li.append("span")
                     .attr("class", "graph-diagram-in-node-caption")
                     .text("A");
+
+                var dl = li.append("dl")
+                    .attr("class", "graph-diagram-properties");
+
+                dl.append("dt")
+                    .text("name");
+
+                dl.append("dd")
+                    .text("Alistair");
+
+                dl.append("dt")
+                    .text("location");
+
+                dl.append("dd")
+                    .text("London");
 
                 return gd.markup.parse(markup);
             },
@@ -69,6 +85,12 @@ suite.addBatch({
             "with label": function(model) {
                 var node = model.nodeList()[0];
                 assert.equal(node.label(), "A");
+            },
+            "with properties": function(model) {
+                var node = model.nodeList()[0];
+                assert.deepEqual(node.properties().keys(), ["name", "location"]);
+                assert.equal(node.properties().get("name"), "Alistair");
+                assert.equal(node.properties().get("location"), "London");
             },
             "no relationships": function(model) {
                 assert.equal(model.relationshipList().length, 0);
@@ -148,7 +170,8 @@ suite.addBatch({
         "one node": {
             topic: function() {
                 var model = gd.model();
-                model.createNode("node_A").x(12).y(34).label("A" ).class("diagram-specific-class");
+                model.createNode("node_A").x(12).y(34).label("A" ).class("diagram-specific-class")
+                    .properties().set("name", "Alistair").set("location", "London");
 
                 var markup = d3.select("body").append("div");
                 gd.markup.format(model, markup);
@@ -169,7 +192,14 @@ suite.addBatch({
                 assert.equal(nodes.attr("data-y"), "34");
             },
             "with label": function(nodes) {
-                assert.equal(nodes.select("span.graph-diagram-in-node-caption" ).text(), "A");
+                assert.equal(nodes.select("span.graph-diagram-in-node-caption").text(), "A");
+            },
+            "with properties": function(nodes) {
+                var list = nodes.select("dl.graph-diagram-properties");
+                assert.equal(list.select("dt:nth-child(1)").text(), "name");
+                assert.equal(list.select("dd:nth-child(2)").text(), "Alistair");
+                assert.equal(list.select("dt:nth-child(3)").text(), "location");
+                assert.equal(list.select("dd:nth-child(4)").text(), "London");
             }
         },
         "two nodes and one relationship": {
