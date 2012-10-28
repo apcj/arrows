@@ -179,7 +179,9 @@ gd = {};
         model.nodeList = function() {
             var list = [];
             for (var nodeId in nodes) {
-                list.push(nodes[nodeId]);
+                if (nodes.hasOwnProperty(nodeId)) {
+                    list.push(nodes[nodeId]);
+                }
             }
             return list;
         };
