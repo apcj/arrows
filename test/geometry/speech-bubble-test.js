@@ -18,4 +18,48 @@ suite.addBatch({
     }
 });
 
+function bubbleOrientation(model, relatedNodes) {
+    var focus = model.createNode().x(0).y(0);
+    return gd.chooseSpeechBubbleOrientation(focus, relatedNodes);
+}
+
+suite.addBatch({
+    "avoid relationships": {
+        topic: function() {
+            return gd.model();
+        },
+        "relationship to east, go west": function(model) {
+            var relatedNode = model.createNode().x(10).y(0);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "WEST");
+        },
+        "relationship to west, go east": function(model) {
+            var relatedNode = model.createNode().x(-10).y(0);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "EAST");
+        },
+        "relationship to north, go south": function(model) {
+            var relatedNode = model.createNode().x(0).y(-10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "SOUTH");
+        },
+        "relationship to south, go north": function(model) {
+            var relatedNode = model.createNode().x(0).y(10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "NORTH");
+        },
+        "relationship to north-east, go south-west": function(model) {
+            var relatedNode = model.createNode().x(10).y(-10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "SOUTH-WEST");
+        },
+        "relationship to south-east, go north-west": function(model) {
+            var relatedNode = model.createNode().x(10).y(10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "NORTH-WEST");
+        },
+        "relationship to north-west, go south-east": function(model) {
+            var relatedNode = model.createNode().x(-10).y(-10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "SOUTH-EAST");
+        },
+        "relationship to south-west, go north-east": function(model) {
+            var relatedNode = model.createNode().x(-10).y(10);
+            assert.equal(bubbleOrientation(model, [relatedNode]), "NORTH-EAST");
+        }
+    }
+});
 suite.export(module);

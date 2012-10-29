@@ -387,6 +387,44 @@ gd = {};
             "Z"].join(" ");
     };
 
+    gd.chooseSpeechBubbleOrientation = function(focusNode, relatedNodes) {
+        var orientations = [
+            { key: "WEST" , angle: 180 },
+            { key: "NORTH-WEST" , angle: -135 },
+            { key: "NORTH" , angle: -90 },
+            { key: "NORTH-EAST" , angle: -45 },
+            { key: "EAST" , angle: 0 },
+            { key: "SOUTH-EAST" , angle: 45 },
+            { key: "SOUTH" , angle: 90 },
+            { key: "SOUTH-WEST" , angle: 135 }
+        ];
+
+        orientations.forEach(function(orientation) {
+            orientation.closest = 180;
+        });
+
+        relatedNodes.forEach(function(relatedNode) {
+            orientations.forEach(function(orientation) {
+                var angle = Math.abs(focusNode.angleTo( relatedNode ) - orientation.angle);
+                if (angle > 180) angle -= 180;
+                if (angle < orientation.closest) {
+                    orientation.closest = angle;
+                }
+            });
+        });
+
+        var maxAngle = 0;
+        var bestOrientation;
+        orientations.forEach(function(orientation) {
+            if (orientation.closest > maxAngle) {
+                maxAngle = orientation.closest;
+                bestOrientation = orientation;
+            }
+        });
+
+        return bestOrientation.key;
+    };
+
     gd.speechBubblePath = function(textSize, margin, padding) {
         var width = textSize.width, height = textSize.height;
         return [
