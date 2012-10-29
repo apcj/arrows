@@ -170,6 +170,9 @@ gd = {};
         };
 
         model.deleteNode = function(node) {
+            relationships = relationships.filter(function (relationship) {
+               return !(relationship.start === node || relationship.end == node);
+            });
             delete nodes[node.id];
         };
 
@@ -414,7 +417,7 @@ gd = {};
         });
 
         var maxAngle = 0;
-        var bestOrientation;
+        var bestOrientation = orientations[0];
         orientations.forEach(function(orientation) {
             if (orientation.closest > maxAngle) {
                 maxAngle = orientation.closest;

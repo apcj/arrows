@@ -135,8 +135,17 @@
                 .style("display", null);
         }
 
-        editor.select(".save-button")
-            .on("click", saveChange);
+        function deleteNode()
+        {
+            graphModel.deleteNode(node);
+            save( formatMarkup() );
+            draw();
+            d3.selectAll(".modal-appear, .pop-up-editor.node")
+                .style("display", null);
+        }
+
+        editor.select(".save-button").on("click", saveChange);
+        editor.select(".delete-button").on("click", deleteNode);
         d3.select( "#modal-container" ).on( "click", saveChange );
     }
 
