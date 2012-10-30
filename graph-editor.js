@@ -103,7 +103,7 @@
             .style("display", "block");
 
         editor.select("path")
-            .attr("d", gd.speechBubblePath({ width: 500, height: 200},
+            .attr("d", gd.speechBubblePath({ width: 500, height: 200}, "diagonal",
             gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding));
 
         var labelField = editor.select(".label.editor-field");

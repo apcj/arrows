@@ -392,14 +392,14 @@ gd = {};
 
     gd.chooseSpeechBubbleOrientation = function(focusNode, relatedNodes) {
         var orientations = [
-//            { key: "WEST"       , mirrorX: -1, mirrorY:  0, angle:  180 },
-            { key: "NORTH-WEST" , mirrorX: -1, mirrorY: -1, angle: -135 },
-//            { key: "NORTH"      , mirrorX:  0, mirrorY: -1, angle:  -90 },
-            { key: "NORTH-EAST" , mirrorX:  1, mirrorY: -1, angle:  -45 },
-//            { key: "EAST"       , mirrorX:  1, mirrorY:  0, angle:    0 },
-            { key: "SOUTH-EAST" , mirrorX:  1, mirrorY:  1, angle:   45 },
-//            { key: "SOUTH"      , mirrorX:  0, mirrorY:  1, angle:   90 },
-            { key: "SOUTH-WEST" , mirrorX: -1, mirrorY:  1, angle:  135 }
+            { key: "WEST"       , style: "horizontal", mirrorX: -1, mirrorY:  1, angle:  180 },
+            { key: "NORTH-WEST" , style: "diagonal",   mirrorX: -1, mirrorY: -1, angle: -135 },
+            { key: "NORTH"      , style: "vertical",   mirrorX:  1, mirrorY: -1, angle:  -90 },
+            { key: "NORTH-EAST" , style: "diagonal",   mirrorX:  1, mirrorY: -1, angle:  -45 },
+            { key: "EAST"       , style: "horizontal", mirrorX:  1, mirrorY:  1, angle:    0 },
+            { key: "SOUTH-EAST" , style: "diagonal",   mirrorX:  1, mirrorY:  1, angle:   45 },
+            { key: "SOUTH"      , style: "vertical",   mirrorX:  1, mirrorY:  1, angle:   90 },
+            { key: "SOUTH-WEST" , style: "diagonal",   mirrorX: -1, mirrorY:  1, angle:  135 }
         ];
 
         orientations.forEach(function(orientation) {
@@ -409,7 +409,7 @@ gd = {};
         relatedNodes.forEach(function(relatedNode) {
             orientations.forEach(function(orientation) {
                 var angle = Math.abs(focusNode.angleTo( relatedNode ) - orientation.angle);
-                if (angle > 180) angle -= 180;
+                if (angle > 180) angle = 360 - angle;
                 if (angle < orientation.closest) {
                     orientation.closest = angle;
                 }
@@ -428,20 +428,51 @@ gd = {};
         return bestOrientation;
     };
 
-    gd.speechBubblePath = function(textSize, margin, padding) {
+    gd.speechBubblePath = function(textSize, style, margin, padding) {
         var width = textSize.width, height = textSize.height;
-        return [
-            "M", 0, 0,
-            "L", margin + padding, margin,
-            "L", margin + width + padding, margin,
-            "A", padding, padding, 0, 0, 1, margin + width + padding * 2, margin + padding,
-            "L", margin + width + padding * 2, margin + height + padding,
-            "A", padding, padding, 0, 0, 1, margin + width + padding, margin + height + padding * 2,
-            "L", margin + padding, margin + height + padding * 2,
-            "A", padding, padding, 0, 0, 1, margin, margin + height + padding,
-            "L", margin, margin + padding,
-            "Z"
-        ].join(" ");
+        var styles = {
+            diagonal: [
+                "M", 0, 0,
+                "L", margin + padding, margin,
+                "L", margin + width + padding, margin,
+                "A", padding, padding, 0, 0, 1, margin + width + padding * 2, margin + padding,
+                "L", margin + width + padding * 2, margin + height + padding,
+                "A", padding, padding, 0, 0, 1, margin + width + padding, margin + height + padding * 2,
+                "L", margin + padding, margin + height + padding * 2,
+                "A", padding, padding, 0, 0, 1, margin, margin + height + padding,
+                "L", margin, margin + padding,
+                "Z"
+            ],
+            horizontal: [
+                "M", 0, 0,
+                "L", margin, -padding,
+                "L", margin, -height / 2,
+                "A", padding, padding, 0, 0, 1, margin + padding, -height / 2 - padding,
+                "L", margin + width + padding, -height / 2 - padding,
+                "A", padding, padding, 0, 0, 1, margin + width + padding * 2, -height / 2,
+                "L", margin + width + padding * 2, height / 2,
+                "A", padding, padding, 0, 0, 1, margin + width + padding, height / 2 + padding,
+                "L", margin + padding, height / 2 + padding,
+                "A", padding, padding, 0, 0, 1, margin, height / 2,
+                "L", margin, padding,
+                "Z"
+            ],
+            vertical: [
+                "M", 0, 0,
+                "L", -padding, margin,
+                "L", -width / 2, margin,
+                "A", padding, padding, 0, 0, 0, -width / 2 - padding, margin + padding,
+                "L", -width / 2 - padding, margin + height + padding,
+                "A", padding, padding, 0, 0, 0, -width / 2, margin + height + padding * 2,
+                "L", width / 2, margin + height + padding * 2,
+                "A", padding, padding, 0, 0, 0, width / 2 + padding, margin + height + padding,
+                "L", width / 2 + padding, margin + padding,
+                "A", padding, padding, 0, 0, 0, width / 2, margin,
+                "L", padding, margin,
+                "Z"
+            ]
+        };
+        return styles[style].join(" ");
     };
 
     gd.textDimensions = function() {
@@ -595,7 +626,6 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         renderBoundVariables("graph-diagram-bound-variable-shadow");
         renderBoundVariables("graph-diagram-bound-variable");
 
-        var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
 
         var speechBubbleGroup = view.selectAll("g.speech-bubble")
             .data(d3.values(graph.nodeList()).filter(hasProperties ).map(function (node) {
@@ -619,24 +649,45 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
                 var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
 
-                var translate = "translate(" + (node.ex() + diagonalRadius * orientation.mirrorX) + ","
-                    + (node.ey() + diagonalRadius * orientation.mirrorY) + ") ";
+                var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
+                var nodeOffsetOptions = {
+                    diagonal: { attach: { x: diagonalRadius, y: diagonalRadius },
+                        textCorner: {
+                            x: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                            y: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        } },
+                    horizontal: { attach: { x: gd.parameters.radius, y: 0 },
+                        textCorner: {
+                            x: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                            y: -textSize.height / 2
+                        } },
+                    vertical: { attach: { x: 0, y: gd.parameters.radius },
+                        textCorner: {
+                            x: -textSize.width / 2,
+                            y: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        } }
+                };
+                var nodeCenterOffset = nodeOffsetOptions[orientation.style].attach;
+                var textCorner = nodeOffsetOptions[orientation.style].textCorner;
+
+                var translate = "translate(" + (node.ex() + nodeCenterOffset.x * orientation.mirrorX) + ","
+                    + (node.ey() + nodeCenterOffset.y * orientation.mirrorY) + ") ";
 
                 return {
                     properties: node.properties().list().map(function(property) {
                         return {
                             textContent: propertyKeyValue(property),
                             textOrigin: {
-                                x: orientation.mirrorX * (gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
+                                x: orientation.mirrorX * (textCorner.x)
                                     - (orientation.mirrorX == -1 ? textSize.width : 0),
-                                y: orientation.mirrorY * (gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
+                                y: orientation.mirrorY * (textCorner.y)
                                     - (orientation.mirrorY == -1 ? textSize.height : 0)
                             }
                         }
                     }),
                     groupTransform: translate,
                     outlineTransform: mirror,
-                    outlinePath: gd.speechBubblePath( textSize,
+                    outlinePath: gd.speechBubblePath( textSize, orientation.style,
                         gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding )
                 };
             }));
