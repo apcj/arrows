@@ -20,7 +20,7 @@ suite.addBatch({
 
 function bubbleOrientation(model, relatedNodes) {
     var focus = model.createNode().x(0).y(0);
-    return gd.chooseSpeechBubbleOrientation(focus, relatedNodes);
+    return gd.chooseSpeechBubbleOrientation(focus, relatedNodes).key;
 }
 
 suite.addBatch({

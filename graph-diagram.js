@@ -392,14 +392,14 @@ gd = {};
 
     gd.chooseSpeechBubbleOrientation = function(focusNode, relatedNodes) {
         var orientations = [
-            { key: "WEST" , angle: 180 },
-            { key: "NORTH-WEST" , angle: -135 },
-            { key: "NORTH" , angle: -90 },
-            { key: "NORTH-EAST" , angle: -45 },
-            { key: "EAST" , angle: 0 },
-            { key: "SOUTH-EAST" , angle: 45 },
-            { key: "SOUTH" , angle: 90 },
-            { key: "SOUTH-WEST" , angle: 135 }
+//            { key: "WEST"       , mirrorX: -1, mirrorY:  0, angle:  180 },
+            { key: "NORTH-WEST" , mirrorX: -1, mirrorY: -1, angle: -135 },
+//            { key: "NORTH"      , mirrorX:  0, mirrorY: -1, angle:  -90 },
+            { key: "NORTH-EAST" , mirrorX:  1, mirrorY: -1, angle:  -45 },
+//            { key: "EAST"       , mirrorX:  1, mirrorY:  0, angle:    0 },
+            { key: "SOUTH-EAST" , mirrorX:  1, mirrorY:  1, angle:   45 },
+//            { key: "SOUTH"      , mirrorX:  0, mirrorY:  1, angle:   90 },
+            { key: "SOUTH-WEST" , mirrorX: -1, mirrorY:  1, angle:  135 }
         ];
 
         orientations.forEach(function(orientation) {
@@ -425,7 +425,7 @@ gd = {};
             }
         });
 
-        return bestOrientation.key;
+        return bestOrientation;
     };
 
     gd.speechBubblePath = function(textSize, margin, padding) {
@@ -479,10 +479,6 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
 
         function hasProperties(d) {
             return d.properties().list().length > 0;
-        }
-
-        function properties(d) {
-            return d.properties().list();
         }
 
         function propertyKeyValue( property ) {
@@ -599,35 +595,59 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
         renderBoundVariables("graph-diagram-bound-variable-shadow");
         renderBoundVariables("graph-diagram-bound-variable");
 
+        var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
+
         var speechBubbleGroup = view.selectAll("g.speech-bubble")
-            .data(d3.values(graph.nodeList()).filter(hasProperties));
+            .data(d3.values(graph.nodeList()).filter(hasProperties ).map(function (node) {
+                var relatedNodes = [];
+                graph.relationshipList().forEach(function(relationship) {
+                    if (relationship.start === node) {
+                        relatedNodes.push(relationship.end);
+                    }
+                    if (relationship.end === node) {
+                        relatedNodes.push(relationship.start);
+                    }
+                });
+                var orientation = gd.chooseSpeechBubbleOrientation(node, relatedNodes);
+
+                var textSize = {
+                    width: d3.max(node.properties().list(), function(property) {
+                        return gd.textDimensions.measure(propertyKeyValue(property));
+                    }),
+                    height: node.properties().list().length * 50
+                };
+
+                var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
+
+                var translate = "translate(" + (node.ex() + diagonalRadius * orientation.mirrorX) + ","
+                    + (node.ey() + diagonalRadius * orientation.mirrorY) + ") ";
+
+                return {
+                    properties: node.properties().list().map(function(property) {
+                        return {
+                            textContent: propertyKeyValue(property),
+                            textOrigin: {
+                                x: orientation.mirrorX * (gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
+                                    - (orientation.mirrorX == -1 ? textSize.width : 0),
+                                y: orientation.mirrorY * (gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding)
+                                    - (orientation.mirrorY == -1 ? textSize.height : 0)
+                            }
+                        }
+                    }),
+                    groupTransform: translate,
+                    outlineTransform: mirror,
+                    outlinePath: gd.speechBubblePath( textSize,
+                        gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding )
+                };
+            }));
 
         speechBubbleGroup.exit().remove();
 
         speechBubbleGroup.enter().append("svg:g")
             .attr("class", "speech-bubble");
 
-        var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
-
-        function speechBubble(node)
-        {
-            var textSize = {
-                width: d3.max(node.properties().list(), function(property) {
-                    return gd.textDimensions.measure(propertyKeyValue(property));
-                }),
-                height: node.properties().list().length * 50
-            };
-
-            return gd.speechBubblePath( textSize,
-                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding
-            );
-        }
-
         speechBubbleGroup
-            .attr("transform", function(node) {
-                return "translate(" + (node.ex() + diagonalRadius) + ","
-                    + (node.ey() + diagonalRadius) + ")";
-            } );
+            .attr("transform", function(speechBubble) { return speechBubble.groupTransform; } );
 
         var speechBubbleOutline = speechBubbleGroup.selectAll("path.speech-bubble-outline")
             .data(singleton);
@@ -638,20 +658,21 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             .attr("class", "speech-bubble-outline");
 
         speechBubbleOutline
-            .attr("d", speechBubble);
+            .attr("transform", function(speechBubble) { return speechBubble.outlineTransform; })
+            .attr("d", function(speechBubble) { return speechBubble.outlinePath; });
 
         var speechBubbleContent = speechBubbleGroup.selectAll("text.speech-bubble-content")
-            .data(properties);
+            .data(function(speechBubble) { return speechBubble.properties; });
 
         speechBubbleContent.exit().remove();
 
         speechBubbleContent.enter().append("svg:text")
-            .attr("class", "speech-bubble-content")
-            .attr("x", gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding);
+            .attr("class", "speech-bubble-content");
 
         speechBubbleContent
-            .attr("y", function(d, i) {
-                return i * 50 + gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding + 25
+            .attr("x", function(property) { return property.textOrigin.x; })
+            .attr("y", function(property, i) {
+                return i * 50 + property.textOrigin.y + 25
             })
-            .text(propertyKeyValue);
+            .text(function(property) { return property.textContent; });
 }
