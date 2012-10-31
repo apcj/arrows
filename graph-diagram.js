@@ -512,10 +512,6 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             return d.properties().list().length > 0;
         }
 
-        function propertyKeyValue( property ) {
-            return property.key + ": " + property.value;
-        }
-
         function nodeClasses(d) {
             return d.class().join(" ") + " " + "graph-diagram-node-id-" + d.id;
         }
@@ -640,10 +636,14 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
                 });
                 var orientation = gd.chooseSpeechBubbleOrientation(node, relatedNodes);
 
+                var propertyKeysWidth = d3.max(node.properties().list(), function(property) {
+                    return gd.textDimensions.measure(property.key + ": ");
+                });
+                var propertyValuesWidth = d3.max(node.properties().list(), function(property) {
+                    return gd.textDimensions.measure(property.value);
+                });
                 var textSize = {
-                    width: d3.max(node.properties().list(), function(property) {
-                        return gd.textDimensions.measure(propertyKeyValue(property));
-                    }),
+                    width: propertyKeysWidth + propertyValuesWidth,
                     height: node.properties().list().length * 50
                 };
 
@@ -676,9 +676,10 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
                 return {
                     properties: node.properties().list().map(function(property) {
                         return {
-                            textContent: propertyKeyValue(property),
+                            keyText: property.key + ": ",
+                            valueText: property.value,
                             textOrigin: {
-                                x: orientation.mirrorX * (textCorner.x)
+                                x: propertyKeysWidth + orientation.mirrorX * (textCorner.x)
                                     - (orientation.mirrorX == -1 ? textSize.width : 0),
                                 y: orientation.mirrorY * (textCorner.y)
                                     - (orientation.mirrorY == -1 ? textSize.height : 0)
@@ -712,18 +713,34 @@ function bind(graph, view, nodeBehaviour, relationshipBehaviour) {
             .attr("transform", function(speechBubble) { return speechBubble.outlineTransform; })
             .attr("d", function(speechBubble) { return speechBubble.outlinePath; });
 
-        var speechBubbleContent = speechBubbleGroup.selectAll("text.speech-bubble-content")
+        var propertyKeys = speechBubbleGroup.selectAll("text.speech-bubble-content.property-key")
             .data(function(speechBubble) { return speechBubble.properties; });
 
-        speechBubbleContent.exit().remove();
+        propertyKeys.exit().remove();
 
-        speechBubbleContent.enter().append("svg:text")
-            .attr("class", "speech-bubble-content");
+        propertyKeys.enter().append("svg:text")
+            .attr("class", "speech-bubble-content property-key");
 
-        speechBubbleContent
+        propertyKeys
+            .attr("x", function(property) { return property.textOrigin.x - 10; })
+                // -10 because trailing space gets trimmed
+            .attr("y", function(property, i) {
+                return i * 50 + property.textOrigin.y + 25
+            })
+            .text(function(property) { return property.keyText; });
+
+        var propertyValues = speechBubbleGroup.selectAll("text.speech-bubble-content.property-value")
+            .data(function(speechBubble) { return speechBubble.properties; });
+
+        propertyValues.exit().remove();
+
+        propertyValues.enter().append("svg:text")
+            .attr("class", "speech-bubble-content property-value");
+
+        propertyValues
             .attr("x", function(property) { return property.textOrigin.x; })
             .attr("y", function(property, i) {
                 return i * 50 + property.textOrigin.y + 25
             })
-            .text(function(property) { return property.textContent; });
+            .text(function(property) { return property.valueText; });
 }

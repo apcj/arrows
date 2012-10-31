@@ -43,6 +43,10 @@ text.speech-bubble-content {
     font-size: 50px
 }
 
+text.speech-bubble-content.property-key {
+    text-anchor: end;
+}
+
 text.graph-diagram-bound-variable, text.graph-diagram-bound-variable-shadow {
     user-select: none;
     -webkit-user-select: none;
