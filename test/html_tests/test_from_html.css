@@ -6,14 +6,26 @@
     width: 10px;
 }
 
+.examples.table {
+    width: auto;
+}
+
+.example .result {
+    opacity: 0.65;
+}
+
 .example.pass .result {
-    background-color: green;
+    background-color: #51a351;
 }
 
 .example.fail .result {
-    background-color: red;
+    background-color: #bd362f;
 }
 
-.example.pass .expected-diagram {
+.example.pass .actual-diagram svg {
     visibility: hidden;
+}
+
+.examples.all-pass .actual-diagram, .examples.all-pass .errors {
+    display: none;
 }

@@ -62,6 +62,7 @@ function compareSvg( expected, actual, report )
 
 var diagram = gd.diagram();
 
+var allPass = true;
 d3.selectAll( ".example" ).each( function ()
 {
     var exampleRow = d3.select( this );
@@ -72,7 +73,7 @@ d3.selectAll( ".example" ).each( function ()
         .text( function ( d )
         {
             var markup = exampleRow.select( "td.markup" );
-            return markup.node().innerHTML;
+            return markup.node().innerHTML.replace(/^      /gm,"").replace(/^\s*\n/g,"").replace(/\n\s*$/,"");
         } );
 
     var view = exampleRow.append( "td" ).attr( "class", "actual-diagram" ).append( "svg:svg" );
@@ -85,7 +86,7 @@ d3.selectAll( ".example" ).each( function ()
     errorContainer.enter().append( "td" ).attr( "class", "errors" );
 
     var resultCell = exampleRow.selectAll( "td.result" ).data( [ {} ] );
-    resultCell.enter().append( "td" ).attr( "class", "result" );
+    resultCell.enter().append( "td" ).attr( "class", "result" ).append( "i" ).attr( "class", "icon-white" );
 
     var pass = true;
 
@@ -97,6 +98,15 @@ d3.selectAll( ".example" ).each( function ()
         } );
 
     exampleRow.classed(pass ? "pass" : "fail", true);
+
+    allPass = allPass && pass;
 });
 
+d3.selectAll( ".example.pass .result i" ).classed( "icon-ok", true );
+d3.selectAll( ".example.fail .result i" ).classed( "icon-remove", true );
+
+d3.select( ".overall-result.pass" ).classed( "hide", !allPass );
+d3.select( ".overall-result.fail" ).classed( "hide", allPass );
+
+d3.select( ".examples.table" ).classed( "all-pass", allPass );
 
