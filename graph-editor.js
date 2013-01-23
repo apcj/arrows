@@ -12,17 +12,25 @@
         .append("svg:svg")
         .attr("class", "graphdiagram");
 
+    var diagram = gd.diagram()
+        .scaling(gd.scaling.centerOrScaleDiagramToFitSvg)
+        .nodeBehaviour(function ( newNodes )
+        {
+            newNodes
+                .call( d3.behavior.drag().on( "drag", drag ).on( "dragend", dragEnd ) )
+                .on( "dblclick", editNode );
+
+        } ).relationshipBehaviour( function ( newRelationships )
+        {
+            newRelationships
+                .on( "dblclick", editRelationship );
+        } );
+
     function draw()
     {
-        bind(graphModel, svg.data([graphModel]), function(newNodes) {
-            newNodes
-                .call(d3.behavior.drag().on("drag", drag ).on("dragend", dragEnd))
-                .on("dblclick", editNode);
-        }, function(newRelationships) {
-            newRelationships
-                .on("dblclick", editRelationship);
-        });
-        gd.scaling.centerOrScaleDiagramToFitSvg(graphModel, svg.data([graphModel]));
+        svg
+            .data([graphModel])
+            .call(diagram);
     }
 
     function save( markup )
