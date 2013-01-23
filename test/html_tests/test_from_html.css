@@ -1,0 +1,19 @@
+.markup {
+    display: none;
+}
+
+.result {
+    width: 10px;
+}
+
+.example.pass .result {
+    background-color: green;
+}
+
+.example.fail .result {
+    background-color: red;
+}
+
+.example.pass .expected-diagram {
+    visibility: hidden;
+}
