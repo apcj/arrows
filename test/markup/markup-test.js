@@ -40,17 +40,17 @@ suite.addBatch({
         "markup with one node and no relationships": {
             topic: function(markup) {
                 var li = markup.append("li")
-                    .attr("class", "graph-diagram-node diagram-specific-class")
+                    .attr("class", "node diagram-specific-class")
                     .attr("data-node-id", "node_A")
                     .attr("data-x", "12")
                     .attr("data-y", "34");
 
                 li.append("span")
-                    .attr("class", "graph-diagram-in-node-caption")
+                    .attr("class", "caption")
                     .text("A");
 
                 var dl = li.append("dl")
-                    .attr("class", "graph-diagram-properties");
+                    .attr("class", "properties");
 
                 dl.append("dt")
                     .text("name");
@@ -73,7 +73,7 @@ suite.addBatch({
                 assert.equal(model.nodeList()[0].id, "node_A");
             },
             "with class": function(model) {
-                assert.deepEqual(model.nodeList()[0].class(), ["graph-diagram-node", "diagram-specific-class"]);
+                assert.deepEqual(model.nodeList()[0].class(), ["node", "diagram-specific-class"]);
             },
             "with coordinates": function(model) {
                 var node = model.nodeList()[0];
@@ -101,21 +101,21 @@ suite.addBatch({
         "markup with two nodes and one relationship": {
             topic: function(markup) {
                 markup.append("li")
-                    .attr("class", "graph-diagram-node")
+                    .attr("class", "node")
                     .attr("data-node-id", "node_A")
                     .attr("data-x", "12")
                     .attr("data-y", "34");
                 markup.append("li")
-                    .attr("class", "graph-diagram-node")
+                    .attr("class", "node")
                     .attr("data-node-id", "node_B")
                     .attr("data-x", "56")
                     .attr("data-y", "78");
                 markup.append("li")
-                    .attr("class", "graph-diagram-relationship diagram-specific-class")
+                    .attr("class", "relationship diagram-specific-class")
                     .attr("data-from", "node_A")
                     .attr("data-to", "node_B")
                     .append("span")
-                    .attr("class", "graph-diagram-relationship-type")
+                    .attr("class", "type")
                     .text("RELATED_TO");
 
                 return gd.markup.parse(markup);
@@ -130,7 +130,7 @@ suite.addBatch({
                 assert.equal(model.relationshipList()[0].end.id, "node_B");
             },
             "with class": function(model) {
-                assert.deepEqual(model.relationshipList()[0].class(), ["graph-diagram-relationship", "diagram-specific-class"]);
+                assert.deepEqual(model.relationshipList()[0].class(), ["relationship", "diagram-specific-class"]);
             },
             "with label": function(model) {
                 assert.equal(model.relationshipList()[0].label(), "RELATED_TO");
@@ -178,7 +178,7 @@ suite.addBatch({
                 var markup = d3.select("body").append("div");
                 gd.markup.format(model, markup);
                 return markup.select("ul.graph-diagram-markup")
-                    .selectAll("li.graph-diagram-node");
+                    .selectAll("li.node");
             },
             "one node li": function(nodes) {
                 assert.equal(nodes[0].length, 1);
@@ -187,17 +187,17 @@ suite.addBatch({
                 assert.equal(nodes.attr("data-node-id"), "node_A");
             },
             "with class": function(nodes) {
-                assert.equal(nodes.attr("class"), "graph-diagram-node diagram-specific-class")
+                assert.equal(nodes.attr("class"), "node diagram-specific-class")
             },
             "with coordinates attributes": function(nodes) {
                 assert.equal(nodes.attr("data-x"), "12");
                 assert.equal(nodes.attr("data-y"), "34");
             },
             "with label": function(nodes) {
-                assert.equal(nodes.select("span.graph-diagram-in-node-caption").text(), "A");
+                assert.equal(nodes.select("span.caption").text(), "A");
             },
             "with properties": function(nodes) {
-                var list = nodes.select("dl.graph-diagram-properties");
+                var list = nodes.select("dl.properties");
                 assert.equal(list.select("dt:nth-child(1)").text(), "name");
                 assert.equal(list.select("dd:nth-child(2)").text(), "Alistair");
                 assert.equal(list.select("dt:nth-child(3)").text(), "location");
@@ -214,7 +214,7 @@ suite.addBatch({
                 var markup = d3.select("body").append("div");
                 gd.markup.format(model, markup);
                 return markup.select("ul.graph-diagram-markup")
-                    .selectAll("li.graph-diagram-relationship");
+                    .selectAll("li.relationship");
             },
             "one relationship li": function(relationships) {
                 assert.equal(relationships[0].length, 1);
@@ -226,10 +226,10 @@ suite.addBatch({
                 assert.equal(relationships.attr("data-to"), "node_B");
             },
             "with class": function(relationships) {
-                assert.equal(relationships.attr("class"), "graph-diagram-relationship diagram-specific-class");
+                assert.equal(relationships.attr("class"), "relationship diagram-specific-class");
             },
             "with label": function(relationships) {
-                assert.equal(relationships.select("span.graph-diagram-relationship-type" ).text(),
+                assert.equal(relationships.select("span.type" ).text(),
                     "RELATED TO");
             }
         }

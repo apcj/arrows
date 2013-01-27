@@ -19,16 +19,16 @@
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
-        <li class="graph-diagram-node" data-node-id="0" data-x="50" data-y="0">
-          <span class="graph-diagram-in-node-caption">A</span>
+        <li class="node" data-node-id="0" data-x="50" data-y="0">
+          <span class="caption">A</span>
         </li>
       </ul>
     </td>
     <td class="expected-diagram">
       <svg viewBox="-8 -58 116 116" width="116" height="116">
-        <circle class="graph-diagram-node graph-diagram-node-id-0" r="50" cx="50" cy="0"></circle>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="50" y="0">A</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="50" y="0">A</text>
+        <circle class="node node-id-0" r="50" cx="50" cy="0"></circle>
+        <text class="caption-shadow node" x="50" y="0">A</text>
+        <text class="caption node" x="50" y="0">A</text>
       </svg>
     </td>
   </tr>
@@ -36,30 +36,30 @@
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
-        <li class="graph-diagram-node" data-node-id="0" data-x="50" data-y="0">
-          <span class="graph-diagram-in-node-caption">A</span>
+        <li class="node" data-node-id="0" data-x="50" data-y="0">
+          <span class="caption">A</span>
         </li>
-        <li class="graph-diagram-node" data-node-id="1" data-x="380" data-y="0">
-          <span class="graph-diagram-in-node-caption">B</span>
+        <li class="node" data-node-id="1" data-x="380" data-y="0">
+          <span class="caption">B</span>
         </li>
-        <li class="graph-diagram-relationship" data-from="0" data-to="1">
-          <span class="graph-diagram-relationship-type">R</span>
+        <li class="relationship" data-from="0" data-to="1">
+          <span class="type">R</span>
         </li>
       </ul>
     </td>
     <td class="expected-diagram">
       <svg viewBox="-8 -58 446 116" width="446" height="116">
-        <circle class="graph-diagram-node graph-diagram-node-id-0" r="50" cx="50" cy="0"></circle>
-        <circle class="graph-diagram-node graph-diagram-node-id-1" r="50" cx="380" cy="0"></circle>
-        <g class="graph-diagram-relationship" transform="translate(50,0) rotate(0)">
-          <path class="graph-diagram-relationship"
+        <circle class="node node-id-0" r="50" cx="50" cy="0"></circle>
+        <circle class="node node-id-1" r="50" cx="380" cy="0"></circle>
+        <g class="relationship" transform="translate(50,0) rotate(0)">
+          <path class="relationship"
                 d="M 65 4 L 235 4 L 235 15 L 265 0 L 235 -15 L 235 -4 L 65 -4 Z"></path>
-          <text class="graph-diagram-relationship-label" x="165" y="0">R</text>
+          <text class="type" x="165" y="0">R</text>
         </g>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="50" y="0">A</text>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="380" y="0">B</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="50" y="0">A</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="380" y="0">B</text>
+        <text class="caption-shadow node" x="50" y="0">A</text>
+        <text class="caption-shadow node" x="380" y="0">B</text>
+        <text class="caption node" x="50" y="0">A</text>
+        <text class="caption node" x="380" y="0">B</text>
       </svg>
     </td>
   </tr>
@@ -67,54 +67,54 @@
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
-        <li class="graph-diagram-node" data-node-id="0" data-x="50" data-y="0">
-          <span class="graph-diagram-in-node-caption">A</span>
+        <li class="node" data-node-id="0" data-x="50" data-y="0">
+          <span class="caption">A</span>
         </li>
-        <li class="graph-diagram-node" data-node-id="1" data-x="380" data-y="-200">
-          <span class="graph-diagram-in-node-caption">B</span>
+        <li class="node" data-node-id="1" data-x="380" data-y="-200">
+          <span class="caption">B</span>
         </li>
-        <li class="graph-diagram-node" data-node-id="2" data-x="380" data-y="200">
-          <span class="graph-diagram-in-node-caption">C</span>
+        <li class="node" data-node-id="2" data-x="380" data-y="200">
+          <span class="caption">C</span>
         </li>
-        <li class="graph-diagram-relationship" data-from="0" data-to="1">
-          <span class="graph-diagram-relationship-type">R</span>
+        <li class="relationship" data-from="0" data-to="1">
+          <span class="type">R</span>
         </li>
-        <li class="graph-diagram-relationship" data-from="1" data-to="2">
-          <span class="graph-diagram-relationship-type">R</span>
+        <li class="relationship" data-from="1" data-to="2">
+          <span class="type">R</span>
         </li>
-        <li class="graph-diagram-relationship" data-from="0" data-to="2">
-          <span class="graph-diagram-relationship-type">R</span>
+        <li class="relationship" data-from="0" data-to="2">
+          <span class="type">R</span>
         </li>
       </ul>
     </td>
     <td class="expected-diagram">
       <svg viewBox="-8 -258 446 516" width="446" height="516">
-        <circle class="graph-diagram-node graph-diagram-node-id-0" r="50" cx="50" cy="0"></circle>
-        <circle class="graph-diagram-node graph-diagram-node-id-1" r="50" cx="380" cy="-200"></circle>
-        <circle class="graph-diagram-node graph-diagram-node-id-2" r="50" cx="380" cy="200"></circle>
-        <g class="graph-diagram-relationship" transform="translate(50,0) rotate(-31.218402764346372)">
-          <path class="graph-diagram-relationship"
+        <circle class="node node-id-0" r="50" cx="50" cy="0"></circle>
+        <circle class="node node-id-1" r="50" cx="380" cy="-200"></circle>
+        <circle class="node node-id-2" r="50" cx="380" cy="200"></circle>
+        <g class="relationship" transform="translate(50,0) rotate(-31.218402764346372)">
+          <path class="relationship"
 
 
                 d="M 65 4 L 290.87562763149475 4 L 290.87562763149475 15 L 320.87562763149475 0 L 290.87562763149475 -15 L 290.87562763149475 -4 L 65 -4 Z"></path>
-          <text class="graph-diagram-relationship-label" x="192.93781381574738" y="0">R</text>
+          <text class="type" x="192.93781381574738" y="0">R</text>
         </g>
-        <g class="graph-diagram-relationship" transform="translate(380,-200) rotate(90)">
-          <path class="graph-diagram-relationship"
+        <g class="relationship" transform="translate(380,-200) rotate(90)">
+          <path class="relationship"
                 d="M 65 4 L 305 4 L 305 15 L 335 0 L 305 -15 L 305 -4 L 65 -4 Z"></path>
-          <text class="graph-diagram-relationship-label" x="200" y="0">R</text>
+          <text class="type" x="200" y="0">R</text>
         </g>
-        <g class="graph-diagram-relationship" transform="translate(50,0) rotate(31.218402764346372)">
-          <path class="graph-diagram-relationship"
+        <g class="relationship" transform="translate(50,0) rotate(31.218402764346372)">
+          <path class="relationship"
                 d="M 65 4 L 290.87562763149475 4 L 290.87562763149475 15 L 320.87562763149475 0 L 290.87562763149475 -15 L 290.87562763149475 -4 L 65 -4 Z"></path>
-          <text class="graph-diagram-relationship-label" x="192.93781381574738" y="0">R</text>
+          <text class="type" x="192.93781381574738" y="0">R</text>
         </g>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="50" y="0">A</text>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="380" y="-200">B</text>
-        <text class="graph-diagram-bound-variable-shadow graph-diagram-node" x="380" y="200">C</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="50" y="0">A</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="380" y="-200">B</text>
-        <text class="graph-diagram-bound-variable graph-diagram-node" x="380" y="200">C</text>
+        <text class="caption-shadow node" x="50" y="0">A</text>
+        <text class="caption-shadow node" x="380" y="-200">B</text>
+        <text class="caption-shadow node" x="380" y="200">C</text>
+        <text class="caption node" x="50" y="0">A</text>
+        <text class="caption node" x="380" y="-200">B</text>
+        <text class="caption node" x="380" y="200">C</text>
       </svg>
     </td>
   </tr>

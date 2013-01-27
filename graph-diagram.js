@@ -30,11 +30,11 @@ gd = {};
             this.class = function(classesString) {
                 if (arguments.length == 1) {
                     classes = classesString.split(" ").filter(function(className) {
-                        return className.length > 0 && className != "graph-diagram-node";
+                        return className.length > 0 && className != "node";
                     });
                     return this;
                 }
-                return ["graph-diagram-node"].concat(classes);
+                return ["node"].concat(classes);
             };
 
             this.x = function(x) {
@@ -135,11 +135,11 @@ gd = {};
             this.class = function(classesString) {
                 if (arguments.length == 1) {
                     classes = classesString.split(" ").filter(function(className) {
-                        return className.length > 0 && className != "graph-diagram-relationship";
+                        return className.length > 0 && className != "relationship";
                     });
                     return this;
                 }
-                return ["graph-diagram-relationship"].concat(classes);
+                return ["relationship"].concat(classes);
             };
 
             this.label = function(labelText) {
@@ -299,17 +299,17 @@ gd = {};
                 model.externalScale(selection.attr("data-external-scale"));
             }
 
-            selection.selectAll(".graph-diagram-node").each(function () {
+            selection.selectAll(".node").each(function () {
                 var nodeMarkup = d3.select(this);
                 var id = nodeMarkup.attr("data-node-id");
                 var node = model.createNode(id);
                 node.class(nodeMarkup.attr("class") || "");
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
-                nodeMarkup.select("span.graph-diagram-in-node-caption").each(function() {
+                nodeMarkup.select("span.caption").each(function() {
                     node.label(d3.select(this).text());
                 });
-                nodeMarkup.select("dl.graph-diagram-properties").each(function() {
+                nodeMarkup.select("dl.properties").each(function() {
                     var elements = d3.select(this).selectAll("dt, dd");
                     var currentKey;
                     elements.each(function() {
@@ -322,13 +322,13 @@ gd = {};
                 })
             });
 
-            selection.selectAll(".graph-diagram-relationship").each(function () {
+            selection.selectAll(".relationship").each(function () {
                 var relationshipMarkup = d3.select(this);
                 var fromId = relationshipMarkup.attr("data-from");
                 var toId = relationshipMarkup.attr("data-to");
                 var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
                 relationship.class(relationshipMarkup.attr("class") || "");
-                relationshipMarkup.select("span.graph-diagram-relationship-type" ).each(function() {
+                relationshipMarkup.select("span.type" ).each(function() {
                     relationship.label(d3.select(this).text());
                 });
             });
@@ -351,13 +351,13 @@ gd = {};
 
                 if (node.label()) {
                     li.append("span")
-                        .attr("class", "graph-diagram-in-node-caption")
+                        .attr("class", "caption")
                         .text(node.label());
                 }
 
                 if (node.properties().list().length > 0) {
                     var dl = li.append("dl")
-                        .attr("class", "graph-diagram-properties");
+                        .attr("class", "properties");
 
                     node.properties().list().forEach(function(property) {
                         dl.append("dt")
@@ -376,7 +376,7 @@ gd = {};
 
                 if (relationship.label()) {
                     li.append("span")
-                        .attr("class", "graph-diagram-relationship-type")
+                        .attr("class", "type")
                         .text(relationship.label());
                 }
             });
@@ -530,10 +530,10 @@ gd = {};
                 }
 
                 function nodeClasses(d) {
-                    return d.class().join(" ") + " " + "graph-diagram-node-id-" + d.id;
+                    return d.class().join(" ") + " " + "node-id-" + d.id;
                 }
 
-                var nodes = view.selectAll("circle.graph-diagram-node")
+                var nodes = view.selectAll("circle.node")
                     .data(d3.values(model.nodeList()));
 
                 nodes.exit().remove();
@@ -573,7 +573,7 @@ gd = {};
                     return d.class().join(" ");
                 }
 
-                var relationshipGroup = view.selectAll("g.graph-diagram-relationship")
+                var relationshipGroup = view.selectAll("g.relationship")
                     .data(model.relationshipList());
 
                 relationshipGroup.exit().remove();
@@ -588,7 +588,7 @@ gd = {};
                     return [d];
                 }
 
-                var relationshipPath = relationshipGroup.selectAll("path.graph-diagram-relationship")
+                var relationshipPath = relationshipGroup.selectAll("path.relationship")
                     .data(singleton);
 
                 relationshipPath.enter().append("svg:path")
@@ -602,13 +602,13 @@ gd = {};
                     return [d].filter(label);
                 }
 
-                var relationshipLabel = relationshipGroup.selectAll("text.graph-diagram-relationship-label")
+                var relationshipLabel = relationshipGroup.selectAll("text.type")
                     .data(relationshipWithLabel);
 
                 relationshipLabel.exit().remove();
 
                 relationshipLabel.enter().append("svg:text")
-                    .attr("class", "graph-diagram-relationship-label")
+                    .attr("class", "type")
                     .call(relationshipBehaviour);
 
                 relationshipLabel
@@ -636,8 +636,8 @@ gd = {};
                         .text(label);
                 }
 
-                renderBoundVariables("graph-diagram-bound-variable-shadow");
-                renderBoundVariables("graph-diagram-bound-variable");
+                renderBoundVariables("caption-shadow");
+                renderBoundVariables("caption");
 
 
                 var speechBubbleGroup = view.selectAll("g.speech-bubble")
