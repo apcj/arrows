@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script type="text/javascript" src="lib/d3.js"></script>
+  <script type="text/javascript" src="lib/d3.v3.js" charset="UTF-8"></script>
   <script type="text/javascript" src="graph-diagram.js"></script>
+  <link rel="stylesheet" href="lib/bootstrap.css" type="text/css">
   <link rel="stylesheet" href="graph-diagram.css" type="text/css">
   <link rel="stylesheet" href="graph-editor.css" type="text/css">
   <title>Arrow Tool</title>
 </head>
 <body>
 
-<div class="tools">
-  <button id="exportMarkupButton">Export Markup</button>
-  <button id="exportSvgButton">Export SVG</button>
+<div class="tools form-inline well">
+  <button class="btn" id="exportMarkupButton">Export Markup</button>
+  <button class="btn" id="exportSvgButton">Export SVG</button>
   <label for="internalScale">Internal Scale</label>
   <input id="internalScale" type="range" min="0.1" max="5" value="1" step="0.01">
 </div>
 
 <!--<input id="node_name_editor" class="editor-field">-->
 
-<div id="glass-pane" class="modal-appear"></div>
-<div id="modal-container" class="modal-appear">
-  <div class="modal-dialog export-markup">
+<div class="modal hide export-markup">
+  <div class="modal-header">
+    <h3>Edit/Export markup</h3>
+  </div>
+  <div class="modal-body">
     <textarea class="code">Some text</textarea>
   </div>
-  <div class="modal-dialog pop-up-editor node"
-      style="width: 700px; height: 400px">
-    <button class="delete-button"
-        style="position: absolute; left: 300px; top: 50px; z-index: 2000">Delete Node</button>
-    <svg xmlns="http://www.w3.org/2000/svg" width="700" height="400" viewBox="-110 -110 700 400"
-        style="position: absolute; left: 0; top: 0">
-      <circle class="graph-diagram-node graph-diagram-node-id-0 undefined" r="50" cx="0" cy="0"></circle>
-      <path class="graph-diagram-property-outline" transform="translate(35.3553390593, 35.3553390593)"></path>
-    </svg>
-
-    <input class="label editor-field" value="A"
-        style="position: absolute; left: 10px; top: 70px; width: 200px">
-    <textarea class="properties-field"
-        style="position: absolute; left: 173px; top: 173px; width: 500px; height: 200px" ></textarea>
-
-    <button class="save-button"
-        style="position: absolute; left: 600px; top: 450px">Save</button>
+  <div class="modal-footer">
+    <a href="#" class="btn cancel">Cancel</a>
+    <a href="#" class="btn btn-primary" id="save_markup">Save</a>
   </div>
 </div>
-
+<div class="modal hide pop-up-editor node">
+  <div class="modal-header">
+    <h3>Edit Node</h3>
+  </div>
+  <div class="modal-body">
+    <button class="btn btn-danger pull-right" id="edit_node_delete">Delete</button>
+    <div class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label" for="node_caption">Caption</label>
+        <div class="controls">
+          <input id="node_caption" type="text" value="A">
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="node_properties">Properties</label>
+        <div class="controls">
+          <textarea id="node_properties" rows="6"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn cancel">Cancel</a>
+    <a href="#" class="btn btn-primary" id="edit_node_save">Save</a>
+  </div>
+</div>
 
 <div id="canvas"></div>
 

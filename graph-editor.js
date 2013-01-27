@@ -103,20 +103,20 @@
 
     function editNode()
     {
+        appendModalBackdrop();
+        d3.select( ".modal.pop-up-editor.node" ).classed( "hide", false );
+
         var node = this.__data__;
 
         var editor = d3.select(".pop-up-editor.node");
-
-        d3.selectAll(".modal-appear, .pop-up-editor.node")
-            .style("display", "block");
 
         editor.select("path")
             .attr("d", gd.speechBubblePath({ width: 500, height: 200}, "diagonal",
             gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding));
 
-        var labelField = editor.select(".label.editor-field");
-        labelField.node().value = node.label() || "";
-        labelField.node().select();
+        var captionField = editor.select("#node_caption");
+        captionField.node().value = node.label() || "";
+        captionField.node().select();
 
         var propertiesField = editor.select(".properties-field");
         propertiesField.node().value = node.properties().list().reduce(function(previous, property) {
@@ -125,7 +125,7 @@
 
         function saveChange()
         {
-            node.label( labelField.node().value );
+            node.label( captionField.node().value );
             node.properties().clearAll();
             propertiesField.node().value.split("\n").forEach(function(line) {
                 var tokens = line.split(/: */);
@@ -139,8 +139,7 @@
             });
             save( formatMarkup() );
             draw();
-            d3.selectAll(".modal-appear, .pop-up-editor.node")
-                .style("display", null);
+            cancelModal();
         }
 
         function deleteNode()
@@ -148,13 +147,11 @@
             graphModel.deleteNode(node);
             save( formatMarkup() );
             draw();
-            d3.selectAll(".modal-appear, .pop-up-editor.node")
-                .style("display", null);
+            cancelModal();
         }
 
-        editor.select(".save-button").on("click", saveChange);
-        editor.select(".delete-button").on("click", deleteNode);
-        d3.select( "#modal-container" ).on( "click", saveChange );
+        editor.select("#edit_node_save").on("click", saveChange);
+        editor.select("#edit_node_delete").on("click", deleteNode);
     }
 
     function editRelationship()
@@ -200,15 +197,29 @@
         return markup;
     }
 
+    function cancelModal()
+    {
+        d3.selectAll( ".modal" ).classed( "hide", true );
+        d3.selectAll( ".modal-backdrop" ).remove();
+    }
+
+    d3.selectAll( ".btn.cancel" ).on( "click", cancelModal );
+
+    function appendModalBackdrop()
+    {
+        d3.select( "body" ).append( "div" )
+            .attr( "class", "modal-backdrop" )
+            .on( "click", cancelModal );
+    }
+
     var exportMarkup = function ()
     {
-        d3.selectAll(".modal-appear, .export-markup")
-            .style("display", "block");
-        d3.select( "#modal-container" ).on( "click", useMarkupFromMarkupEditor );
+        appendModalBackdrop();
+        d3.select( ".modal.export-markup" ).classed( "hide", false );
 
         var markup = formatMarkup();
         d3.select( "textarea.code" )
-            .attr( "rows", markup.split( "\n" ).length )
+            .attr( "rows", markup.split( "\n" ).length * 2 )
             .node().value = markup;
     };
 
@@ -227,10 +238,10 @@
         graphModel = parseMarkup( markup );
         save( markup );
         draw();
-
-        d3.selectAll(".modal-appear, .export-markup")
-            .style("display", null);
+        cancelModal();
     };
+
+    d3.select( "#save_markup" ).on( "click", useMarkupFromMarkupEditor );
 
     var exportSvg = function ()
     {
