@@ -118,7 +118,7 @@
         captionField.node().value = node.label() || "";
         captionField.node().select();
 
-        var propertiesField = editor.select(".properties-field");
+        var propertiesField = editor.select("#node_properties");
         propertiesField.node().value = node.properties().list().reduce(function(previous, property) {
             return previous + property.key + ": " + property.value + "\n";
         }, "");
