@@ -101,6 +101,13 @@
         draw();
     }
 
+    d3.select( "#add_node_button" ).on( "click", function ()
+    {
+        graphModel.createNode().x( 0 ).y( 0 );
+        save( formatMarkup() );
+        draw();
+    } );
+
     function editNode()
     {
         appendModalBackdrop();

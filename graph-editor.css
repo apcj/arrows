@@ -9,7 +9,7 @@ svg.graphdiagram {
 .tools {
     z-index: 100;
     position: absolute;
-    left: 10px;
+    right: 10px;
     top: 10px;
     padding: 10px;
     background-color: #f7f7f7;
