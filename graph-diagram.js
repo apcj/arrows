@@ -4,11 +4,12 @@ gd = {};
 
     gd.parameters = {
         radius: 50,
-        strokeWidth: 8,
+        nodeStrokeWidth: 8,
         nodeStartMargin: 15,
         nodeEndMargin: 15,
         speechBubbleMargin: 20,
-        speechBubblePadding: 10
+        speechBubblePadding: 10,
+        speechBubbleStrokeWidth: 3
     };
 
     gd.model = function() {
@@ -223,18 +224,80 @@ gd = {};
 
         var scaling = {};
 
-        function smallestContainingBox(graph) {
-            var cxList = graph.nodeList().map(function(d) { return d.ex(); });
-            var cyList = graph.nodeList().map(function(d) { return d.ey(); });
+        function flatten( previous, current )
+        {
+            return previous.concat( current );
+        }
 
-            var bounds = {
-                xMin:Math.min.apply(Math, cxList) - gd.parameters.radius - gd.parameters.strokeWidth,
-                xMax:Math.max.apply(Math, cxList) + gd.parameters.radius + gd.parameters.strokeWidth,
-                yMin:Math.min.apply(Math, cyList) - gd.parameters.radius - gd.parameters.strokeWidth,
-                yMax:Math.max.apply(Math, cyList) + gd.parameters.radius + gd.parameters.strokeWidth
+        scaling.nodeBox = function( node )
+        {
+            var margin = gd.parameters.radius + gd.parameters.nodeStrokeWidth / 2;
+            return {
+                x1: node.ex() - margin,
+                y1: node.ey() - margin,
+                x2: node.ex() + margin,
+                y2: node.ey() + margin
             };
-            return { x: bounds.xMin, y: bounds.yMin,
-                width: (bounds.xMax - bounds.xMin), height: (bounds.yMax - bounds.yMin) }
+        };
+
+        scaling.boxNormalise = function( box )
+        {
+            return {
+                x1: box.width > 0 ? box.x : box.x + box.width,
+                y1: box.height > 0 ? box.y : box.y +box. height,
+                x2: box.width < 0 ? box.x : box.x + box.width,
+                y2: box.height < 0 ? box.y : box.y + box.height
+            };
+        };
+
+        scaling.boxUnion = function ( boxes )
+        {
+            return boxes.reduce( function ( previous, current )
+            {
+                return {
+                    x1: Math.min( previous.x1, current.x1 ),
+                    y1: Math.min( previous.y1, current.y1 ),
+                    x2: Math.max( previous.x2, current.x2 ),
+                    y2: Math.max( previous.y2, current.y2 )
+                };
+            } );
+        };
+
+        function smallestContainingBox(graph) {
+            function boundingBox( speechBubble )
+            {
+                return speechBubble.boundingBox;
+            }
+
+            var bounds = scaling.boxUnion( graph.nodeList().map( scaling.nodeBox )
+                .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.speechBubble( graph ) ).map( boundingBox )
+                .map( scaling.boxNormalise ) ) );
+
+//            console.log( graph.nodeList().map( gd.speechBubble( graph ) ).map( boundingBox )
+//                .map( scaling.boxNormalise ) ));
+//            var cxList = graph.nodeList().map(function ( d )
+//            {
+//                return [d.ex()].concat(d.boundingBox == null ? [] : [
+//                    d.boundingBox.x,
+//                    d.boundingBox.x + d.boundingBox.width
+//                ]);
+//            } ).reduce( flatten, [] );
+//            var cyList = graph.nodeList().map(function ( d )
+//            {
+//                return [d.ey()].concat(d.boundingBox == null ? [] : [
+//                    d.boundingBox.y,
+//                    d.boundingBox.y + d.boundingBox.height
+//                ]);
+//            } ).reduce( flatten, [] );
+//
+//            var bounds = {
+//                xMin:Math.min.apply(Math, cxList) - gd.parameters.radius - gd.parameters.strokeWidth,
+//                xMax:Math.max.apply(Math, cxList) + gd.parameters.radius + gd.parameters.strokeWidth,
+//                yMin:Math.min.apply(Math, cyList) - gd.parameters.radius - gd.parameters.strokeWidth,
+//                yMax:Math.max.apply(Math, cyList) + gd.parameters.radius + gd.parameters.strokeWidth
+//            };
+            return { x: bounds.x1, y: bounds.y1,
+                width: (bounds.x2 - bounds.x1), height: (bounds.y2 - bounds.y1) }
         }
 
         scaling.centeredOrScaledViewBox = function(viewDimensions, diagramExtent) {
@@ -485,6 +548,97 @@ gd = {};
         return styles[style].join(" ");
     };
 
+    gd.speechBubble = function ( model )
+    {
+        return function ( node )
+        {
+            var relatedNodes = [];
+            model.relationshipList().forEach( function ( relationship )
+            {
+                if ( relationship.start === node )
+                {
+                    relatedNodes.push( relationship.end );
+                }
+                if ( relationship.end === node )
+                {
+                    relatedNodes.push( relationship.start );
+                }
+            } );
+            var orientation = gd.chooseSpeechBubbleOrientation( node, relatedNodes );
+
+            var propertyKeysWidth = d3.max( node.properties().list(), function ( property )
+            {
+                return gd.textDimensions.measure( property.key + ": " );
+            } );
+            var propertyValuesWidth = d3.max( node.properties().list(), function ( property )
+            {
+                return gd.textDimensions.measure( property.value );
+            } );
+            var textSize = {
+                width:propertyKeysWidth + propertyValuesWidth,
+                height:node.properties().list().length * 50
+            };
+
+            var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
+
+            var diagonalRadius = gd.parameters.radius * Math.sqrt( 2 ) / 2;
+            var nodeOffsetOptions = {
+                diagonal:{ attach:{ x:diagonalRadius, y:diagonalRadius },
+                    textCorner:{
+                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                    } },
+                horizontal:{ attach:{ x:gd.parameters.radius, y:0 },
+                    textCorner:{
+                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        y:-textSize.height / 2
+                    } },
+                vertical:{ attach:{ x:0, y:gd.parameters.radius },
+                    textCorner:{
+                        x:-textSize.width / 2,
+                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                    } }
+            };
+            var nodeCenterOffset = nodeOffsetOptions[orientation.style].attach;
+            var textCorner = nodeOffsetOptions[orientation.style].textCorner;
+
+            var translate = "translate(" + (node.ex() + nodeCenterOffset.x * orientation.mirrorX) + ","
+                + (node.ey() + nodeCenterOffset.y * orientation.mirrorY) + ") ";
+
+            var textOrigin = {
+                x:propertyKeysWidth + orientation.mirrorX * (textCorner.x)
+                    - (orientation.mirrorX == -1 ? textSize.width : 0),
+                y:orientation.mirrorY * (textCorner.y)
+                    - (orientation.mirrorY == -1 ? textSize.height : 0)
+            };
+
+            var boundingPadding = gd.parameters.speechBubblePadding + gd.parameters.speechBubbleStrokeWidth / 2;
+
+            var boundingBox = {
+                x:node.ex() + (nodeCenterOffset.x + textCorner.x - boundingPadding) * orientation.mirrorX,
+                y:node.ey() + (nodeCenterOffset.y + textCorner.y - boundingPadding) * orientation.mirrorY,
+                width:orientation.mirrorX * (textSize.width + (boundingPadding * 2)),
+                height:orientation.mirrorY * (textSize.height + (boundingPadding * 2))
+            };
+
+            return {
+                properties:node.properties().list().map( function ( property )
+                {
+                    return {
+                        keyText:property.key + ": ",
+                        valueText:property.value,
+                        textOrigin:textOrigin
+                    }
+                } ),
+                groupTransform:translate,
+                outlineTransform:mirror,
+                outlinePath:gd.speechBubblePath( textSize, orientation.style,
+                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding ),
+                boundingBox:boundingBox
+            };
+        }
+    };
+
     gd.textDimensions = function() {
         var textDimensions = {};
 
@@ -501,6 +655,11 @@ gd = {};
 
         return textDimensions;
     }();
+
+    gd.hasProperties = function ( node )
+    {
+        return node.properties().list().length > 0;
+    };
 
     gd.diagram = function()
     {
@@ -523,10 +682,6 @@ gd = {};
 
                 function label(d) {
                     return d.label();
-                }
-
-                function hasProperties(d) {
-                    return d.properties().list().length > 0;
                 }
 
                 function nodeClasses(d) {
@@ -641,74 +796,7 @@ gd = {};
 
 
                 var speechBubbleGroup = view.selectAll("g.speech-bubble")
-                    .data(d3.values(model.nodeList()).filter(hasProperties ).map(function (node) {
-                    var relatedNodes = [];
-                    model.relationshipList().forEach(function(relationship) {
-                        if (relationship.start === node) {
-                            relatedNodes.push(relationship.end);
-                        }
-                        if (relationship.end === node) {
-                            relatedNodes.push(relationship.start);
-                        }
-                    });
-                    var orientation = gd.chooseSpeechBubbleOrientation(node, relatedNodes);
-
-                    var propertyKeysWidth = d3.max(node.properties().list(), function(property) {
-                        return gd.textDimensions.measure(property.key + ": ");
-                    });
-                    var propertyValuesWidth = d3.max(node.properties().list(), function(property) {
-                        return gd.textDimensions.measure(property.value);
-                    });
-                    var textSize = {
-                        width: propertyKeysWidth + propertyValuesWidth,
-                        height: node.properties().list().length * 50
-                    };
-
-                    var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
-
-                    var diagonalRadius = gd.parameters.radius * Math.sqrt(2) / 2;
-                    var nodeOffsetOptions = {
-                        diagonal: { attach: { x: diagonalRadius, y: diagonalRadius },
-                            textCorner: {
-                                x: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
-                                y: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
-                            } },
-                        horizontal: { attach: { x: gd.parameters.radius, y: 0 },
-                            textCorner: {
-                                x: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
-                                y: -textSize.height / 2
-                            } },
-                        vertical: { attach: { x: 0, y: gd.parameters.radius },
-                            textCorner: {
-                                x: -textSize.width / 2,
-                                y: gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
-                            } }
-                    };
-                    var nodeCenterOffset = nodeOffsetOptions[orientation.style].attach;
-                    var textCorner = nodeOffsetOptions[orientation.style].textCorner;
-
-                    var translate = "translate(" + (node.ex() + nodeCenterOffset.x * orientation.mirrorX) + ","
-                        + (node.ey() + nodeCenterOffset.y * orientation.mirrorY) + ") ";
-
-                    return {
-                        properties: node.properties().list().map(function(property) {
-                            return {
-                                keyText: property.key + ": ",
-                                valueText: property.value,
-                                textOrigin: {
-                                    x: propertyKeysWidth + orientation.mirrorX * (textCorner.x)
-                                        - (orientation.mirrorX == -1 ? textSize.width : 0),
-                                    y: orientation.mirrorY * (textCorner.y)
-                                        - (orientation.mirrorY == -1 ? textSize.height : 0)
-                                }
-                            }
-                        }),
-                        groupTransform: translate,
-                        outlineTransform: mirror,
-                        outlinePath: gd.speechBubblePath( textSize, orientation.style,
-                            gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding )
-                    };
-                }));
+                    .data(d3.values(model.nodeList()).filter(gd.hasProperties ).map(gd.speechBubble(model)));
 
                 speechBubbleGroup.exit().remove();
 

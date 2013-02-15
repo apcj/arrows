@@ -48,7 +48,7 @@ function compareSvg( expected, actual, report )
     var actualChildElements = onlyElements( actual.childNodes );
 
     if (expectedChildElements.length === 0) {
-        if (expected.textContent != actual.textContent) {
+        if (expected.textContent.trim() != actual.textContent.trim()) {
             report(expected, actual,
                 "Expected text content \"" + expected.textContent + "\" but got \"" + actual.textContent + "\"");
         }
