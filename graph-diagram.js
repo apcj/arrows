@@ -224,11 +224,6 @@ gd = {};
 
         var scaling = {};
 
-        function flatten( previous, current )
-        {
-            return previous.concat( current );
-        }
-
         scaling.nodeBox = function( node )
         {
             var margin = gd.parameters.radius + gd.parameters.nodeStrokeWidth / 2;
@@ -252,13 +247,17 @@ gd = {};
 
         scaling.boxUnion = function ( boxes )
         {
+            if ( boxes.length < 1 )
+            {
+                return { x1:0, y1:0, x2:0, y2:0 };
+            }
             return boxes.reduce( function ( previous, current )
             {
                 return {
-                    x1: Math.min( previous.x1, current.x1 ),
-                    y1: Math.min( previous.y1, current.y1 ),
-                    x2: Math.max( previous.x2, current.x2 ),
-                    y2: Math.max( previous.y2, current.y2 )
+                    x1:Math.min( previous.x1, current.x1 ),
+                    y1:Math.min( previous.y1, current.y1 ),
+                    x2:Math.max( previous.x2, current.x2 ),
+                    y2:Math.max( previous.y2, current.y2 )
                 };
             } );
         };
@@ -273,29 +272,6 @@ gd = {};
                 .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.speechBubble( graph ) ).map( boundingBox )
                 .map( scaling.boxNormalise ) ) );
 
-//            console.log( graph.nodeList().map( gd.speechBubble( graph ) ).map( boundingBox )
-//                .map( scaling.boxNormalise ) ));
-//            var cxList = graph.nodeList().map(function ( d )
-//            {
-//                return [d.ex()].concat(d.boundingBox == null ? [] : [
-//                    d.boundingBox.x,
-//                    d.boundingBox.x + d.boundingBox.width
-//                ]);
-//            } ).reduce( flatten, [] );
-//            var cyList = graph.nodeList().map(function ( d )
-//            {
-//                return [d.ey()].concat(d.boundingBox == null ? [] : [
-//                    d.boundingBox.y,
-//                    d.boundingBox.y + d.boundingBox.height
-//                ]);
-//            } ).reduce( flatten, [] );
-//
-//            var bounds = {
-//                xMin:Math.min.apply(Math, cxList) - gd.parameters.radius - gd.parameters.strokeWidth,
-//                xMax:Math.max.apply(Math, cxList) + gd.parameters.radius + gd.parameters.strokeWidth,
-//                yMin:Math.min.apply(Math, cyList) - gd.parameters.radius - gd.parameters.strokeWidth,
-//                yMax:Math.max.apply(Math, cyList) + gd.parameters.radius + gd.parameters.strokeWidth
-//            };
             return { x: bounds.x1, y: bounds.y1,
                 width: (bounds.x2 - bounds.x1), height: (bounds.y2 - bounds.y1) }
         }

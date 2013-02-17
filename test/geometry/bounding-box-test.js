@@ -31,6 +31,9 @@ suite.addBatch({
             var rect1 = { x1: 0, y1: 0, x2: 10, y2: 10 };
             var rect2 = { x1: 0, y1: 20, x2: 10, y2: 30 };
             assert.deepEqual(gd.scaling.boxUnion([rect1, rect2]), { x1: 0, y1: 0, x2: 10, y2: 30 });
+        },
+        "union of no boxes" : function() {
+            assert.deepEqual(gd.scaling.boxUnion([]), { x1: 0, y1: 0, x2: 0, y2: 0 });
         }
     }
 });
