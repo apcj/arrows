@@ -643,189 +643,200 @@ gd = {};
         var relationshipBehaviour = function() {};
         var scaling = gd.scaling.sizeSvgToFitDiagram;
 
+        function method(methodName)
+        {
+            return function( d )
+            {
+                return d[methodName]();
+            }
+        }
+
+        function singleton(d) {
+            return [d];
+        }
+
+        function renderNodes( model, view )
+        {
+            function nodeClasses(d) {
+                return d.class().join(" ") + " " + "node-id-" + d.id;
+            }
+
+            var nodes = view.selectAll("circle.node")
+                .data(d3.values(model.nodeList()));
+
+            nodes.exit().remove();
+
+            nodes.enter().append("svg:circle")
+                .attr("class", nodeClasses)
+                .attr("r", gd.parameters.radius)
+                .call(nodeBehaviour);
+
+            nodes
+                .attr("cx", method("ex"))
+                .attr("cy", method("ey"));
+
+            function renderBoundVariables(className) {
+                function boundVariableClasses(d) {
+                    return className + " " + d.class();
+                }
+
+                var boundVariables = view.selectAll("text." + className)
+                    .data(d3.values(model.nodeList()).filter(method("label")));
+
+                boundVariables.exit().remove();
+
+                boundVariables.enter().append("svg:text")
+                    .attr("class", boundVariableClasses)
+                    .call(nodeBehaviour);
+
+                boundVariables
+                    .attr("x", method("ex"))
+                    .attr("y", method("ey"))
+                    .text(method("label"));
+            }
+
+            renderBoundVariables("caption-shadow");
+            renderBoundVariables("caption");
+        }
+
+        function renderRelationships( model, view )
+        {
+            function horizontalArrow(d) {
+                var length = d.start.distanceTo(d.end);
+                var side = d.end.isLeftOf(d.start) ? -1 : 1;
+                return gd.horizontalArrowOutline(
+                    side * (gd.parameters.radius + gd.parameters.nodeStartMargin),
+                    side * (length - (gd.parameters.radius + gd.parameters.nodeEndMargin)));
+            }
+
+            function midwayBetweenStartAndEnd(d) {
+                var length = d.start.distanceTo(d.end);
+                var side = d.end.isLeftOf(d.start) ? -1 : 1;
+                return side * length / 2;
+            }
+
+            function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
+                var angle = d.start.angleTo(d.end);
+                if (d.end.isLeftOf(d.start)) {
+                    angle += 180;
+                }
+                return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
+            }
+
+            function relationshipClasses(d) {
+                return d.class().join(" ");
+            }
+
+            var relationshipGroup = view.selectAll("g.relationship")
+                .data(model.relationshipList());
+
+            relationshipGroup.exit().remove();
+
+            relationshipGroup.enter().append("svg:g")
+                .attr("class", relationshipClasses);
+
+            relationshipGroup
+                .attr("transform", translateToStartNodeCenterAndRotateToRelationshipAngle);
+
+            var relationshipPath = relationshipGroup.selectAll("path.relationship")
+                .data(singleton);
+
+            relationshipPath.enter().append("svg:path")
+                .attr("class", relationshipClasses)
+                .call(relationshipBehaviour);
+
+            relationshipPath
+                .attr("d", horizontalArrow);
+
+            function relationshipWithLabel(d) {
+                return [d].filter(method("label"));
+            }
+
+            var relationshipLabel = relationshipGroup.selectAll("text.type")
+                .data(relationshipWithLabel);
+
+            relationshipLabel.exit().remove();
+
+            relationshipLabel.enter().append("svg:text")
+                .attr("class", "type")
+                .call(relationshipBehaviour);
+
+            relationshipLabel
+                .attr("x", midwayBetweenStartAndEnd)
+                .attr("y", 0 )
+                .text(method("label"));
+        }
+
+        function renderNodeProperties( model, view )
+        {
+            var speechBubbleGroup = view.selectAll("g.speech-bubble")
+                .data(d3.values(model.nodeList()).filter(gd.hasProperties ).map(gd.speechBubble(model)));
+
+            speechBubbleGroup.exit().remove();
+
+            speechBubbleGroup.enter().append("svg:g")
+                .attr("class", "speech-bubble");
+
+            speechBubbleGroup
+                .attr("transform", function(speechBubble) { return speechBubble.groupTransform; } );
+
+            var speechBubbleOutline = speechBubbleGroup.selectAll("path.speech-bubble-outline")
+                .data(singleton);
+
+            speechBubbleOutline.exit().remove();
+
+            speechBubbleOutline.enter().append("svg:path")
+                .attr("class", "speech-bubble-outline");
+
+            speechBubbleOutline
+                .attr("transform", function(speechBubble) { return speechBubble.outlineTransform; })
+                .attr("d", function(speechBubble) { return speechBubble.outlinePath; });
+
+            var propertyKeys = speechBubbleGroup.selectAll("text.speech-bubble-content.property-key")
+                .data(function(speechBubble) { return speechBubble.properties; });
+
+            propertyKeys.exit().remove();
+
+            propertyKeys.enter().append("svg:text")
+                .attr("class", "speech-bubble-content property-key");
+
+            propertyKeys
+                .attr("x", function(property) { return property.textOrigin.x - 10; })
+                // -10 because trailing space gets trimmed
+                .attr("y", function(property, i) {
+                    return i * 50 + property.textOrigin.y + 25
+                })
+                .text(function(property) { return property.keyText; });
+
+            var propertyValues = speechBubbleGroup.selectAll("text.speech-bubble-content.property-value")
+                .data(function(speechBubble) { return speechBubble.properties; });
+
+            propertyValues.exit().remove();
+
+            propertyValues.enter().append("svg:text")
+                .attr("class", "speech-bubble-content property-value");
+
+            propertyValues
+                .attr("x", function(property) { return property.textOrigin.x; })
+                .attr("y", function(property, i) {
+                    return i * 50 + property.textOrigin.y + 25
+                })
+                .text(function(property) { return property.valueText; });
+
+            scaling( model, view );
+        }
+
         var diagram = function ( selection )
         {
             selection.each( function ( model )
             {
                 var view = d3.select( this );
 
-                function cx(d) {
-                    return d.ex();
-                }
-                function cy(d) {
-                    return d.ey();
-                }
+                renderNodes( model, view );
 
-                function label(d) {
-                    return d.label();
-                }
+                renderRelationships( model, view );
 
-                function nodeClasses(d) {
-                    return d.class().join(" ") + " " + "node-id-" + d.id;
-                }
-
-                var nodes = view.selectAll("circle.node")
-                    .data(d3.values(model.nodeList()));
-
-                nodes.exit().remove();
-
-                nodes.enter().append("svg:circle")
-                    .attr("class", nodeClasses)
-                    .attr("r", gd.parameters.radius)
-                    .call(nodeBehaviour);
-
-                nodes
-                    .attr("cx", cx)
-                    .attr("cy", cy);
-
-                function horizontalArrow(d) {
-                    var length = d.start.distanceTo(d.end);
-                    var side = d.end.isLeftOf(d.start) ? -1 : 1;
-                    return gd.horizontalArrowOutline(
-                        side * (gd.parameters.radius + gd.parameters.nodeStartMargin),
-                        side * (length - (gd.parameters.radius + gd.parameters.nodeEndMargin)));
-                }
-
-                function midwayBetweenStartAndEnd(d) {
-                    var length = d.start.distanceTo(d.end);
-                    var side = d.end.isLeftOf(d.start) ? -1 : 1;
-                    return side * length / 2;
-                }
-
-                function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
-                    var angle = d.start.angleTo(d.end);
-                    if (d.end.isLeftOf(d.start)) {
-                        angle += 180;
-                    }
-                    return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
-                }
-
-                function relationshipClasses(d) {
-                    return d.class().join(" ");
-                }
-
-                var relationshipGroup = view.selectAll("g.relationship")
-                    .data(model.relationshipList());
-
-                relationshipGroup.exit().remove();
-
-                relationshipGroup.enter().append("svg:g")
-                    .attr("class", relationshipClasses);
-
-                relationshipGroup
-                    .attr("transform", translateToStartNodeCenterAndRotateToRelationshipAngle);
-
-                function singleton(d) {
-                    return [d];
-                }
-
-                var relationshipPath = relationshipGroup.selectAll("path.relationship")
-                    .data(singleton);
-
-                relationshipPath.enter().append("svg:path")
-                    .attr("class", relationshipClasses)
-                    .call(relationshipBehaviour);
-
-                relationshipPath
-                    .attr("d", horizontalArrow);
-
-                function relationshipWithLabel(d) {
-                    return [d].filter(label);
-                }
-
-                var relationshipLabel = relationshipGroup.selectAll("text.type")
-                    .data(relationshipWithLabel);
-
-                relationshipLabel.exit().remove();
-
-                relationshipLabel.enter().append("svg:text")
-                    .attr("class", "type")
-                    .call(relationshipBehaviour);
-
-                relationshipLabel
-                    .attr("x", midwayBetweenStartAndEnd)
-                    .attr("y", 0 )
-                    .text(label);
-
-                function renderBoundVariables(className) {
-                    function boundVariableClasses(d) {
-                        return className + " " + d.class();
-                    }
-
-                    var boundVariables = view.selectAll("text." + className)
-                        .data(d3.values(model.nodeList()).filter(label));
-
-                    boundVariables.exit().remove();
-
-                    boundVariables.enter().append("svg:text")
-                        .attr("class", boundVariableClasses)
-                        .call(nodeBehaviour);
-
-                    boundVariables
-                        .attr("x", cx)
-                        .attr("y", cy)
-                        .text(label);
-                }
-
-                renderBoundVariables("caption-shadow");
-                renderBoundVariables("caption");
-
-
-                var speechBubbleGroup = view.selectAll("g.speech-bubble")
-                    .data(d3.values(model.nodeList()).filter(gd.hasProperties ).map(gd.speechBubble(model)));
-
-                speechBubbleGroup.exit().remove();
-
-                speechBubbleGroup.enter().append("svg:g")
-                    .attr("class", "speech-bubble");
-
-                speechBubbleGroup
-                    .attr("transform", function(speechBubble) { return speechBubble.groupTransform; } );
-
-                var speechBubbleOutline = speechBubbleGroup.selectAll("path.speech-bubble-outline")
-                    .data(singleton);
-
-                speechBubbleOutline.exit().remove();
-
-                speechBubbleOutline.enter().append("svg:path")
-                    .attr("class", "speech-bubble-outline");
-
-                speechBubbleOutline
-                    .attr("transform", function(speechBubble) { return speechBubble.outlineTransform; })
-                    .attr("d", function(speechBubble) { return speechBubble.outlinePath; });
-
-                var propertyKeys = speechBubbleGroup.selectAll("text.speech-bubble-content.property-key")
-                    .data(function(speechBubble) { return speechBubble.properties; });
-
-                propertyKeys.exit().remove();
-
-                propertyKeys.enter().append("svg:text")
-                    .attr("class", "speech-bubble-content property-key");
-
-                propertyKeys
-                    .attr("x", function(property) { return property.textOrigin.x - 10; })
-                    // -10 because trailing space gets trimmed
-                    .attr("y", function(property, i) {
-                        return i * 50 + property.textOrigin.y + 25
-                    })
-                    .text(function(property) { return property.keyText; });
-
-                var propertyValues = speechBubbleGroup.selectAll("text.speech-bubble-content.property-value")
-                    .data(function(speechBubble) { return speechBubble.properties; });
-
-                propertyValues.exit().remove();
-
-                propertyValues.enter().append("svg:text")
-                    .attr("class", "speech-bubble-content property-value");
-
-                propertyValues
-                    .attr("x", function(property) { return property.textOrigin.x; })
-                    .attr("y", function(property, i) {
-                        return i * 50 + property.textOrigin.y + 25
-                    })
-                    .text(function(property) { return property.valueText; });
-
-                scaling( model, view );
+                renderNodeProperties( model, view );
             } );
         };
 

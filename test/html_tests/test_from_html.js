@@ -7,25 +7,28 @@ function compareSvg( expected, actual, report )
     }
     if ( expected.childElementCount != actual.childElementCount )
     {
-        report( expected, actual, "different number of children" )
+        report( expected, actual, "different number of children" );
         return;
     }
 
-    for ( var i = 0; i < expected.attributes.length; i++ )
+    for ( var iAttribute = 0; iAttribute < expected.attributes.length; iAttribute++ )
     {
-        var expectedAttribute = expected.attributes[i];
+        var expectedAttribute = expected.attributes[iAttribute];
         var name = expectedAttribute.name;
-        var actualAttribute = actual.attributes[name];
-        if (actualAttribute == null) {
-            report(expected, actual, "missing attribute " + name );
-            result = false;
-        } else {
-            var expectedAttributeValue = expectedAttribute.value;
-            var actualAttributeValue = actualAttribute.value;
-            if ( expectedAttributeValue != actualAttributeValue )
-            {
-                report(expected, actual,
-                    "Expected " + name + "=\"" + expectedAttributeValue + "\" but got " + name + "=\"" + actualAttributeValue );
+        if (name != "xmlns")
+        {
+            var actualAttribute = actual.attributes[name];
+            if (actualAttribute == null) {
+                report(expected, actual, "missing attribute " + name );
+                result = false;
+            } else {
+                var expectedAttributeValue = expectedAttribute.value;
+                var actualAttributeValue = actualAttribute.value;
+                if ( expectedAttributeValue != actualAttributeValue )
+                {
+                    report(expected, actual,
+                        "Expected " + name + "=\"" + expectedAttributeValue + "\" but got " + name + "=\"" + actualAttributeValue );
+                }
             }
         }
     }
@@ -53,9 +56,9 @@ function compareSvg( expected, actual, report )
                 "Expected text content \"" + expected.textContent + "\" but got \"" + actual.textContent + "\"");
         }
     } else {
-        for ( var i = 0; i < expectedChildElements.length; i++ )
+        for ( var iChild = 0; iChild < expectedChildElements.length; iChild++ )
         {
-            compareSvg( expectedChildElements[i], actualChildElements[i], report );
+            compareSvg( expectedChildElements[iChild], actualChildElements[iChild], report );
         }
     }
 }
@@ -70,7 +73,7 @@ d3.selectAll( ".example" ).each( function ()
     exampleRow.insert( "td", "td" )
         .append( "pre" ).append( "code" )
         .attr( "class", "pretty-markup" )
-        .text( function ( d )
+        .text( function ()
         {
             var markup = exampleRow.select( "td.markup" );
             return markup.node().innerHTML.replace(/^      /gm,"").replace(/^\s*\n/g,"").replace(/\n\s*$/,"");
