@@ -857,4 +857,21 @@ gd = {};
 
         return diagram;
     };
+
+    gd.figure = function ()
+    {
+        return function ( selection )
+        {
+            selection.each( function ()
+            {
+                var figure = d3.select( this );
+                var markup = figure.select( "ul.graph-diagram-markup" );
+                figure.selectAll( "svg" )
+                    .data( [gd.markup.parse( markup )] )
+                    .enter()
+                    .append( "svg" )
+                    .call( gd.diagram() );
+            } );
+        }
+    };
 })();
