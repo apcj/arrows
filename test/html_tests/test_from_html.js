@@ -81,8 +81,14 @@ d3.selectAll( ".example" ).each( function ()
 
     var view = exampleRow.append( "td" ).attr( "class", "actual-diagram" ).append( "svg:svg" );
 
+    var models = gd.markup.parseAll( exampleRow.select( "ul.graph-diagram-markup" ) );
+    models.forEach( function ( model )
+    {
+        gd.updateTextDerivedDimensions( model );
+    } );
+
     view
-        .data(gd.markup.parseAll( exampleRow.select( "ul.graph-diagram-markup" ) ))
+        .data(models)
         .call(diagram);
 
     var errorContainer = exampleRow.selectAll( "td.errors" ).data( [ {} ] );

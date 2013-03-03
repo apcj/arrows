@@ -5,8 +5,8 @@ gd = {};
     gd.parameters = {
         radius: 50,
         nodeStrokeWidth: 8,
-        nodeStartMargin: 15,
-        nodeEndMargin: 15,
+        nodeStartMargin: 11,
+        nodeEndMargin: 11,
         speechBubbleMargin: 20,
         speechBubblePadding: 10,
         speechBubbleStrokeWidth: 3
@@ -22,11 +22,42 @@ gd = {};
 
         var model = {};
 
+        var Radius = function(insideRadius) {
+
+            this.insideRadius = insideRadius;
+
+            this.update = function( insideRadius )
+            {
+                this.insideRadius = insideRadius;
+            };
+
+            this.mid = function() {
+                return this.insideRadius + gd.parameters.nodeStrokeWidth / 2;
+            };
+
+            this.inside = function() {
+                return this.insideRadius;
+            };
+
+            this.outside = function() {
+                return this.insideRadius + gd.parameters.nodeStrokeWidth;
+            };
+
+            this.startRelationship = function() {
+                return this.insideRadius + gd.parameters.nodeStrokeWidth + gd.parameters.nodeStartMargin;
+            };
+
+            this.endRelationship = function() {
+                return this.insideRadius + gd.parameters.nodeStrokeWidth + gd.parameters.nodeEndMargin;
+            };
+        };
+
         var Node = function() {
             var position = {};
             var label;
             var classes = [];
             var properties = new Properties();
+            var styles = {};
 
             this.class = function(classesString) {
                 if (arguments.length == 1) {
@@ -92,6 +123,8 @@ gd = {};
                 return this.x() < node.x();
             };
 
+            this.radius = new Radius(gd.parameters.radius - gd.parameters.nodeStrokeWidth / 2);
+
             this.label = function(labelText) {
                 if (arguments.length == 1) {
                     label = labelText;
@@ -103,6 +136,18 @@ gd = {};
             this.properties = function() {
                 return properties;
             };
+
+            this.style = function(cssPropertyKey, cssPropertyValue)
+            {
+                if (arguments.length == 2) {
+                    styles[cssPropertyKey] = cssPropertyValue;
+                    return this;
+                }
+                if (arguments.length == 1) {
+                    return styles[cssPropertyKey];
+                }
+                return styles;
+            }
         };
 
         var Properties = function() {
@@ -226,7 +271,7 @@ gd = {};
 
         scaling.nodeBox = function( node )
         {
-            var margin = gd.parameters.radius + gd.parameters.nodeStrokeWidth / 2;
+            var margin = node.radius.outside();
             return {
                 x1: node.ex() - margin,
                 y1: node.ey() - margin,
@@ -328,6 +373,20 @@ gd = {};
             return models;
         };
 
+        function copyStyle( node, computedStyle, cssPropertyKey )
+        {
+            node.style( cssPropertyKey, computedStyle.getPropertyValue( cssPropertyKey ) );
+        }
+
+        function copyStyles( node, nodeMarkup )
+        {
+            var computedStyle = window.getComputedStyle(nodeMarkup.node() );
+            copyStyle( node, computedStyle, "font-size" );
+            copyStyle( node, computedStyle, "font-face" );
+            copyStyle( node, computedStyle, "padding" );
+            copyStyle( node, computedStyle, "min-width" );
+        }
+
         markup.parse = function(selection) {
             var model = gd.model();
 
@@ -358,7 +417,8 @@ gd = {};
                             node.properties().set(currentKey, d3.select(this).text());
                         }
                     })
-                })
+                });
+                copyStyles(node, nodeMarkup);
             });
 
             selection.selectAll(".relationship").each(function () {
@@ -524,6 +584,29 @@ gd = {};
         return styles[style].join(" ");
     };
 
+    gd.updateTextDerivedDimensions = function ( model )
+    {
+        var nodes = model.nodeList();
+
+        function parsePixels(fontSize)
+        {
+            return parseFloat( fontSize.slice( 0, -2 ) );
+        }
+
+        for ( var i = 0; i < nodes.length; i++ )
+        {
+            var node = nodes[i];
+            var fontSize = node.style( "font-size" );
+            var width = gd.textDimensions.measure( node.label() || "", fontSize );
+            var height = parsePixels( fontSize );
+            var padding = parsePixels( node.style( "padding" ) );
+            var radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
+            var minRadius = parsePixels( node.style("min-width")) / 2;
+            if ( minRadius > radius ) radius = minRadius;
+            node.radius.update( radius );
+        }
+    };
+
     gd.speechBubble = function ( model )
     {
         return function ( node )
@@ -557,19 +640,19 @@ gd = {};
 
             var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
 
-            var diagonalRadius = gd.parameters.radius * Math.sqrt( 2 ) / 2;
+            var diagonalRadius = node.radius.mid() * Math.sqrt( 2 ) / 2;
             var nodeOffsetOptions = {
                 diagonal:{ attach:{ x:diagonalRadius, y:diagonalRadius },
                     textCorner:{
                         x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
                         y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
                     } },
-                horizontal:{ attach:{ x:gd.parameters.radius, y:0 },
+                horizontal:{ attach:{ x:node.radius.mid(), y:0 },
                     textCorner:{
                         x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
                         y:-textSize.height / 2
                     } },
-                vertical:{ attach:{ x:0, y:gd.parameters.radius },
+                vertical:{ attach:{ x:0, y:node.radius.mid() },
                     textCorner:{
                         x:-textSize.width / 2,
                         y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
@@ -618,14 +701,15 @@ gd = {};
     gd.textDimensions = function() {
         var textDimensions = {};
 
-        textDimensions.measure = function(text) {
+        textDimensions.measure = function ( text, fontSize ) {
+            fontSize = fontSize || "50px";
             var canvasSelection = d3.select("#textMeasuringCanvas").data([this]);
             canvasSelection.enter().append("canvas")
                 .attr("id", "textMeasuringCanvas");
 
             var canvas = canvasSelection.node();
             var context = canvas.getContext("2d");
-            context.font = "normal normal normal 50px/normal Gill Sans";
+            context.font = "normal normal normal " + fontSize + "/normal Gill Sans";
             return context.measureText(text).width;
         };
 
@@ -668,10 +752,12 @@ gd = {};
 
             nodes.enter().append("svg:circle")
                 .attr("class", nodeClasses)
-                .attr("r", gd.parameters.radius)
                 .call(nodeBehaviour);
 
             nodes
+                .attr("r", function(node) {
+                    return node.radius.mid();
+                })
                 .attr("cx", method("ex"))
                 .attr("cy", method("ey"));
 
@@ -692,10 +778,11 @@ gd = {};
                 boundVariables
                     .attr("x", method("ex"))
                     .attr("y", method("ey"))
+                    .style("font-size", function(node) { return node.style("font-size"); })
                     .text(method("label"));
             }
 
-            renderBoundVariables("caption-shadow");
+//            renderBoundVariables("caption-shadow");
             renderBoundVariables("caption");
         }
 
@@ -705,8 +792,8 @@ gd = {};
                 var length = d.start.distanceTo(d.end);
                 var side = d.end.isLeftOf(d.start) ? -1 : 1;
                 return gd.horizontalArrowOutline(
-                    side * (gd.parameters.radius + gd.parameters.nodeStartMargin),
-                    side * (length - (gd.parameters.radius + gd.parameters.nodeEndMargin)));
+                    side * d.start.radius.startRelationship(),
+                    side * (length - d.end.radius.endRelationship()));
             }
 
             function midwayBetweenStartAndEnd(d) {

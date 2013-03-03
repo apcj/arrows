@@ -18,10 +18,10 @@
     background-color: #bd362f;
 }
 
-.example.pass .actual-diagram svg {
+.example.pass .expected-diagram svg {
     visibility: hidden;
 }
 
-.examples.all-pass .actual-diagram, .examples.all-pass .errors {
+.examples.all-pass .expected-diagram, .examples.all-pass .errors {
     display: none;
 }
