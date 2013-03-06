@@ -100,23 +100,45 @@ suite.addBatch({
         },
         "markup with two nodes and one relationship": {
             topic: function(markup) {
-                markup.append("li")
+                markup
+                    .append("li")
                     .attr("class", "node")
                     .attr("data-node-id", "node_A")
                     .attr("data-x", "12")
                     .attr("data-y", "34");
-                markup.append("li")
+
+                markup
+                    .append("li")
                     .attr("class", "node")
                     .attr("data-node-id", "node_B")
                     .attr("data-x", "56")
                     .attr("data-y", "78");
-                markup.append("li")
+
+                var li = markup
+                    .append("li")
                     .attr("class", "relationship diagram-specific-class")
                     .attr("data-from", "node_A")
-                    .attr("data-to", "node_B")
+                    .attr("data-to", "node_B");
+
+                li
                     .append("span")
                     .attr("class", "type")
                     .text("RELATED_TO");
+
+                var dl = li.append("dl")
+                    .attr("class", "properties");
+
+                dl.append("dt")
+                    .text("name");
+
+                dl.append("dd")
+                    .text("Alistair");
+
+                dl.append("dt")
+                    .text("location");
+
+                dl.append("dd")
+                    .text("London");
 
                 return gd.markup.parse(markup);
             },
@@ -134,6 +156,14 @@ suite.addBatch({
             },
             "with label": function(model) {
                 assert.equal(model.relationshipList()[0].label(), "RELATED_TO");
+            },
+            "with properties": function(model) {
+                var relationship = model.relationshipList()[0];
+                assert.equal(relationship.properties().list().length, 2);
+                assert.equal(relationship.properties().list()[0].key, "name");
+                assert.equal(relationship.properties().list()[0].value, "Alistair");
+                assert.equal(relationship.properties().list()[1].key, "location");
+                assert.equal(relationship.properties().list()[1].value, "London");
             }
         }
     },
@@ -209,7 +239,8 @@ suite.addBatch({
                 var model = gd.model();
                 var nodeA = model.createNode("node_A");
                 var nodeB = model.createNode("node_B");
-                model.createRelationship(nodeA, nodeB).label("RELATED TO" ).class("diagram-specific-class");
+                model.createRelationship(nodeA, nodeB).label("RELATED TO" ).class("diagram-specific-class")
+                    .properties().set("name", "Alistair").set("location", "London");
 
                 var markup = d3.select("body").append("div");
                 gd.markup.format(model, markup);
@@ -231,6 +262,13 @@ suite.addBatch({
             "with label": function(relationships) {
                 assert.equal(relationships.select("span.type" ).text(),
                     "RELATED TO");
+            },
+            "with properties": function(nodes) {
+                var list = nodes.select("dl.properties");
+                assert.equal(list.select("dt:nth-child(1)").text(), "name");
+                assert.equal(list.select("dd:nth-child(2)").text(), "Alistair");
+                assert.equal(list.select("dt:nth-child(3)").text(), "location");
+                assert.equal(list.select("dd:nth-child(4)").text(), "London");
             }
         }
     }

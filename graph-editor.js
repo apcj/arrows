@@ -110,16 +110,11 @@
 
     function editNode()
     {
+        var editor = d3.select(".pop-up-editor.node");
         appendModalBackdrop();
-        d3.select( ".modal.pop-up-editor.node" ).classed( "hide", false );
+        editor.classed( "hide", false );
 
         var node = this.__data__;
-
-        var editor = d3.select(".pop-up-editor.node");
-
-        editor.select("path")
-            .attr("d", gd.speechBubblePath({ width: 500, height: 200}, "diagonal",
-            gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding));
 
         var captionField = editor.select("#node_caption");
         captionField.node().value = node.label() || "";
@@ -164,31 +159,60 @@
 
     function editRelationship()
     {
-        var relationship = this.__data__;
-        var midwayPoint = relationship.start.midwayTo( relationship.end );
-        var field = svg.append( "svg:foreignObject" )
-            .attr( "x", midwayPoint.x - 50 )
-            .attr( "y", midwayPoint.y - 50 )
-            .attr( "height", 100 )
-            .attr( "width", 120 )
-            .append( "xhtml:body" )
-            .append( "input" )
-            .attr( "class", "editor-field" )
-            .style( "width", 100 + "px" );
+        var editor = d3.select(".pop-up-editor.relationship");
+        appendModalBackdrop();
+        editor.classed( "hide", false );
 
-        field.node().value = relationship.label() || "";
-        field.node().select();
-        field.on( "keypress", function ()
+        var relationship = this.__data__;
+
+        var relationshipTypeField = editor.select("#relationship_type");
+        relationshipTypeField.node().value = relationship.label() || "";
+        relationshipTypeField.node().select();
+
+        var propertiesField = editor.select("#relationship_properties");
+        propertiesField.node().value = relationship.properties().list().reduce(function(previous, property) {
+            return previous + property.key + ": " + property.value + "\n";
+        }, "");
+
+        function saveChange()
         {
-            var e = d3.event;
-            if ( e.which == 10 || e.which == 13 )
-            {
-                relationship.label( field.node().value );
-                field.remove();
-                save( formatMarkup() );
-                draw();
-            }
-        } )
+            relationship.label( relationshipTypeField.node().value );
+            relationship.properties().clearAll();
+            propertiesField.node().value.split("\n").forEach(function(line) {
+                var tokens = line.split(/: */);
+                if (tokens.length === 2) {
+                    var key = tokens[0].trim();
+                    var value = tokens[1].trim();
+                    if (key.length > 0 && value.length > 0) {
+                        relationship.properties().set(key, value);
+                    }
+                }
+            });
+            save( formatMarkup() );
+            gd.updateTextDerivedDimensions( graphModel );
+            draw();
+            cancelModal();
+        }
+
+        function reverseRelationship()
+        {
+            relationship.reverse();
+            save( formatMarkup() );
+            draw();
+            cancelModal();
+        }
+
+        function deleteRelationship()
+        {
+            graphModel.deleteRelationship(relationship);
+            save( formatMarkup() );
+            draw();
+            cancelModal();
+        }
+
+        editor.select("#edit_relationship_save").on("click", saveChange);
+        editor.select("#edit_relationship_reverse").on("click", reverseRelationship);
+        editor.select("#edit_relationship_delete").on("click", deleteRelationship);
     }
 
     function formatMarkup()

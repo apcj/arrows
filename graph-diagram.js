@@ -150,6 +150,43 @@ gd = {};
             }
         };
 
+        var Relationship = function(start, end) {
+            var label;
+            var classes = [];
+            var properties = new Properties();
+
+            this.class = function(classesString) {
+                if (arguments.length == 1) {
+                    classes = classesString.split(" ").filter(function(className) {
+                        return className.length > 0 && className != "relationship";
+                    });
+                    return this;
+                }
+                return ["relationship"].concat(classes);
+            };
+
+            this.label = function(labelText) {
+                if (arguments.length == 1) {
+                    label = labelText;
+                    return this;
+                }
+                return label;
+            };
+
+            this.start = start;
+            this.end = end;
+
+            this.reverse = function() {
+                var oldStart = this.start;
+                this.start = this.end;
+                this.end = oldStart;
+            };
+
+            this.properties = function() {
+                return properties;
+            };
+        };
+
         var Properties = function() {
             var keys = [];
             var values = {};
@@ -174,32 +211,6 @@ gd = {};
             }
         };
 
-        var Relationship = function(start, end) {
-            var label;
-            var classes = [];
-
-            this.class = function(classesString) {
-                if (arguments.length == 1) {
-                    classes = classesString.split(" ").filter(function(className) {
-                        return className.length > 0 && className != "relationship";
-                    });
-                    return this;
-                }
-                return ["relationship"].concat(classes);
-            };
-
-            this.label = function(labelText) {
-                if (arguments.length == 1) {
-                    label = labelText;
-                    return this;
-                }
-                return label;
-            };
-
-            this.start = start;
-            this.end = end;
-        };
-
         function generateNodeId() {
             while (nodes[highestId]) {
                 highestId++;
@@ -220,6 +231,10 @@ gd = {};
                 return !(relationship.start === node || relationship.end == node);
             });
             delete nodes[node.id];
+        };
+
+        model.deleteRelationship = function(relationship) {
+            relationships.splice(relationships.indexOf(relationship), 1);
         };
 
         model.createRelationship = function(start, end) {
@@ -397,6 +412,24 @@ gd = {};
                 model.externalScale(selection.attr("data-external-scale"));
             }
 
+            function parseProperties(entity)
+            {
+                return function() {
+                    var elements = d3.select( this ).selectAll( "dt, dd" );
+                    var currentKey;
+                    elements.each( function ()
+                    {
+                        if ( this.nodeName.toLowerCase() === "dt" )
+                        {
+                            currentKey = d3.select( this ).text();
+                        } else if ( currentKey && this.nodeName.toLowerCase() === "dd" )
+                        {
+                            entity.properties().set( currentKey, d3.select( this ).text() );
+                        }
+                    } )
+                }
+            }
+
             selection.selectAll(".node").each(function () {
                 var nodeMarkup = d3.select(this);
                 var id = nodeMarkup.attr("data-node-id");
@@ -407,17 +440,8 @@ gd = {};
                 nodeMarkup.select("span.caption").each(function() {
                     node.label(d3.select(this).text());
                 });
-                nodeMarkup.select("dl.properties").each(function() {
-                    var elements = d3.select(this).selectAll("dt, dd");
-                    var currentKey;
-                    elements.each(function() {
-                        if (this.nodeName.toLowerCase() === "dt") {
-                            currentKey = d3.select(this).text();
-                        } else if (currentKey && this.nodeName.toLowerCase() === "dd") {
-                            node.properties().set(currentKey, d3.select(this).text());
-                        }
-                    })
-                });
+                nodeMarkup.select( "dl.properties" ).each( parseProperties( node ) );
+
                 copyStyles(node, nodeMarkup);
             });
 
@@ -430,6 +454,7 @@ gd = {};
                 relationshipMarkup.select("span.type" ).each(function() {
                     relationship.label(d3.select(this).text());
                 });
+                relationshipMarkup.select( "dl.properties" ).each( parseProperties( relationship ) );
             });
 
             return model;
@@ -440,6 +465,23 @@ gd = {};
                 .attr("class", "graph-diagram-markup")
                 .attr("data-internal-scale", model.internalScale())
                 .attr("data-external-scale", model.externalScale());
+
+            function formatProperties( entity, li )
+            {
+                if ( entity.properties().list().length > 0 )
+                {
+                    var dl = li.append( "dl" )
+                        .attr( "class", "properties" );
+
+                    entity.properties().list().forEach( function ( property )
+                    {
+                        dl.append( "dt" )
+                            .text( property.key );
+                        dl.append( "dd" )
+                            .text( property.value );
+                    } );
+                }
+            }
 
             model.nodeList().forEach(function(node) {
                 var li = ul.append("li")
@@ -453,18 +495,7 @@ gd = {};
                         .attr("class", "caption")
                         .text(node.label());
                 }
-
-                if (node.properties().list().length > 0) {
-                    var dl = li.append("dl")
-                        .attr("class", "properties");
-
-                    node.properties().list().forEach(function(property) {
-                        dl.append("dt")
-                            .text(property.key);
-                        dl.append("dd")
-                            .text(property.value);
-                    });
-                }
+                formatProperties( node, li );
             });
 
             model.relationshipList().forEach(function(relationship) {
@@ -478,6 +509,7 @@ gd = {};
                         .attr("class", "type")
                         .text(relationship.label());
                 }
+                formatProperties( relationship, li );
             });
         };
 
@@ -518,7 +550,10 @@ gd = {};
         relatedNodes.forEach(function(relatedNode) {
             orientations.forEach(function(orientation) {
                 var angle = Math.abs(focusNode.angleTo( relatedNode ) - orientation.angle);
-                if (angle > 180) angle = 360 - angle;
+                if ( angle > 180 )
+                {
+                    angle = 360 - angle;
+                }
                 if (angle < orientation.closest) {
                     orientation.closest = angle;
                 }
@@ -602,7 +637,10 @@ gd = {};
             var padding = parsePixels( node.style( "padding" ) );
             var radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
             var minRadius = parsePixels( node.style("min-width")) / 2;
-            if ( minRadius > radius ) radius = minRadius;
+            if ( minRadius > radius )
+            {
+                radius = minRadius;
+            }
             node.radius.update( radius );
         }
     };
