@@ -329,7 +329,7 @@ gd = {};
             }
 
             var bounds = scaling.boxUnion( graph.nodeList().map( scaling.nodeBox )
-                .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.speechBubble( graph ) ).map( boundingBox )
+                .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.nodeSpeechBubble( graph ) ).map( boundingBox )
                 .map( scaling.boxNormalise ) ) );
 
             return { x: bounds.x1, y: bounds.y1,
@@ -531,7 +531,7 @@ gd = {};
             "Z"].join(" ");
     };
 
-    gd.chooseSpeechBubbleOrientation = function(focusNode, relatedNodes) {
+    gd.chooseNodeSpeechBubbleOrientation = function(focusNode, relatedNodes) {
         var orientations = [
             { key: "WEST"       , style: "horizontal", mirrorX: -1, mirrorY:  1, angle:  180 },
             { key: "NORTH-WEST" , style: "diagonal",   mirrorX: -1, mirrorY: -1, angle: -135 },
@@ -570,6 +570,29 @@ gd = {};
         });
 
         return bestOrientation;
+    };
+
+    gd.chooseRelationshipSpeechBubbleOrientation = function(relationship) {
+        var orientations = {
+            SOUTH_EAST: { style: "diagonal",   mirrorX:  1, mirrorY:  1, angle:   45 },
+            SOUTH     : { style: "vertical",   mirrorX:  1, mirrorY:  1, angle:   90 },
+            SOUTH_WEST: { style: "diagonal",   mirrorX: -1, mirrorY:  1, angle:  135 }
+    };
+
+        var relationshipAngle = relationship.start.angleTo(relationship.end);
+
+        if ( Math.abs( relationshipAngle ) > 175 || Math.abs( relationshipAngle ) < 5 )
+        {
+            return orientations.SOUTH;
+        }
+        else if ( relationshipAngle < 0 ? relationshipAngle > -90 : relationshipAngle > 90 )
+        {
+            return orientations.SOUTH_EAST
+        }
+        else
+        {
+            return orientations.SOUTH_WEST;
+        }
     };
 
     gd.speechBubblePath = function(textSize, style, margin, padding) {
@@ -645,7 +668,7 @@ gd = {};
         }
     };
 
-    gd.speechBubble = function ( model )
+    gd.nodeSpeechBubble = function ( model )
     {
         return function ( node )
         {
@@ -661,7 +684,7 @@ gd = {};
                     relatedNodes.push( relationship.start );
                 }
             } );
-            var orientation = gd.chooseSpeechBubbleOrientation( node, relatedNodes );
+            var orientation = gd.chooseNodeSpeechBubbleOrientation( node, relatedNodes );
 
             var propertyKeysWidth = d3.max( node.properties().list(), function ( property )
             {
@@ -720,6 +743,84 @@ gd = {};
 
             return {
                 properties:node.properties().list().map( function ( property )
+                {
+                    return {
+                        keyText:property.key + ": ",
+                        valueText:property.value,
+                        textOrigin:textOrigin
+                    }
+                } ),
+                groupTransform:translate,
+                outlineTransform:mirror,
+                outlinePath:gd.speechBubblePath( textSize, orientation.style,
+                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding ),
+                boundingBox:boundingBox
+            };
+        }
+    };
+
+    gd.relationshipSpeechBubble = function ()
+    {
+        return function ( relationship )
+        {
+            var orientation = gd.chooseRelationshipSpeechBubbleOrientation( relationship );
+
+            var propertyKeysWidth = d3.max( relationship.properties().list(), function ( property )
+            {
+                return gd.textDimensions.measure( property.key + ": " );
+            } );
+            var propertyValuesWidth = d3.max( relationship.properties().list(), function ( property )
+            {
+                return gd.textDimensions.measure( property.value );
+            } );
+            var textSize = {
+                width:propertyKeysWidth + propertyValuesWidth,
+                height:relationship.properties().list().length * 50
+            };
+
+            var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
+
+            var nodeOffsetOptions = {
+                diagonal:{
+                    textCorner:{
+                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                    } },
+                horizontal:{
+                    textCorner:{
+                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        y:-textSize.height / 2
+                    } },
+                vertical:{
+                    textCorner:{
+                        x:-textSize.width / 2,
+                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                    } }
+            };
+            var textCorner = nodeOffsetOptions[orientation.style].textCorner;
+
+            var midPoint = relationship.start.midwayTo(relationship.end);
+
+            var translate = "translate(" + midPoint.x + "," + midPoint.y + ") ";
+
+            var textOrigin = {
+                x:propertyKeysWidth + orientation.mirrorX * (textCorner.x)
+                    - (orientation.mirrorX == -1 ? textSize.width : 0),
+                y:orientation.mirrorY * (textCorner.y)
+                    - (orientation.mirrorY == -1 ? textSize.height : 0)
+            };
+
+            var boundingPadding = gd.parameters.speechBubblePadding + gd.parameters.speechBubbleStrokeWidth / 2;
+
+            var boundingBox = {
+                x:midPoint.x + (textCorner.x - boundingPadding) * orientation.mirrorX,
+                y:midPoint.y + (textCorner.y - boundingPadding) * orientation.mirrorY,
+                width:orientation.mirrorX * (textSize.width + (boundingPadding * 2)),
+                height:orientation.mirrorY * (textSize.height + (boundingPadding * 2))
+            };
+
+            return {
+                properties:relationship.properties().list().map( function ( property )
                 {
                     return {
                         keyText:property.key + ": ",
@@ -820,7 +921,6 @@ gd = {};
                     .text(method("label"));
             }
 
-//            renderBoundVariables("caption-shadow");
             renderBoundVariables("caption");
         }
 
@@ -892,63 +992,100 @@ gd = {};
                 .text(method("label"));
         }
 
-        function renderNodeProperties( model, view )
+        function renderProperties( model, view, speechBubble, entities, descriminator )
         {
-            var speechBubbleGroup = view.selectAll("g.speech-bubble")
-                .data(d3.values(model.nodeList()).filter(gd.hasProperties ).map(gd.speechBubble(model)));
+            var speechBubbleGroup = view.selectAll( "g.speech-bubble." + descriminator )
+                .data( d3.values( entities ).filter( gd.hasProperties ).map( speechBubble( model ) ) );
 
             speechBubbleGroup.exit().remove();
 
-            speechBubbleGroup.enter().append("svg:g")
-                .attr("class", "speech-bubble");
+            speechBubbleGroup.enter().append( "svg:g" )
+                .attr( "class", "speech-bubble " + descriminator );
 
             speechBubbleGroup
-                .attr("transform", function(speechBubble) { return speechBubble.groupTransform; } );
+                .attr( "transform", function ( speechBubble )
+                {
+                    return speechBubble.groupTransform;
+                } );
 
-            var speechBubbleOutline = speechBubbleGroup.selectAll("path.speech-bubble-outline")
-                .data(singleton);
+            var speechBubbleOutline = speechBubbleGroup.selectAll( "path.speech-bubble-outline" )
+                .data( singleton );
 
             speechBubbleOutline.exit().remove();
 
-            speechBubbleOutline.enter().append("svg:path")
-                .attr("class", "speech-bubble-outline");
+            speechBubbleOutline.enter().append( "svg:path" )
+                .attr( "class", "speech-bubble-outline" );
 
             speechBubbleOutline
-                .attr("transform", function(speechBubble) { return speechBubble.outlineTransform; })
-                .attr("d", function(speechBubble) { return speechBubble.outlinePath; });
+                .attr( "transform", function ( speechBubble )
+                {
+                    return speechBubble.outlineTransform;
+                } )
+                .attr( "d", function ( speechBubble )
+                {
+                    return speechBubble.outlinePath;
+                } );
 
-            var propertyKeys = speechBubbleGroup.selectAll("text.speech-bubble-content.property-key")
-                .data(function(speechBubble) { return speechBubble.properties; });
+            var propertyKeys = speechBubbleGroup.selectAll( "text.speech-bubble-content.property-key" )
+                .data( function ( speechBubble )
+                {
+                    return speechBubble.properties;
+                } );
 
             propertyKeys.exit().remove();
 
-            propertyKeys.enter().append("svg:text")
-                .attr("class", "speech-bubble-content property-key");
+            propertyKeys.enter().append( "svg:text" )
+                .attr( "class", "speech-bubble-content property-key" );
 
             propertyKeys
-                .attr("x", function(property) { return property.textOrigin.x - 10; })
+                .attr( "x", function ( property )
+                {
+                    return property.textOrigin.x - 10;
+                } )
                 // -10 because trailing space gets trimmed
-                .attr("y", function(property, i) {
+                .attr( "y", function ( property, i )
+                {
                     return i * 50 + property.textOrigin.y + 25
-                })
-                .text(function(property) { return property.keyText; });
+                } )
+                .text( function ( property )
+                {
+                    return property.keyText;
+                } );
 
-            var propertyValues = speechBubbleGroup.selectAll("text.speech-bubble-content.property-value")
-                .data(function(speechBubble) { return speechBubble.properties; });
+            var propertyValues = speechBubbleGroup.selectAll( "text.speech-bubble-content.property-value" )
+                .data( function ( speechBubble )
+                {
+                    return speechBubble.properties;
+                } );
 
             propertyValues.exit().remove();
 
-            propertyValues.enter().append("svg:text")
-                .attr("class", "speech-bubble-content property-value");
+            propertyValues.enter().append( "svg:text" )
+                .attr( "class", "speech-bubble-content property-value" );
 
             propertyValues
-                .attr("x", function(property) { return property.textOrigin.x; })
-                .attr("y", function(property, i) {
+                .attr( "x", function ( property )
+                {
+                    return property.textOrigin.x;
+                } )
+                .attr( "y", function ( property, i )
+                {
                     return i * 50 + property.textOrigin.y + 25
-                })
-                .text(function(property) { return property.valueText; });
+                } )
+                .text( function ( property )
+                {
+                    return property.valueText;
+                } );
+        }
 
-            scaling( model, view );
+        function renderNodeProperties( model, view )
+        {
+            renderProperties( model, view, gd.nodeSpeechBubble, model.nodeList(), "node" );
+        }
+
+        function renderRelationshipProperties( model, view )
+        {
+            renderProperties( model, view, gd.relationshipSpeechBubble, model.relationshipList(), "relationship" );
         }
 
         var diagram = function ( selection )
@@ -962,6 +1099,10 @@ gd = {};
                 renderRelationships( model, view );
 
                 renderNodeProperties( model, view );
+
+                renderRelationshipProperties( model, view );
+
+                scaling( model, view );
             } );
         };
 
