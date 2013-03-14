@@ -574,24 +574,36 @@ gd = {};
 
     gd.chooseRelationshipSpeechBubbleOrientation = function(relationship) {
         var orientations = {
+            EAST:       { style: "horizontal", mirrorX:  1, mirrorY:  1, angle:    0 },
             SOUTH_EAST: { style: "diagonal",   mirrorX:  1, mirrorY:  1, angle:   45 },
             SOUTH     : { style: "vertical",   mirrorX:  1, mirrorY:  1, angle:   90 },
-            SOUTH_WEST: { style: "diagonal",   mirrorX: -1, mirrorY:  1, angle:  135 }
+            SOUTH_WEST: { style: "diagonal",   mirrorX: -1, mirrorY:  1, angle:  135 },
+            WEST:       { style: "horizontal", mirrorX: -1, mirrorY:  1, angle:  180 }
     };
 
         var relationshipAngle = relationship.start.angleTo(relationship.end);
 
-        if ( Math.abs( relationshipAngle ) > 175 || Math.abs( relationshipAngle ) < 5 )
+        var positiveAngle = relationshipAngle > 0 ? relationshipAngle : relationshipAngle + 180;
+
+        if ( positiveAngle > 175 || positiveAngle < 5 )
         {
             return orientations.SOUTH;
         }
-        else if ( relationshipAngle < 0 ? relationshipAngle > -90 : relationshipAngle > 90 )
+        else if ( positiveAngle < 85 )
         {
-            return orientations.SOUTH_EAST
+            return orientations.SOUTH_WEST
+        }
+        else if ( positiveAngle < 90 )
+        {
+            return orientations.WEST;
+        }
+        else if ( positiveAngle < 95 )
+        {
+            return orientations.EAST;
         }
         else
         {
-            return orientations.SOUTH_WEST;
+            return orientations.SOUTH_EAST;
         }
     };
 
@@ -994,13 +1006,13 @@ gd = {};
 
         function renderProperties( model, view, speechBubble, entities, descriminator )
         {
-            var speechBubbleGroup = view.selectAll( "g.speech-bubble." + descriminator )
+            var speechBubbleGroup = view.selectAll( "g.speech-bubble." + descriminator + "-speech-bubble" )
                 .data( d3.values( entities ).filter( gd.hasProperties ).map( speechBubble( model ) ) );
 
             speechBubbleGroup.exit().remove();
 
             speechBubbleGroup.enter().append( "svg:g" )
-                .attr( "class", "speech-bubble " + descriminator );
+                .attr( "class", "speech-bubble " + descriminator + "-speech-bubble" );
 
             speechBubbleGroup
                 .attr( "transform", function ( speechBubble )
