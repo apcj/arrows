@@ -330,6 +330,8 @@ gd = {};
 
             var bounds = scaling.boxUnion( graph.nodeList().map( scaling.nodeBox )
                 .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.nodeSpeechBubble( graph ) ).map( boundingBox )
+                .map( scaling.boxNormalise ) )
+                .concat( graph.relationshipList().filter(gd.hasProperties ).map( gd.relationshipSpeechBubble( graph ) ).map( boundingBox )
                 .map( scaling.boxNormalise ) ) );
 
             return { x: bounds.x1, y: bounds.y1,
@@ -596,6 +598,10 @@ gd = {};
         else if ( positiveAngle < 90 )
         {
             return orientations.WEST;
+        }
+        else if ( positiveAngle === 90 )
+        {
+            return relationshipAngle > 0 ? orientations.WEST : orientations.EAST;
         }
         else if ( positiveAngle < 95 )
         {
