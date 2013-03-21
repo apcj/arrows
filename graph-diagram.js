@@ -673,10 +673,13 @@ gd = {};
         {
             var node = nodes[i];
             var fontSize = node.style( "font-size" );
-            var width = gd.textDimensions.measure( node.label() || "", fontSize );
-            var height = parsePixels( fontSize );
-            var padding = parsePixels( node.style( "padding" ) );
-            var radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
+            var radius = 0;
+            if ( node.label() ) {
+                var width = gd.textDimensions.measure( node.label() || "", fontSize );
+                var height = parsePixels( fontSize );
+                var padding = parsePixels( node.style( "padding" ) );
+                radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
+            }
             var minRadius = parsePixels( node.style("min-width")) / 2;
             if ( minRadius > radius )
             {

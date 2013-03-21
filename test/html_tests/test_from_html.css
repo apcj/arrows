@@ -2,6 +2,10 @@
     display: none;
 }
 
+pre {
+    white-space: nowrap;
+}
+
 .examples.table {
     width: auto;
 }
@@ -19,7 +23,7 @@
 }
 
 .example.pass .expected-diagram svg {
-    visibility: hidden;
+    display: none;
 }
 
 .examples.all-pass .expected-diagram, .examples.all-pass .errors {

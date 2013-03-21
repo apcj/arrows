@@ -22,23 +22,117 @@
   <span class="overall-result fail hide btn btn-danger disabled"><i class="icon-remove icon-white"></i> FAIL</span>
 </h1>
 
+<h2>Nodes</h2>
+
 <table class="examples table">
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
-        <li class="node" data-node-id="0" data-x="50" data-y="0">
+        <li class="node" data-node-id="0" data-x="0" data-y="0"></li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-54 -54 108 108" width="108" height="108">
+        <circle class="node node-id-0" r="50" cx="0" cy="0"></circle>
+      </svg>
+    </td>
+  </tr>
+
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li class="node" data-node-id="0" data-x="0" data-y="0">
           <span class="caption">A</span>
         </li>
       </ul>
     </td>
     <td class="expected-diagram">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -54 108 108" width="108" height="108">
-        <circle class="node node-id-0" r="50" cx="50" cy="0"></circle>
-        <text class="caption node" x="50" y="0">A</text>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-54 -54 108 108" width="108" height="108">
+        <circle class="node node-id-0" r="50" cx="0" cy="0"></circle>
+        <text class="caption node" x="0" y="0">A</text>
+      </svg>
+    </td>
+  </tr>
+</table>
+
+<h2>Node Styling</h2>
+
+<table class="examples table">
+
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li style="min-width: 50px" class="node" data-node-id="0" data-x="0" data-y="0"></li>
+        <li style="min-width: 100px" class="node" data-node-id="1" data-x="150" data-y="0"></li>
+        <li style="min-width: 150px" class="node" data-node-id="2" data-x="300" data-y="0"></li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-33 -83 416 166" width="416" height="166">
+        <circle class="node node-id-0" r="29" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="54" cx="150" cy="0"></circle>
+        <circle class="node node-id-2" r="79" cx="300" cy="0"></circle>
       </svg>
     </td>
   </tr>
 
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li style="min-width: 50px" class="node" data-node-id="0" data-x="0" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="min-width: 100px" class="node" data-node-id="1" data-x="150" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="min-width: 150px" class="node" data-node-id="2" data-x="300" data-y="0">
+          <span class="caption">A</span>
+        </li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-52.95413160150032 -83 435.9541316015003 166" width="435.9541316015003" height="166">
+        <circle class="node node-id-0" r="48.95413160150032" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="54" cx="150" cy="0"></circle>
+        <circle class="node node-id-2" r="79" cx="300" cy="0"></circle>
+        <text class="caption node" x="0" y="0" style="font-size: 50px;">A</text>
+        <text class="caption node" x="150" y="0" style="font-size: 50px;">A</text>
+        <text class="caption node" x="300" y="0" style="font-size: 50px;">A</text>
+      </svg>
+    </td>
+  </tr>
+
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li style="font-size: 25px; min-width: 0" class="node" data-node-id="0" data-x="0" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="font-size: 50px; min-width: 0" class="node" data-node-id="1" data-x="150" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="font-size: 100px; min-width: 0" class="node" data-node-id="2" data-x="300" data-y="0">
+          <span class="caption">A</span>
+        </li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38.11621645783097 -83.1851310541067 421.3013475119377 166.3702621082134" width="421.3013475119377"
+           height="166.3702621082134">
+        <circle class="node node-id-0" r="34.11621645783097" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="48.95413160150032" cx="150" cy="0"></circle>
+        <circle class="node node-id-2" r="79.1851310541067" cx="300" cy="0"></circle>
+        <text class="caption node" x="0" y="0" style="font-size: 25px;">A</text>
+        <text class="caption node" x="150" y="0" style="font-size: 50px;">A</text>
+        <text class="caption node" x="300" y="0" style="font-size: 100px;">A</text>
+      </svg>
+    </td>
+  </tr>
+</table>
+
+<h2>Relationships</h2>
+
+<table class="examples table">
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
@@ -116,7 +210,11 @@
       </svg>
     </td>
   </tr>
+</table>
 
+<h2>Properties</h2>
+
+<table class="examples table">
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
@@ -201,60 +299,41 @@
       </svg>
     </td>
   </tr>
+</table>
+
+<h2>Property alignment</h2>
+
+<table class="examples table">
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
         <li class="node" data-node-id="0" data-x="0" data-y="0">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="1" data-x="300" data-y="0">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="2" data-x="300" data-y="300">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="3" data-x="0" data-y="300">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="0" data-to="1">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="1" data-to="2">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="2" data-to="3">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="3" data-to="0">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
       </ul>
     </td>
@@ -337,56 +416,32 @@
     <td class="markup">
       <ul class="graph-diagram-markup">
         <li class="node" data-node-id="0" data-x="-250" data-y="0">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="1" data-x="0" data-y="250">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="2" data-x="250" data-y="0">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="node" data-node-id="3" data-x="0" data-y="-250">
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="0" data-to="1">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="1" data-to="2">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="2" data-to="3">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
         <li class="relationship" data-from="3" data-to="0">
           <span class="type">R</span>
-          <dl class="properties">
-            <dt>k</dt>
-            <dd>v</dd>
-          </dl>
+          <dl class="properties"><dt>k</dt><dd>v</dd></dl>
         </li>
       </ul>
     </td>
