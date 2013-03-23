@@ -1184,8 +1184,10 @@ gd = {};
             {
                 var figure = d3.select( this );
                 var markup = figure.select( "ul.graph-diagram-markup" );
+                var model = gd.markup.parse( markup );
+                gd.updateTextDerivedDimensions( model );
                 figure.selectAll( "svg" )
-                    .data( [gd.markup.parse( markup )] )
+                    .data( [model] )
                     .enter()
                     .append( "svg" )
                     .call( gd.diagram() );
