@@ -62,12 +62,27 @@ gd = {};
             };
         };
 
+        var styleSet = function() {
+            var styles = {};
+
+            return function(cssPropertyKey, cssPropertyValue)
+            {
+                if (arguments.length == 2) {
+                    styles[cssPropertyKey] = cssPropertyValue;
+                    return this;
+                }
+                if (arguments.length == 1) {
+                    return styles[cssPropertyKey];
+                }
+                return styles;
+            };
+        };
+
         var Node = function() {
             var position = {};
             var label;
             var classes = [];
             var properties = new Properties();
-            var styles = {};
 
             this.class = function(classesString) {
                 if (arguments.length == 1) {
@@ -147,17 +162,7 @@ gd = {};
                 return properties;
             };
 
-            this.style = function(cssPropertyKey, cssPropertyValue)
-            {
-                if (arguments.length == 2) {
-                    styles[cssPropertyKey] = cssPropertyValue;
-                    return this;
-                }
-                if (arguments.length == 1) {
-                    return styles[cssPropertyKey];
-                }
-                return styles;
-            }
+            this.style = styleSet();
         };
 
         var Relationship = function(start, end) {
@@ -195,6 +200,8 @@ gd = {};
             this.properties = function() {
                 return properties;
             };
+
+            this.style = styleSet();
         };
 
         var Properties = function() {
@@ -400,23 +407,23 @@ gd = {};
             return models;
         };
 
-        function copyStyle( node, computedStyle, cssPropertyKey )
+        function copyStyle( entity, computedStyle, cssPropertyKey )
         {
-            node.style( cssPropertyKey, computedStyle.getPropertyValue( cssPropertyKey ) );
+            entity.style( cssPropertyKey, computedStyle.getPropertyValue( cssPropertyKey ) );
         }
 
-        function copyStyles( node, nodeMarkup )
+        function copyStyles( entity, markup )
         {
-            var computedStyle = window.getComputedStyle(nodeMarkup.node() );
-            copyStyle( node, computedStyle, "min-width" );
-            copyStyle( node, computedStyle, "font-face" );
-            copyStyle( node, computedStyle, "font-size" );
-            copyStyle( node, computedStyle, "padding" );
-            copyStyle( node, computedStyle, "border-width" );
-            copyStyle( node, computedStyle, "border-style" );
-            if ( node.style( "border-width" ) === "0px" )
+            var computedStyle = window.getComputedStyle(markup.node() );
+            copyStyle( entity, computedStyle, "min-width" );
+            copyStyle( entity, computedStyle, "font-face" );
+            copyStyle( entity, computedStyle, "font-size" );
+            copyStyle( entity, computedStyle, "padding" );
+            copyStyle( entity, computedStyle, "border-width" );
+            copyStyle( entity, computedStyle, "border-style" );
+            if ( entity.style( "border-width" ) === "0px" )
             {
-                node.style( "border-width", "1px" );
+                entity.style( "border-width", "1px" );
             }
         }
 
@@ -473,6 +480,8 @@ gd = {};
                     relationship.label(d3.select(this).text());
                 });
                 relationshipMarkup.select( "dl.properties" ).each( parseProperties( relationship ) );
+
+                copyStyles(relationship, relationshipMarkup);
             });
 
             return model;
@@ -958,7 +967,7 @@ gd = {};
                 boundVariables
                     .attr("x", method("ex"))
                     .attr("y", method("ey"))
-                    .style("font-size", function(node) { return node.style("font-size"); })
+                    .style( "font-size", function ( node ) { return node.style( "font-size" ); } )
                     .text(method("label"));
             }
 
@@ -1030,6 +1039,7 @@ gd = {};
             relationshipLabel
                 .attr("x", midwayBetweenStartAndEnd)
                 .attr("y", 0 )
+                .style( "font-size", function ( node ) { return node.style( "font-size" ); } )
                 .text(method("label"));
         }
 

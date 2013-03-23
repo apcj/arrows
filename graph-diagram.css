@@ -4,7 +4,6 @@ svg {
 
 circle.node {
     stroke: black;
-    /*stroke-width: 8px;*/
     fill: white;
 }
 
@@ -70,7 +69,6 @@ text.type {
     text-anchor: middle;
     alignment-baseline: bottom;
     baseline-shift: 30%;
-    font-size: 50px
 }
 
 #textMeasuringCanvas {
