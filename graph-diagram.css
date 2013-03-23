@@ -4,7 +4,7 @@ svg {
 
 circle.node {
     stroke: black;
-    stroke-width: 8px;
+    /*stroke-width: 8px;*/
     fill: white;
 }
 

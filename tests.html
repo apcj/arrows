@@ -12,6 +12,7 @@
       font-size: 50px;
       padding: 15px;
       min-width: 92px;
+      border: 8px solid black;
     }
   </style>
 </head>
@@ -105,26 +106,53 @@
   <tr class="example">
     <td class="markup">
       <ul class="graph-diagram-markup">
-        <li style="font-size: 25px; min-width: 0" class="node" data-node-id="0" data-x="0" data-y="0">
+        <li style="font-size: 25px; min-width: 0; padding: 0" class="node" data-node-id="0" data-x="0" data-y="0">
           <span class="caption">A</span>
         </li>
-        <li style="font-size: 50px; min-width: 0" class="node" data-node-id="1" data-x="150" data-y="0">
+        <li style="font-size: 50px; min-width: 0; padding: 0" class="node" data-node-id="1" data-x="150" data-y="0">
           <span class="caption">A</span>
         </li>
-        <li style="font-size: 100px; min-width: 0" class="node" data-node-id="2" data-x="300" data-y="0">
+        <li style="font-size: 100px; min-width: 0; padding: 0" class="node" data-node-id="2" data-x="300" data-y="0">
           <span class="caption">A</span>
         </li>
       </ul>
     </td>
     <td class="expected-diagram">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-38.11621645783097 -83.1851310541067 421.3013475119377 166.3702621082134" width="421.3013475119377"
-           height="166.3702621082134">
-        <circle class="node node-id-0" r="34.11621645783097" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="48.95413160150032" cx="150" cy="0"></circle>
-        <circle class="node node-id-2" r="79.1851310541067" cx="300" cy="0"></circle>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-23.116216457830973 -68.1851310541067 391.3013475119377 136.3702621082134" width="391.3013475119377"
+           height="136.3702621082134">
+        <circle class="node node-id-0" r="19.116216457830973" stroke-width="8px" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="33.95413160150032" stroke-width="8px" cx="150" cy="0"></circle>
+        <circle class="node node-id-2" r="64.1851310541067" stroke-width="8px" cx="300" cy="0"></circle>
         <text class="caption node" x="0" y="0" style="font-size: 25px;">A</text>
         <text class="caption node" x="150" y="0" style="font-size: 50px;">A</text>
         <text class="caption node" x="300" y="0" style="font-size: 100px;">A</text>
+      </svg>
+    </td>
+  </tr>
+  
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li style="border: 1px solid black; min-width: 0" class="node" data-node-id="0" data-x="0" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="border: 5px solid black; min-width: 0" class="node" data-node-id="1" data-x="150" data-y="0">
+          <span class="caption">A</span>
+        </li>
+        <li style="border: 10px solid black; min-width: 0" class="node" data-node-id="2" data-x="300" data-y="0">
+          <span class="caption">A</span>
+        </li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-45.95413160150032 -54.95413160150032 400.9082632030006 109.90826320300064"
+           width="400.9082632030006" height="109.90826320300064">
+        <circle class="node node-id-0" r="45.45413160150032" stroke-width="1px" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="47.45413160150032" stroke-width="5px" cx="150" cy="0"></circle>
+        <circle class="node node-id-2" r="49.95413160150032" stroke-width="10px" cx="300" cy="0"></circle>
+        <text class="caption node" x="0" y="0" style="font-size: 50px;">A</text>
+        <text class="caption node" x="150" y="0" style="font-size: 50px;">A</text>
+        <text class="caption node" x="300" y="0" style="font-size: 50px;">A</text>
       </svg>
     </td>
   </tr>

@@ -25,30 +25,40 @@ gd = {};
         var Radius = function(insideRadius) {
 
             this.insideRadius = insideRadius;
+            this.borderWidth = gd.parameters.nodeStrokeWidth;
 
-            this.update = function( insideRadius )
-            {
-                this.insideRadius = insideRadius;
-            };
-
-            this.mid = function() {
-                return this.insideRadius + gd.parameters.nodeStrokeWidth / 2;
-            };
-
-            this.inside = function() {
+            this.inside = function(insideRadius) {
+                if (arguments.length == 1)
+                {
+                    this.insideRadius = insideRadius;
+                    return this;
+                }
                 return this.insideRadius;
             };
 
+            this.border = function(borderWidth) {
+                if (arguments.length == 1)
+                {
+                    this.borderWidth = borderWidth;
+                    return this;
+                }
+                return this.borderWidth;
+            };
+
+            this.mid = function() {
+                return this.insideRadius + this.borderWidth / 2;
+            };
+
             this.outside = function() {
-                return this.insideRadius + gd.parameters.nodeStrokeWidth;
+                return this.insideRadius + this.borderWidth;
             };
 
             this.startRelationship = function() {
-                return this.insideRadius + gd.parameters.nodeStrokeWidth + gd.parameters.nodeStartMargin;
+                return this.insideRadius + this.borderWidth + gd.parameters.nodeStartMargin;
             };
 
             this.endRelationship = function() {
-                return this.insideRadius + gd.parameters.nodeStrokeWidth + gd.parameters.nodeEndMargin;
+                return this.insideRadius + this.borderWidth + gd.parameters.nodeEndMargin;
             };
         };
 
@@ -398,10 +408,16 @@ gd = {};
         function copyStyles( node, nodeMarkup )
         {
             var computedStyle = window.getComputedStyle(nodeMarkup.node() );
-            copyStyle( node, computedStyle, "font-size" );
-            copyStyle( node, computedStyle, "font-face" );
-            copyStyle( node, computedStyle, "padding" );
             copyStyle( node, computedStyle, "min-width" );
+            copyStyle( node, computedStyle, "font-face" );
+            copyStyle( node, computedStyle, "font-size" );
+            copyStyle( node, computedStyle, "padding" );
+            copyStyle( node, computedStyle, "border-width" );
+            copyStyle( node, computedStyle, "border-style" );
+            if ( node.style( "border-width" ) === "0px" )
+            {
+                node.style( "border-width", "1px" );
+            }
         }
 
         markup.parse = function(selection) {
@@ -685,7 +701,8 @@ gd = {};
             {
                 radius = minRadius;
             }
-            node.radius.update( radius );
+            node.radius.inside( radius );
+            node.radius.border( parsePixels( node.style( "border-width" ) ) );
         }
     };
 
@@ -917,6 +934,9 @@ gd = {};
             nodes
                 .attr("r", function(node) {
                     return node.radius.mid();
+                })
+                .attr("stroke-width", function(node) {
+                    return node.style("border-width");
                 })
                 .attr("cx", method("ex"))
                 .attr("cy", method("ey"));
