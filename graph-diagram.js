@@ -543,10 +543,10 @@ gd = {};
         return markup;
     }();
 
-    gd.horizontalArrowOutline = function(start, end) {
-        var shaftRadius = 4;
-        var headRadius = 15;
-        var headLength = 30;
+    gd.horizontalArrowOutline = function(start, end, arrowWidth) {
+        var shaftRadius = arrowWidth / 2;
+        var headRadius = arrowWidth * 2;
+        var headLength = headRadius * 2;
         var shoulder = start < end ? end - headLength : end + headLength;
         return ["M", start, shaftRadius,
             "L", shoulder, shaftRadius,
@@ -685,14 +685,14 @@ gd = {};
         return styles[style].join(" ");
     };
 
+    function parsePixels(fontSize)
+    {
+        return parseFloat( fontSize.slice( 0, -2 ) );
+    }
+
     gd.updateTextDerivedDimensions = function ( model )
     {
         var nodes = model.nodeList();
-
-        function parsePixels(fontSize)
-        {
-            return parseFloat( fontSize.slice( 0, -2 ) );
-        }
 
         for ( var i = 0; i < nodes.length; i++ )
         {
@@ -976,12 +976,13 @@ gd = {};
 
         function renderRelationships( model, view )
         {
-            function horizontalArrow(d) {
-                var length = d.start.distanceTo(d.end);
-                var side = d.end.isLeftOf(d.start) ? -1 : 1;
+            function horizontalArrow(relationship) {
+                var length = relationship.start.distanceTo(relationship.end);
+                var side = relationship.end.isLeftOf(relationship.start) ? -1 : 1;
                 return gd.horizontalArrowOutline(
-                    side * d.start.radius.startRelationship(),
-                    side * (length - d.end.radius.endRelationship()));
+                    side * relationship.start.radius.startRelationship(),
+                    side * (length - relationship.end.radius.endRelationship()),
+                    parsePixels( relationship.style( "border-width" ) ) );
             }
 
             function midwayBetweenStartAndEnd(d) {
