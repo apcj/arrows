@@ -62,8 +62,20 @@ gd = {};
             };
         };
 
-        var styleSet = function() {
+        var styleSet = function(stylePrototype) {
             var styles = {};
+
+            if (stylePrototype)
+            {
+                var styleMap = stylePrototype.style();
+                for ( var key in styleMap )
+                {
+                    if ( styleMap.hasOwnProperty( key ) )
+                    {
+                        styles[key] = styleMap[key];
+                    }
+                }
+            }
 
             return function(cssPropertyKey, cssPropertyValue)
             {
@@ -82,7 +94,7 @@ gd = {};
             var position = {};
             var label;
             var classes = [];
-            var properties = new Properties();
+            var properties = new Properties(model.stylePrototype.nodeProperties);
 
             this.class = function(classesString) {
                 if (arguments.length == 1) {
@@ -162,13 +174,13 @@ gd = {};
                 return properties;
             };
 
-            this.style = styleSet();
+            this.style = styleSet(model.stylePrototype.node);
         };
 
         var Relationship = function(start, end) {
             var label;
             var classes = [];
-            var properties = new Properties();
+            var properties = new Properties(model.stylePrototype.relationshipProperties);
 
             this.class = function(classesString) {
                 if (arguments.length == 1) {
@@ -201,10 +213,10 @@ gd = {};
                 return properties;
             };
 
-            this.style = styleSet();
+            this.style = styleSet(model.stylePrototype.relationship);
         };
 
-        var Properties = function() {
+        var Properties = function(stylePrototype) {
             var keys = [];
             var values = {};
 
@@ -227,7 +239,7 @@ gd = {};
                 values = {};
             };
 
-            this.style = styleSet();
+            this.style = styleSet(stylePrototype);
         };
 
         function generateNodeId() {
@@ -294,6 +306,17 @@ gd = {};
                 return this;
             }
             return externalScale;
+        };
+
+        var SimpleStyle = function() {
+            this.style = styleSet();
+        };
+
+        model.stylePrototype = {
+            node: new SimpleStyle(),
+            nodeProperties: new SimpleStyle(),
+            relationship: new SimpleStyle(),
+            relationshipProperties: new SimpleStyle()
         };
 
         return model;
@@ -439,6 +462,18 @@ gd = {};
                 model.externalScale(selection.attr("data-external-scale"));
             }
 
+            var nodePrototype = selection.append("li" ).attr("class", "node");
+            var nodePropertiesPrototype = nodePrototype.append("dl" ).attr("class", "properties");
+            copyStyles(model.stylePrototype.node, nodePrototype);
+            copyStyles(model.stylePrototype.nodeProperties, nodePropertiesPrototype);
+            nodePrototype.remove();
+            
+            var relationshipPrototype = selection.append("li" ).attr("class", "relationship");
+            var relationshipPropertiesPrototype = relationshipPrototype.append("dl" ).attr("class", "properties");
+            copyStyles(model.stylePrototype.relationship, relationshipPrototype);
+            copyStyles(model.stylePrototype.relationshipProperties, relationshipPropertiesPrototype);
+            relationshipPrototype.remove();
+            
             function parseProperties(entity)
             {
                 return function() {
