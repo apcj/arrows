@@ -225,7 +225,9 @@ gd = {};
             this.clearAll = function() {
                 keys = [];
                 values = {};
-            }
+            };
+
+            this.style = styleSet();
         };
 
         function generateNodeId() {
@@ -440,7 +442,9 @@ gd = {};
             function parseProperties(entity)
             {
                 return function() {
-                    var elements = d3.select( this ).selectAll( "dt, dd" );
+                    var propertiesMarkup = d3.select( this );
+
+                    var elements = propertiesMarkup.selectAll( "dt, dd" );
                     var currentKey;
                     elements.each( function ()
                     {
@@ -451,7 +455,9 @@ gd = {};
                         {
                             entity.properties().set( currentKey, d3.select( this ).text() );
                         }
-                    } )
+                    } );
+
+                    copyStyles(entity.properties(), propertiesMarkup);
                 }
             }
 
@@ -700,7 +706,7 @@ gd = {};
             var fontSize = node.style( "font-size" );
             var radius = 0;
             if ( node.label() ) {
-                var width = gd.textDimensions.measure( node.label() || "", fontSize );
+                var width = gd.textDimensions.measure( node.label() || "", node );
                 var height = parsePixels( fontSize );
                 var padding = parsePixels( node.style( "padding" ) );
                 radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
@@ -733,17 +739,19 @@ gd = {};
             } );
             var orientation = gd.chooseNodeSpeechBubbleOrientation( node, relatedNodes );
 
-            var propertyKeysWidth = d3.max( node.properties().list(), function ( property )
+            var properties = node.properties();
+
+            var propertyKeysWidth = d3.max( properties.list(), function ( property )
             {
-                return gd.textDimensions.measure( property.key + ": " );
+                return gd.textDimensions.measure( property.key + ": ", properties );
             } );
-            var propertyValuesWidth = d3.max( node.properties().list(), function ( property )
+            var propertyValuesWidth = d3.max( properties.list(), function ( property )
             {
-                return gd.textDimensions.measure( property.value );
+                return gd.textDimensions.measure( property.value, properties );
             } );
             var textSize = {
                 width:propertyKeysWidth + propertyValuesWidth,
-                height:node.properties().list().length * 50
+                height:properties.list().length * parsePixels( properties.style( "font-size" ) )
             };
 
             var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
@@ -789,12 +797,13 @@ gd = {};
             };
 
             return {
-                properties:node.properties().list().map( function ( property )
+                properties:properties.list().map( function ( property )
                 {
                     return {
-                        keyText:property.key + ": ",
+                        keyText:property.key + ":\u00A0",
                         valueText:property.value,
-                        textOrigin:textOrigin
+                        textOrigin:textOrigin,
+                        style:node.properties().style
                     }
                 } ),
                 groupTransform:translate,
@@ -810,19 +819,21 @@ gd = {};
     {
         return function ( relationship )
         {
+            var properties = relationship.properties();
+
             var orientation = gd.chooseRelationshipSpeechBubbleOrientation( relationship );
 
-            var propertyKeysWidth = d3.max( relationship.properties().list(), function ( property )
+            var propertyKeysWidth = d3.max( properties.list(), function ( property )
             {
-                return gd.textDimensions.measure( property.key + ": " );
+                return gd.textDimensions.measure( property.key + ": ", properties );
             } );
-            var propertyValuesWidth = d3.max( relationship.properties().list(), function ( property )
+            var propertyValuesWidth = d3.max( properties.list(), function ( property )
             {
-                return gd.textDimensions.measure( property.value );
+                return gd.textDimensions.measure( property.value, properties );
             } );
             var textSize = {
                 width:propertyKeysWidth + propertyValuesWidth,
-                height:relationship.properties().list().length * 50
+                height:properties.list().length * parsePixels( properties.style( "font-size" ) )
             };
 
             var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
@@ -867,12 +878,13 @@ gd = {};
             };
 
             return {
-                properties:relationship.properties().list().map( function ( property )
+                properties:properties.list().map( function ( property )
                 {
                     return {
-                        keyText:property.key + ": ",
+                        keyText:property.key + ":\u00A0",
                         valueText:property.value,
-                        textOrigin:textOrigin
+                        textOrigin:textOrigin,
+                        style:relationship.properties().style
                     }
                 } ),
                 groupTransform:translate,
@@ -887,8 +899,8 @@ gd = {};
     gd.textDimensions = function() {
         var textDimensions = {};
 
-        textDimensions.measure = function ( text, fontSize ) {
-            fontSize = fontSize || "50px";
+        textDimensions.measure = function ( text, styleSource ) {
+            var fontSize = styleSource.style( "font-size" );
             var canvasSelection = d3.select("#textMeasuringCanvas").data([this]);
             canvasSelection.enter().append("canvas")
                 .attr("id", "textMeasuringCanvas");
@@ -1092,13 +1104,13 @@ gd = {};
             propertyKeys
                 .attr( "x", function ( property )
                 {
-                    return property.textOrigin.x - 10;
+                    return property.textOrigin.x;
                 } )
-                // -10 because trailing space gets trimmed
                 .attr( "y", function ( property, i )
                 {
-                    return i * 50 + property.textOrigin.y + 25
+                    return (i + 0.5) * parsePixels( property.style( "font-size" ) ) + property.textOrigin.y
                 } )
+                .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
                 .text( function ( property )
                 {
                     return property.keyText;
@@ -1122,8 +1134,9 @@ gd = {};
                 } )
                 .attr( "y", function ( property, i )
                 {
-                    return i * 50 + property.textOrigin.y + 25
+                    return (i + 0.5) * parsePixels( property.style( "font-size" ) ) + property.textOrigin.y
                 } )
+                .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
                 .text( function ( property )
                 {
                     return property.valueText;
