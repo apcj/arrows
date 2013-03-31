@@ -22,7 +22,7 @@
 
     .graph-diagram-markup .properties {
       font-size: 50px;
-      border: 8px solid black;
+      border: 3px solid black;
     }
   </style>
 </head>
@@ -467,6 +467,112 @@
     </td>
   </tr>
 
+</table>
+
+<h2>Property Styling</h2>
+
+<table class="examples table">
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li class="node" data-node-id="0" data-x="0" data-y="0">
+          <dl style="font-size: 25px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+        <li class="node" data-node-id="1" data-x="0" data-y="150">
+          <dl style="font-size: 50px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+        <li class="node" data-node-id="2" data-x="0" data-y="300">
+          <dl style="font-size: 100px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-409.5 -54 463.5 415.5" width="463.5" height="415.5">
+        <circle class="node node-id-0" r="50" stroke-width="8px" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="50" stroke-width="8px" cx="0" cy="150"></circle>
+        <circle class="node node-id-2" r="50" stroke-width="8px" cx="0" cy="300"></circle>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -12.5 A 10 10 0 0 1 30 -22.5 L 110 -22.5 A 10 10 0 0 1 120 -12.5 L 120 12.5 A 10 10 0 0 1 110 22.5 L 30 22.5 A 10 10 0 0 1 20 12.5 L 20 10 Z"></path>
+          <text class="speech-bubble-content property-key" x="-64" y="0" style="font-size: 25px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-64" y="0" style="font-size: 25px;">bar</text>
+        </g>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"></path>
+          <text class="speech-bubble-content property-key" x="-96" y="0" style="font-size: 50px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-96" y="0" style="font-size: 50px;">bar</text>
+        </g>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -50 A 10 10 0 0 1 30 -60 L 348 -60 A 10 10 0 0 1 358 -50 L 358 50 A 10 10 0 0 1 348 60 L 30 60 A 10 10 0 0 1 20 50 L 20 10 Z"></path>
+          <text class="speech-bubble-content property-key" x="-163" y="0" style="font-size: 100px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-163" y="0" style="font-size: 100px;">bar</text>
+        </g>
+      </svg>
+    </td>
+  </tr>
+  <tr class="example">
+    <td class="markup">
+      <ul class="graph-diagram-markup">
+        <li class="node" data-node-id="0" data-x="0" data-y="0">
+          <dl style="border-width: 1px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+        <li class="node" data-node-id="1" data-x="0" data-y="150">
+          <dl style="border-width: 5px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+        <li class="node" data-node-id="2" data-x="0" data-y="300">
+          <dl style="border-width: 10px" class="properties">
+            <dt>foo</dt>
+            <dd>bar</dd>
+          </dl>
+        </li>
+      </ul>
+    </td>
+    <td class="expected-diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-251.5 -54 305.5 408" width="305.5" height="408">
+        <circle class="node node-id-0" r="50" stroke-width="8px" cx="0" cy="0"></circle>
+        <circle class="node node-id-1" r="50" stroke-width="8px" cx="0" cy="150"></circle>
+        <circle class="node node-id-2" r="50" stroke-width="8px" cx="0" cy="300"></circle>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                stroke-width="1px"></path>
+          <text class="speech-bubble-content property-key" x="-96" y="0" style="font-size: 50px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-96" y="0" style="font-size: 50px;">bar</text>
+        </g>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                stroke-width="5px"></path>
+          <text class="speech-bubble-content property-key" x="-96" y="0" style="font-size: 50px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-96" y="0" style="font-size: 50px;">bar</text>
+        </g>
+        <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
+          <path class="speech-bubble-outline" transform="scale(-1,1) "
+                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                stroke-width="10px"></path>
+          <text class="speech-bubble-content property-key" x="-96" y="0" style="font-size: 50px;">foo:&nbsp;</text>
+          <text class="speech-bubble-content property-value" x="-96" y="0" style="font-size: 50px;">bar</text>
+        </g>
+      </svg>
+    </td>
+  </tr>
 </table>
 
 <h2>Property alignment</h2>

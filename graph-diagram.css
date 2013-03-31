@@ -30,7 +30,6 @@ path.relationship.lowlight, text.caption.lowlight, text.type.lowlight {
 
 path.graph-diagram-property-outline, path.speech-bubble-outline {
     stroke: black;
-    stroke-width: 3px;
     fill: white;
 }
 

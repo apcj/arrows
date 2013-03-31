@@ -841,6 +841,7 @@ gd = {};
                         style:node.properties().style
                     }
                 } ),
+                style:node.properties().style,
                 groupTransform:translate,
                 outlineTransform:mirror,
                 outlinePath:gd.speechBubblePath( textSize, orientation.style,
@@ -922,6 +923,7 @@ gd = {};
                         style:relationship.properties().style
                     }
                 } ),
+                style:relationship.properties().style,
                 groupTransform:translate,
                 outlineTransform:mirror,
                 outlinePath:gd.speechBubblePath( textSize, orientation.style,
@@ -1123,6 +1125,12 @@ gd = {};
                 .attr( "d", function ( speechBubble )
                 {
                     return speechBubble.outlinePath;
+                } )
+                .attr( "fill", "none" )
+                .attr( "stroke", "black" )
+                .attr( "stroke-width", function ( speechBubble )
+                {
+                    return speechBubble.style( "border-width" );
                 } );
 
             var propertyKeys = speechBubbleGroup.selectAll( "text.speech-bubble-content.property-key" )
@@ -1145,7 +1153,10 @@ gd = {};
                 {
                     return (i + 0.5) * parsePixels( property.style( "font-size" ) ) + property.textOrigin.y
                 } )
+                .attr( "alignment-baseline", "central" )
+                .attr( "text-anchor", "end" )
                 .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
+                .attr( "font-face", function ( property ) { return property.style( "font-face" ); } )
                 .text( function ( property )
                 {
                     return property.keyText;
@@ -1171,6 +1182,7 @@ gd = {};
                 {
                     return (i + 0.5) * parsePixels( property.style( "font-size" ) ) + property.textOrigin.y
                 } )
+                .attr( "alignment-baseline", "central" )
                 .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
                 .text( function ( property )
                 {
