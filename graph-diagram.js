@@ -442,9 +442,14 @@ gd = {};
             return models;
         };
 
-        function copyStyle( entity, computedStyle, cssPropertyKey )
+        function copyStyle( entity, computedStyle, cssPropertyKey, backupCssPropertyKey )
         {
-            entity.style( cssPropertyKey, computedStyle.getPropertyValue( cssPropertyKey ) );
+            var propertyValue = computedStyle.getPropertyValue( cssPropertyKey );
+            if ( !propertyValue )
+            {
+                propertyValue = computedStyle.getPropertyValue( backupCssPropertyKey );
+            }
+            entity.style( cssPropertyKey, propertyValue );
         }
 
         function copyStyles( entity, markup )
@@ -453,14 +458,10 @@ gd = {};
             copyStyle( entity, computedStyle, "min-width" );
             copyStyle( entity, computedStyle, "font-family" );
             copyStyle( entity, computedStyle, "font-size" );
-            copyStyle( entity, computedStyle, "margin" );
-            copyStyle( entity, computedStyle, "padding" );
-            copyStyle( entity, computedStyle, "border-width" );
-            copyStyle( entity, computedStyle, "border-style" );
-            if ( entity.style( "border-width" ) === "0px" )
-            {
-                entity.style( "border-width", "1px" );
-            }
+            copyStyle( entity, computedStyle, "margin", "margin-top" );
+            copyStyle( entity, computedStyle, "padding", "padding-top" );
+            copyStyle( entity, computedStyle, "border-width", "border-top-width" );
+            copyStyle( entity, computedStyle, "border-style", "border-top-style" );
         }
 
         markup.parse = function(selection) {
