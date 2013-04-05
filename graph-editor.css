@@ -55,3 +55,7 @@ textarea.code {
     margin-left: 5px;
 }
 
+text.caption {
+    user-select: none;
+    -webkit-user-select: none;
+}

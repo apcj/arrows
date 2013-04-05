@@ -1,73 +1,20 @@
-svg {
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+.graph-diagram-markup {
+    display: none;
 }
 
-circle.node {
-    stroke: black;
-    fill: white;
+.graph-diagram-markup .node {
+    padding: 2px;
+    border: 1px solid black;
 }
 
-circle.node.highlight {
-    stroke: blue;
+.graph-diagram-markup .relationship {
+    border: 1px solid black;
 }
 
-circle.node.lowlight {
-    stroke: #555;
-}
-
-path.relationship, text.caption, text.type, text.speech-bubble-content {
-    stroke: none;
-    fill: black;
-}
-
-path.relationship.highlight, text.caption.highlight, text.type.highlight {
-    fill: blue;
-}
-
-path.relationship.lowlight, text.caption.lowlight, text.type.lowlight {
-    fill: #555;
-}
-
-path.graph-diagram-property-outline, path.speech-bubble-outline {
-    stroke: black;
-    fill: white;
-}
-
-text.speech-bubble-content {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
-    alignment-baseline: central;
-    font-size: 50px
-}
-
-text.speech-bubble-content.property-key {
-    text-anchor: end;
-}
-
-text.caption, text.caption-shadow {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
-    text-anchor: middle;
-    alignment-baseline: central;
-    font-size: 50px
-}
-
-text.caption-shadow {
-    fill: none;
-    stroke: white;
-    stroke-width: 20px;
-    stroke-linejoin: round;
-}
-
-text.type {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: default;
-    text-anchor: middle;
-    alignment-baseline: bottom;
-    baseline-shift: 30%;
+.graph-diagram-markup .properties {
+    margin: 5px;
+    padding: 2px;
+    border: 1px solid black;
 }
 
 #textMeasuringCanvas {

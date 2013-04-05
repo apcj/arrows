@@ -1,0 +1,22 @@
+.graph-diagram-markup {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+.graph-diagram-markup .node {
+    font-size: 50px;
+    padding: 15px;
+    min-width: 92px;
+    border: 8px solid black;
+}
+
+.graph-diagram-markup .relationship {
+    font-size: 50px;
+    border: 8px solid black;
+}
+
+.graph-diagram-markup .properties {
+    font-size: 50px;
+    margin: 20px;
+    padding: 10px;
+    border: 3px solid black;
+}

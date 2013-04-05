@@ -441,8 +441,9 @@ gd = {};
         {
             var computedStyle = window.getComputedStyle(markup.node() );
             copyStyle( entity, computedStyle, "min-width" );
-            copyStyle( entity, computedStyle, "font-face" );
+            copyStyle( entity, computedStyle, "font-family" );
             copyStyle( entity, computedStyle, "font-size" );
+            copyStyle( entity, computedStyle, "margin" );
             copyStyle( entity, computedStyle, "padding" );
             copyStyle( entity, computedStyle, "border-width" );
             copyStyle( entity, computedStyle, "border-style" );
@@ -791,22 +792,25 @@ gd = {};
 
             var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
 
+            var margin = parsePixels( properties.style( "margin" ) );
+            var padding = parsePixels( properties.style( "padding" ) );
+
             var diagonalRadius = node.radius.mid() * Math.sqrt( 2 ) / 2;
             var nodeOffsetOptions = {
                 diagonal:{ attach:{ x:diagonalRadius, y:diagonalRadius },
                     textCorner:{
-                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
-                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        x:margin + padding,
+                        y:margin + padding
                     } },
                 horizontal:{ attach:{ x:node.radius.mid(), y:0 },
                     textCorner:{
-                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        x:margin + padding,
                         y:-textSize.height / 2
                     } },
                 vertical:{ attach:{ x:0, y:node.radius.mid() },
                     textCorner:{
                         x:-textSize.width / 2,
-                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        y:margin + padding
                     } }
             };
             var nodeCenterOffset = nodeOffsetOptions[orientation.style].attach;
@@ -822,7 +826,7 @@ gd = {};
                     - (orientation.mirrorY == -1 ? textSize.height : 0)
             };
 
-            var boundingPadding = gd.parameters.speechBubblePadding + gd.parameters.speechBubbleStrokeWidth / 2;
+            var boundingPadding = padding + gd.parameters.speechBubbleStrokeWidth / 2;
 
             var boundingBox = {
                 x:node.ex() + (nodeCenterOffset.x + textCorner.x - boundingPadding) * orientation.mirrorX,
@@ -844,8 +848,7 @@ gd = {};
                 style:node.properties().style,
                 groupTransform:translate,
                 outlineTransform:mirror,
-                outlinePath:gd.speechBubblePath( textSize, orientation.style,
-                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding ),
+                outlinePath:gd.speechBubblePath( textSize, orientation.style, margin, padding ),
                 boundingBox:boundingBox
             };
         }
@@ -872,23 +875,26 @@ gd = {};
                 height:properties.list().length * parsePixels( properties.style( "font-size" ) )
             };
 
+            var margin = parsePixels( properties.style( "margin" ) );
+            var padding = parsePixels( properties.style( "padding" ) );
+
             var mirror = "scale(" + orientation.mirrorX + "," + orientation.mirrorY + ") ";
 
             var nodeOffsetOptions = {
                 diagonal:{
                     textCorner:{
-                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
-                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        x:margin + padding,
+                        y:margin + padding
                     } },
                 horizontal:{
                     textCorner:{
-                        x:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding,
+                        x:margin + padding,
                         y:-textSize.height / 2
                     } },
                 vertical:{
                     textCorner:{
                         x:-textSize.width / 2,
-                        y:gd.parameters.speechBubbleMargin + gd.parameters.speechBubblePadding
+                        y:margin + padding
                     } }
             };
             var textCorner = nodeOffsetOptions[orientation.style].textCorner;
@@ -904,7 +910,7 @@ gd = {};
                     - (orientation.mirrorY == -1 ? textSize.height : 0)
             };
 
-            var boundingPadding = gd.parameters.speechBubblePadding + gd.parameters.speechBubbleStrokeWidth / 2;
+            var boundingPadding = padding + gd.parameters.speechBubbleStrokeWidth / 2;
 
             var boundingBox = {
                 x:midPoint.x + (textCorner.x - boundingPadding) * orientation.mirrorX,
@@ -926,8 +932,7 @@ gd = {};
                 style:relationship.properties().style,
                 groupTransform:translate,
                 outlineTransform:mirror,
-                outlinePath:gd.speechBubblePath( textSize, orientation.style,
-                    gd.parameters.speechBubbleMargin, gd.parameters.speechBubblePadding ),
+                outlinePath:gd.speechBubblePath( textSize, orientation.style, margin, padding ),
                 boundingBox:boundingBox
             };
         }
@@ -938,13 +943,14 @@ gd = {};
 
         textDimensions.measure = function ( text, styleSource ) {
             var fontSize = styleSource.style( "font-size" );
+            var fontFamily = styleSource.style( "font-family" );
             var canvasSelection = d3.select("#textMeasuringCanvas").data([this]);
             canvasSelection.enter().append("canvas")
                 .attr("id", "textMeasuringCanvas");
 
             var canvas = canvasSelection.node();
             var context = canvas.getContext("2d");
-            context.font = "normal normal normal " + fontSize + "/normal Gill Sans";
+            context.font = "normal normal normal " + fontSize + "/normal " + fontFamily;
             return context.measureText(text).width;
         };
 
@@ -993,6 +999,8 @@ gd = {};
                 .attr("r", function(node) {
                     return node.radius.mid();
                 })
+                .attr("fill", "white")
+                .attr("stroke", "black")
                 .attr("stroke-width", function(node) {
                     return node.style("border-width");
                 })
@@ -1011,12 +1019,15 @@ gd = {};
 
                 boundVariables.enter().append("svg:text")
                     .attr("class", boundVariableClasses)
+                    .attr("text-anchor", "middle")
+                    .attr("alignment-baseline", "central")
                     .call(nodeBehaviour);
 
                 boundVariables
                     .attr("x", method("ex"))
                     .attr("y", method("ey"))
-                    .style( "font-size", function ( node ) { return node.style( "font-size" ); } )
+                    .attr( "font-size", function ( node ) { return node.style( "font-size" ); } )
+                    .attr( "font-family", function ( node ) { return node.style( "font-family" ); } )
                     .text(method("label"));
             }
 
@@ -1084,12 +1095,16 @@ gd = {};
 
             relationshipLabel.enter().append("svg:text")
                 .attr("class", "type")
+                .attr("text-anchor", "middle")
+                .attr("baseline-shift", "30%")
+                .attr("alignment-baseline", "alphabetic")
                 .call(relationshipBehaviour);
 
             relationshipLabel
                 .attr("x", midwayBetweenStartAndEnd)
                 .attr("y", 0 )
-                .style( "font-size", function ( node ) { return node.style( "font-size" ); } )
+                .attr( "font-size", function ( relationship ) { return relationship.style( "font-size" ); } )
+                .attr( "font-family", function ( relationship ) { return relationship.style( "font-family" ); } )
                 .text(method("label"));
         }
 
@@ -1155,8 +1170,8 @@ gd = {};
                 } )
                 .attr( "alignment-baseline", "central" )
                 .attr( "text-anchor", "end" )
-                .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
-                .attr( "font-face", function ( property ) { return property.style( "font-face" ); } )
+                .attr( "font-size", function ( property ) { return property.style( "font-size" ); } )
+                .attr( "font-family", function ( property ) { return property.style( "font-family" ); } )
                 .text( function ( property )
                 {
                     return property.keyText;
@@ -1183,7 +1198,8 @@ gd = {};
                     return (i + 0.5) * parsePixels( property.style( "font-size" ) ) + property.textOrigin.y
                 } )
                 .attr( "alignment-baseline", "central" )
-                .style( "font-size", function ( property ) { return property.style( "font-size" ); } )
+                .attr( "font-size", function ( property ) { return property.style( "font-size" ); } )
+                .attr( "font-family", function ( property ) { return property.style( "font-family" ); } )
                 .text( function ( property )
                 {
                     return property.valueText;
