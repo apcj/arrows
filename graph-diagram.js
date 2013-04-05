@@ -26,6 +26,7 @@ gd = {};
 
             this.insideRadius = insideRadius;
             this.borderWidth = gd.parameters.nodeStrokeWidth;
+            this.arrowMargin = gd.parameters.nodeStartMargin;
 
             this.inside = function(insideRadius) {
                 if (arguments.length == 1)
@@ -45,6 +46,15 @@ gd = {};
                 return this.borderWidth;
             };
 
+            this.margin = function(arrowMargin) {
+                if (arguments.length == 1)
+                {
+                    this.arrowMargin = arrowMargin;
+                    return this;
+                }
+                return this.arrowMargin;
+            };
+
             this.mid = function() {
                 return this.insideRadius + this.borderWidth / 2;
             };
@@ -54,11 +64,11 @@ gd = {};
             };
 
             this.startRelationship = function() {
-                return this.insideRadius + this.borderWidth + gd.parameters.nodeStartMargin;
+                return this.insideRadius + this.borderWidth + this.arrowMargin;
             };
 
             this.endRelationship = function() {
-                return this.insideRadius + this.borderWidth + gd.parameters.nodeEndMargin;
+                return this.insideRadius + this.borderWidth + this.arrowMargin;
             };
         };
 
@@ -373,7 +383,7 @@ gd = {};
             var bounds = scaling.boxUnion( graph.nodeList().map( scaling.nodeBox )
                 .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.nodeSpeechBubble( graph ) ).map( boundingBox )
                 .map( scaling.boxNormalise ) )
-                .concat( graph.relationshipList().filter(gd.hasProperties ).map( gd.relationshipSpeechBubble( graph ) ).map( boundingBox )
+                .concat( graph.relationshipList().filter(gd.hasProperties ).map( gd.relationshipSpeechBubble() ).map( boundingBox )
                 .map( scaling.boxNormalise ) ) );
 
             return { x: bounds.x1, y: bounds.y1,
@@ -754,6 +764,7 @@ gd = {};
             }
             node.radius.inside( radius );
             node.radius.border( parsePixels( node.style( "border-width" ) ) );
+            node.radius.margin( parsePixels( node.style( "margin" ) ) );
         }
     };
 
