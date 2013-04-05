@@ -278,15 +278,11 @@
 
     var exportSvg = function ()
     {
-        d3.xhr( "graph-diagram-inverted.css", function ( d )
-        {
-            var css = d.responseText;
-            var rawSvg = document.getElementById( "canvas" ).innerHTML;
-            var styleTag = "<style type=\"text/css\"><![CDATA[" + css + "]]></style>";
-            var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\"";
-            var modifiedSvg = rawSvg.replace( /<svg( [^>]*>)/, svgStartTag + "$1" + styleTag );
-            window.open( "data:image/svg+xml;base64," + btoa( modifiedSvg ) );
-        } );
+        var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());
+        var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\"";
+        var modifiedSvg = rawSvg.replace( /<svg( [^>]*>)/, svgStartTag + "$1" ).replace(/&nbsp;/g, "\u00A0");
+        console.log(modifiedSvg);
+        window.open( "data:image/svg+xml;base64," + btoa( modifiedSvg ) );
     };
 
     function changeInternalScale() {
