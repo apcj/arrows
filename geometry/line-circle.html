@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="../lib/d3.v3.js" charset="UTF-8"></script>
+  <script type="text/javascript" src="../graph-diagram.js"></script>
+  <link rel="stylesheet" href="../graph-diagram.css" type="text/css">
+  <link rel="stylesheet" href="../lib/bootstrap.css" type="text/css">
+  <title>Graph Diagram Example</title>
+</head>
+
+<body>
+
+<figure class="graph-diagram">
+  <svg xmlns="http://www.w3.org/2000/svg" height="1000" width="1000" viewBox="-300 -500 1000 1000"></svg>
+</figure>
+
+<script type="text/javascript">
+
+  var m = 2;
+  var c = 200;
+  var r = 300;
+  var p = 10;
+  var q = -200;
+
+  var svg = d3.select( "svg" );
+
+  svg.append( "circle" )
+      .attr( "cx", p )
+      .attr( "cy", q )
+      .attr( "r", r )
+      .attr( "fill", "none" )
+      .attr( "stroke", "black" );
+
+  var xMin = parseInt( svg.attr( "viewBox" ).split( " " )[0] );
+  var xMax = xMin + parseInt( svg.attr( "viewBox" ).split( " " )[2] );
+
+
+  var line = function ( x )
+  {
+    return m * x + c;
+  };
+
+  svg.append( "path" )
+      .attr( "d", ["M", xMin, line( xMin ), "L", xMax, line( xMax )].join( " " ) )
+      .attr( "fill", "none" )
+      .attr( "stroke", "black" );
+
+  function square(l)
+  {
+    return l * l;
+  }
+
+  // (x-p)^2 + (y-q)^2 = r^2, y = mx + c
+  // (x-p)^2 + (mx + c - q)^2 = r^2
+  // x^2 -2px + p^2 + m^2 x^2 + mc x - mq x + mc x + c^2 - cq - mq x - cq + q^2 - r^2 = 0
+  // (1 + m^2) x^2 + (-2p + 2mc - 2mq) x + (c^2 - r^2 - 2cq + q^2 + p^2)= 0
+
+  var A = 1 + square(m);
+  var B = 2 * (-p + m * c - m * q);
+  var C = square(c) - square(r) - 2 * c * q + square(q) + square(p);
+
+  var x1 = (-B - Math.sqrt(square(B) - 4 * A * C)) / (2 * A);
+  var x2 = (-B + Math.sqrt(square(B) - 4 * A * C)) / (2 * A);
+
+  svg.selectAll("circle.marker")
+      .data([x1, x2])
+      .enter()
+      .append("circle")
+      .attr("class", "marker")
+      .attr("cx", function(x) { return x; })
+      .attr("cy", function(x) { return line(x); })
+      .attr("r", 3);
+</script>
+
+</body>
+</html>

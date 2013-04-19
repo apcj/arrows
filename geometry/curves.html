@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="../lib/d3.v3.js" charset="UTF-8"></script>
+  <script type="text/javascript" src="../graph-diagram.js"></script>
+  <link rel="stylesheet" href="../graph-diagram.css" type="text/css">
+  <link rel="stylesheet" href="../lib/bootstrap.css" type="text/css">
+  <title>Graph Diagram Example</title>
+</head>
+
+<body>
+
+<div class="container">
+
+  <figure class="graph-diagram">
+    <svg xmlns="http://www.w3.org/2000/svg" height="1000" width="1000"></svg>
+  </figure>
+
+</div>
+
+<script type="text/javascript">
+
+  var padding = 10;
+
+  var start = { x: 100, y: 500, r: 50 };
+  var end = { x: 500, y: 500, r: 50 };
+
+  var svg = d3.select("svg");
+
+  var angles = [ 22.5, 45, 67.5, -22.5, -45, -67.5 ].map(function(degrees) { return degrees * Math.PI / 180; });
+
+  var curves = angles.map(function(nodeAngle)
+  {
+    function offset(c) { return { x: Math.cos(nodeAngle) * (c.r + padding), y: Math.sin(nodeAngle) * (c.r + padding) }}
+
+    var displacement =
+    {
+      x: (end.x - offset(end ).x) - (start.x + offset(start).x),
+      y: (end.y + offset(end ).y) - (start.y + offset(start).y)
+    };
+
+    function square(l) { return l * l; }
+
+    var straightLength = Math.sqrt( square( displacement.x ) + square( displacement.y ) );
+
+    var slopeAngle = Math.atan( displacement.y / displacement.x );
+//    console.log(nodeAngle / Math.PI * 180, slopeAngle / Math.PI * 180);
+    var radius = (straightLength) / 2 / Math.sin(nodeAngle);
+
+    var ratio = 1; //Math.sqrt(start.r / end.r) * 1.8;
+
+    return {
+      nodeAngle: nodeAngle,
+      radius: radius,
+      cx: start.x + offset(start ).x + displacement.x / 2,
+      cy: start.y + offset(start ).y - radius * Math.cos(nodeAngle),
+      path: [
+        "M", start.x + offset(start).x, start.y + offset(start).y,
+        "A", radius / ratio, radius * ratio, slopeAngle / Math.PI * 180, 0, nodeAngle > 0 ? 0 : 1, end.x - offset(end ).x, end.y + offset(end ).y
+      ].join(" ")
+    };
+  });
+
+  svg
+      .selectAll("circle.node" ).data( [start, end] ).enter()
+      .append("circle")
+      .attr("fill", "none")
+      .attr("stroke", "black")
+      .attr("stroke-width", 8)
+      .attr("cx", function(d) { return d.x })
+      .attr("cy", function(d) { return d.y })
+      .attr("r", function(d) { return d.r });
+
+  svg
+      .selectAll( "path" ).data( curves ).enter()
+      .append( "path" )
+      .attr("class", function(curve) { return "angle-" + curve.nodeAngle / Math.PI * 180; })
+      .attr("stroke", "black")
+      .attr("stroke-width", 8)
+      .attr("fill", "none")
+      .attr("d", function(curve)
+      {
+        return curve.path;
+      });
+
+  svg
+      .selectAll( "circle.arc" ).data( curves ).enter()
+      .append( "circle" )
+      .attr("class", function(curve) { return "angle-" + curve.nodeAngle / Math.PI * 180; })
+      .attr("stroke", "blue")
+      .attr("stroke-width", 1)
+      .attr("fill", "none")
+      .attr("cx", function(curve) { return curve.cx; })
+      .attr("cy", function(curve) { return curve.cy; })
+      .attr("r", function(curve) { return Math.abs(curve.radius); });
+
+  svg
+      .append("path")
+      .attr("stroke", "black")
+      .attr("stroke-width", 8)
+      .attr("fill", "none")
+      .attr("d", [
+          "M", start.x + start.r + padding, start.y,
+          "L", end.x - end.r - padding, end.y
+      ].join(" "));
+</script>
+
+</body>
+</html>
