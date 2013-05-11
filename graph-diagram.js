@@ -636,51 +636,48 @@ gd = {};
 
     gd.curvedArrowOutline = function(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength)
     {
-        var startAttach, endAttach;
+        var startAttach, endAttach, offsetAngle;
 
         function square( l )
         {
             return l * l;
         }
 
-        if(endRadius + headLength > startRadius)
+        var radiusRatio = startRadius / (endRadius + headLength);
+        var homotheticCenter = -endCentre * radiusRatio / (1 - radiusRatio);
+
+        function intersectWithOtherCircle(fixedPoint, radius, xCenter, polarity)
         {
-            var angle = minOffset / startRadius;
-
-            startAttach = { x: Math.cos( angle ) * (startRadius), y: Math.sin( angle ) * (startRadius) };
-
-            var radiusRatio = startRadius / (endRadius + headLength);
-            var homotheticCenter = -endCentre * radiusRatio / (1 - radiusRatio);
-
-            var gradient = startAttach.y / (startAttach.x - homotheticCenter);
-            var hc = startAttach.y - gradient * startAttach.x;
-
+            var gradient = fixedPoint.y / (fixedPoint.x - homotheticCenter);
+            var hc = fixedPoint.y - gradient * fixedPoint.x;
 
             var A = 1 + square(gradient);
-            var B = 2 * (gradient * hc - endCentre);
-            var C = square(hc) + square(endCentre) - square(endRadius + headLength);
+            var B = 2 * (gradient * hc - xCenter);
+            var C = square(hc) + square(xCenter) - square(radius);
 
-            endAttach = { x: (-B - Math.sqrt( square( B ) - 4 * A * C )) / (2 * A) };
-            endAttach.y = (endAttach.x - homotheticCenter) * gradient;
+            var intersection = { x: (-B + polarity * Math.sqrt( square( B ) - 4 * A * C )) / (2 * A) };
+            intersection.y = (intersection.x - homotheticCenter) * gradient;
+
+            return intersection;
+        }
+
+        if(endRadius + headLength > startRadius)
+        {
+            offsetAngle = minOffset / startRadius;
+            startAttach = {
+                x: Math.cos( offsetAngle ) * (startRadius),
+                y: Math.sin( offsetAngle ) * (startRadius)
+            };
+            endAttach = intersectWithOtherCircle( startAttach, endRadius + headLength, endCentre, -1 );
         }
         else
         {
-            var angle = minOffset / endRadius;
-
-            endAttach = { x: endCentre - Math.cos( angle ) * (endRadius + headLength), y: Math.sin( angle ) * (endRadius + headLength) };
-
-            var radiusRatio = startRadius / (endRadius + headLength);
-            var homotheticCenter = -endCentre * radiusRatio / (1 - radiusRatio);
-
-            var gradient = endAttach.y / (endAttach.x - homotheticCenter);
-            var hc = endAttach.y - gradient * endAttach.x;
-
-            var A = 1 + square(gradient);
-            var B = 2 * (gradient * hc);
-            var C = square(hc) - square(startRadius);
-
-            startAttach = { x: (-B + Math.sqrt( square( B ) - 4 * A * C )) / (2 * A) };
-            startAttach.y = (startAttach.x - homotheticCenter) * gradient;
+            offsetAngle = minOffset / endRadius;
+            endAttach = {
+                x: endCentre - Math.cos( offsetAngle ) * (endRadius + headLength),
+                y: Math.sin( offsetAngle ) * (endRadius + headLength)
+            };
+            startAttach = intersectWithOtherCircle( endAttach, startRadius, 0, 1 );
         }
 
         var
