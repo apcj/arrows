@@ -40,6 +40,21 @@ suite.addBatch({
             assert.isEmpty(model.nodeList())
         }
     },
+    "related pairs": {
+        "relationships grouped by the pairs of nodes they connect": function ()
+        {
+            var model = gd.model();
+            var node1 = model.createNode();
+            var node2 = model.createNode();
+            var node3 = model.createNode();
+            var relationship1 = model.createRelationship( node1, node2 );
+            var relationship2 = model.createRelationship( node2, node1 );
+            var relationship3 = model.createRelationship( node1, node3 );
+            assert.equal( relationship2, model.groupedRelationshipList()[0][0] );
+            assert.equal( relationship1, model.groupedRelationshipList()[0][1] );
+            assert.equal( relationship3, model.groupedRelationshipList()[1][0] );
+        }
+    },
     "node position": {
         "nodes store x and y coordinates": function() {
             var model = gd.model();

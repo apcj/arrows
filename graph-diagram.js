@@ -302,6 +302,29 @@ gd = {};
             return relationships;
         };
 
+        model.groupedRelationshipList = function() {
+            var groups = {};
+            for (var i = 0; i < relationships.length; i++)
+            {
+                var relationship = relationships[i];
+                var nodeIds = [relationship.start.id, relationship.end.id].sort();
+                var group = groups[nodeIds];
+                if (!group)
+                {
+                    group = groups[nodeIds] = [];
+                }
+                if (relationship.start.id < relationship.end.id)
+                {
+                    group.push(relationship);
+                }
+                else
+                {
+                    group.splice(0, 0, relationship);
+                }
+            }
+            return d3.values(groups);
+        };
+
         model.internalScale = function(newScale) {
             if (arguments.length == 1) {
                 internalScale = parseFloat(newScale);
@@ -609,6 +632,111 @@ gd = {};
             "L", shoulder, -shaftRadius,
             "L", start, -shaftRadius,
             "Z"].join(" ");
+    };
+
+    gd.curvedArrowOutline = function(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength)
+    {
+        var startAttach, endAttach;
+
+        function square( l )
+        {
+            return l * l;
+        }
+
+        if(endRadius + headLength > startRadius)
+        {
+            var angle = minOffset / startRadius;
+
+            startAttach = { x: Math.cos( angle ) * (startRadius), y: Math.sin( angle ) * (startRadius) };
+
+            var radiusRatio = startRadius / (endRadius + headLength);
+            var homotheticCenter = -endCentre * radiusRatio / (1 - radiusRatio);
+
+            var gradient = startAttach.y / (startAttach.x - homotheticCenter);
+            var hc = startAttach.y - gradient * startAttach.x;
+
+
+            var A = 1 + square(gradient);
+            var B = 2 * (gradient * hc - endCentre);
+            var C = square(hc) + square(endCentre) - square(endRadius + headLength);
+
+            endAttach = { x: (-B - Math.sqrt( square( B ) - 4 * A * C )) / (2 * A) };
+            endAttach.y = (endAttach.x - homotheticCenter) * gradient;
+        }
+        else
+        {
+            var angle = minOffset / endRadius;
+
+            endAttach = { x: endCentre - Math.cos( angle ) * (endRadius + headLength), y: Math.sin( angle ) * (endRadius + headLength) };
+
+            var radiusRatio = startRadius / (endRadius + headLength);
+            var homotheticCenter = -endCentre * radiusRatio / (1 - radiusRatio);
+
+            var gradient = endAttach.y / (endAttach.x - homotheticCenter);
+            var hc = endAttach.y - gradient * endAttach.x;
+
+            var A = 1 + square(gradient);
+            var B = 2 * (gradient * hc);
+            var C = square(hc) - square(startRadius);
+
+            startAttach = { x: (-B + Math.sqrt( square( B ) - 4 * A * C )) / (2 * A) };
+            startAttach.y = (startAttach.x - homotheticCenter) * gradient;
+        }
+
+        var
+            g1 = -startAttach.x / startAttach.y,
+            c1 = startAttach.y + (square( startAttach.x ) / startAttach.y),
+            g2 = -(endAttach.x - endCentre) / endAttach.y,
+            c2 = endAttach.y + (endAttach.x - endCentre) * endAttach.x / endAttach.y;
+
+        var cx = ( c1 - c2 ) / (g2 - g1);
+        var cy = g1 * cx + c1;
+
+        var arcRadius = Math.sqrt(square(cx - startAttach.x) + square(cy - startAttach.y));
+
+        function startTangent(dr)
+        {
+            var dx = (dr < 0 ? -1 : 1) * Math.sqrt(square(dr) / (1 + square(g1)));
+            var dy = g1 * dx;
+            return [
+                startAttach.x + dx,
+                startAttach.y + dy
+            ].join(",");
+        }
+
+        function endTangent(dr)
+        {
+            var dx = (dr < 0 ? -1 : 1) * Math.sqrt(square(dr) / (1 + square(g2)));
+            var dy = g2 * dx;
+            return [
+                endAttach.x + dx,
+                endAttach.y + dy
+            ].join(",");
+        }
+
+        function endNormal(dc)
+        {
+            var dx = (dc < 0 ? -1 : 1) * Math.sqrt(square(dc) / (1 + square(1 / g2)));
+            var dy = dx / g2;
+            return [
+                endAttach.x + dx,
+                endAttach.y - dy
+            ].join(",");
+        }
+
+        var shaftRadius = arrowWidth / 2;
+        var headRadius = headWidth / 2;
+
+        return [
+                "M", startTangent(-shaftRadius),
+                "L", startTangent(shaftRadius),
+                "A", arcRadius - shaftRadius, arcRadius - shaftRadius, 0, 0, minOffset > 0 ? 0 : 1, endTangent(-shaftRadius),
+                "L", endTangent(-headRadius),
+                "L", endNormal(headLength),
+                "L", endTangent(headRadius),
+                "L", endTangent(shaftRadius),
+                "A", arcRadius + shaftRadius, arcRadius + shaftRadius, 0, 0, minOffset < 0 ? 0 : 1, startTangent(-shaftRadius)
+            ].join( " " );
     };
 
     gd.chooseNodeSpeechBubbleOrientation = function(focusNode, relatedNodes) {
@@ -1048,13 +1176,36 @@ gd = {};
 
         function renderRelationships( model, view )
         {
-            function horizontalArrow(relationship) {
+            function horizontalArrow(wrappedRelationship) {
+                var relationship = wrappedRelationship.relationship;
                 var length = relationship.start.distanceTo(relationship.end);
-                var side = relationship.end.isLeftOf(relationship.start) ? -1 : 1;
-                return gd.horizontalArrowOutline(
-                    side * relationship.start.radius.startRelationship(),
-                    side * (length - relationship.end.radius.endRelationship()),
-                    parsePixels( relationship.style( "border-width" ) ) );
+                var arrowWidth = parsePixels( relationship.style( "border-width" ) );
+                if (wrappedRelationship.offset === 0)
+                {
+                    return gd.horizontalArrowOutline(
+                        relationship.start.radius.startRelationship(),
+                        (length - relationship.end.radius.endRelationship()),
+                        arrowWidth );
+                }
+                return gd.curvedArrowOutline(
+                    relationship.start.radius.startRelationship(),
+                    relationship.end.radius.endRelationship(),
+                    length,
+                    wrappedRelationship.offset,
+                    arrowWidth,
+                    arrowWidth * 4,
+                    arrowWidth * 4
+                );
+            }
+
+            function translateToStartNodeCenterAndRotateToRelationshipAngle(wrappedRelationship) {
+                var d = wrappedRelationship.relationship;
+                var angle = d.start.angleTo(d.end);
+                return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
+            }
+
+            function rotateIfRightToLeft(d) {
+                return d.end.isLeftOf( d.start ) ? "rotate(180)" : null;
             }
 
             function midwayBetweenStartAndEnd(d) {
@@ -1063,20 +1214,35 @@ gd = {};
                 return side * length / 2;
             }
 
-            function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
-                var angle = d.start.angleTo(d.end);
-                if (d.end.isLeftOf(d.start)) {
-                    angle += 180;
-                }
-                return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
-            }
-
-            function relationshipClasses(d) {
+            function relationshipClasses(wrappedRelationship) {
+                var d = wrappedRelationship.relationship;
                 return d.class().join(" ");
             }
 
-            var relationshipGroup = view.selectAll("g.relationship")
-                .data(model.relationshipList());
+            var relatedNodesGroup = view.selectAll("g.related-pair")
+                .data(model.groupedRelationshipList());
+
+            relatedNodesGroup.exit().remove();
+
+            relatedNodesGroup.enter().append("svg:g")
+                .attr("class", "related-pair");
+
+            var relationshipGroup = relatedNodesGroup.selectAll( "g.relationship" )
+                .data( function ( relationships )
+                {
+                    var nominatedStart = relationships[0].start;
+                    var offsetStep = 30;
+                    var wrappedRelationships = [];
+                    for ( var i = 0; i < relationships.length; i++ )
+                    {
+                        wrappedRelationships.push( {
+                            relationship: relationships[i],
+                            offset: (relationships[i].start === nominatedStart ? 1 : -1) *
+                                offsetStep * (i - (relationships.length - 1) / 2)
+                        } );
+                    }
+                    return wrappedRelationships;
+                } );
 
             relationshipGroup.exit().remove();
 
@@ -1097,7 +1263,7 @@ gd = {};
                 .attr("d", horizontalArrow);
 
             function relationshipWithLabel(d) {
-                return [d].filter(method("label"));
+                return [d.relationship].filter(method("label"));
             }
 
             var relationshipLabel = relationshipGroup.selectAll("text.type")
@@ -1113,6 +1279,7 @@ gd = {};
                 .call(relationshipBehaviour);
 
             relationshipLabel
+                .attr("transform", rotateIfRightToLeft)
                 .attr("x", midwayBetweenStartAndEnd)
                 .attr("y", 0 )
                 .attr( "font-size", function ( relationship ) { return relationship.style( "font-size" ); } )

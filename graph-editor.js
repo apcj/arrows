@@ -163,7 +163,7 @@
         appendModalBackdrop();
         editor.classed( "hide", false );
 
-        var relationship = this.__data__;
+        var relationship = this.__data__.relationship;
 
         var relationshipTypeField = editor.select("#relationship_type");
         relationshipTypeField.node().value = relationship.label() || "";
