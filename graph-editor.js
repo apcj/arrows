@@ -253,6 +253,7 @@
     }
 
     d3.selectAll( ".btn.cancel" ).on( "click", cancelModal );
+    d3.selectAll( ".modal" ).on( "keyup", function() { if ( d3.event.keyCode === 27 ) cancelModal(); } );
 
     function appendModalBackdrop()
     {
