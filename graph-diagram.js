@@ -155,8 +155,8 @@ gd = {};
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
                 return {
-                    x: this.x() + dx / 2,
-                    y: this.y() + dy / 2
+                    x: (this.x() + dx / 2) * internalScale,
+                    y: (this.y() + dy / 2) * internalScale
                 };
             };
 
