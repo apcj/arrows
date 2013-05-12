@@ -1189,22 +1189,22 @@ gd = {};
             return [d];
         }
 
-        function renderNodes( model, view )
+        function renderNodes( nodes, view )
         {
             function nodeClasses(d) {
                 return d.class().join(" ") + " " + "node-id-" + d.id;
             }
 
-            var nodes = view.selectAll("circle.node")
-                .data(d3.values(model.nodeList()));
+            var circles = view.selectAll("circle.node")
+                .data(nodes);
 
-            nodes.exit().remove();
+            circles.exit().remove();
 
-            nodes.enter().append("svg:circle")
+            circles.enter().append("svg:circle")
                 .attr("class", nodeClasses)
                 .call(nodeBehaviour);
 
-            nodes
+            circles
                 .attr("r", function(node) {
                     return node.radius.mid();
                 })
@@ -1213,8 +1213,8 @@ gd = {};
                 .attr("stroke-width", function(node) {
                     return node.style("border-width");
                 })
-                .attr("cx", method("ex"))
-                .attr("cy", method("ey"));
+                .attr("cx", field("x"))
+                .attr("cy", field("y"));
 
             function renderBoundVariables(className) {
                 function boundVariableClasses(d) {
@@ -1222,7 +1222,7 @@ gd = {};
                 }
 
                 var boundVariables = view.selectAll("text." + className)
-                    .data(d3.values(model.nodeList()).filter(method("label")));
+                    .data(nodes.filter(field("caption")));
 
                 boundVariables.exit().remove();
 
@@ -1233,11 +1233,11 @@ gd = {};
                     .call(nodeBehaviour);
 
                 boundVariables
-                    .attr("x", method("ex"))
-                    .attr("y", method("ey"))
+                    .attr("x", field("x"))
+                    .attr("y", field("y"))
                     .attr( "font-size", function ( node ) { return node.style( "font-size" ); } )
                     .attr( "font-family", function ( node ) { return node.style( "font-family" ); } )
-                    .text(method("label"));
+                    .text(field("caption"));
             }
 
             renderBoundVariables("caption");
@@ -1434,7 +1434,7 @@ gd = {};
 
                 var layoutModel = gd.layout( model );
 
-                renderNodes( model, view );
+                renderNodes( layoutModel.nodes, view );
 
                 renderRelationships( layoutModel.relationshipGroups, view );
 
