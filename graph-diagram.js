@@ -355,6 +355,70 @@ gd = {};
         return model;
     };
 
+    gd.layout = function(graphModel)
+    {
+        var layoutModel = {};
+
+        layoutModel.nodes = graphModel.nodeList().map( function ( node )
+        {
+            return {
+                class: node.class,
+                x: node.ex(),
+                y: node.ey(),
+                caption: node.label(),
+                radius: node.radius,
+                style: node.style,
+                properties: gd.nodeSpeechBubble(graphModel)(node)
+            }
+        } );
+
+        function horizontalArrow(relationship, offset) {
+            var length = relationship.start.distanceTo(relationship.end);
+            var arrowWidth = parsePixels( relationship.style( "border-width" ) );
+            if (offset === 0)
+            {
+                return gd.horizontalArrowOutline(
+                    relationship.start.radius.startRelationship(),
+                    (length - relationship.end.radius.endRelationship()),
+                    arrowWidth );
+            }
+            return gd.curvedArrowOutline(
+                relationship.start.radius.startRelationship(),
+                relationship.end.radius.endRelationship(),
+                length,
+                offset,
+                arrowWidth,
+                arrowWidth * 4,
+                arrowWidth * 4
+            );
+        }
+
+        layoutModel.relationshipGroups = graphModel.groupedRelationshipList().map( function( group ) {
+            var nominatedStart = group[0].start;
+            var offsetStep = 30;
+            var relationships = [];
+            for ( var i = 0; i < group.length; i++ )
+            {
+                var relationship = group[i];
+                var offset = (relationship.start === nominatedStart ? 1 : -1) *
+                    offsetStep * (i - (group.length - 1) / 2);
+
+                relationships.push( {
+                    class: relationship.class,
+                    label: relationship.label,
+                    start: relationship.start,
+                    end: relationship.end,
+                    style: relationship.style,
+                    arrow: horizontalArrow(relationship, offset),
+                    properties: gd.relationshipSpeechBubble()(relationship)
+                } );
+            }
+            return relationships;
+        } );
+
+        return layoutModel;
+    };
+
     gd.scaling = function() {
 
         var scaling = {};
@@ -1113,6 +1177,14 @@ gd = {};
             }
         }
 
+        function field( fileName )
+        {
+            return function ( d )
+            {
+                return d[fileName];
+            }
+        }
+
         function singleton(d) {
             return [d];
         }
@@ -1171,32 +1243,9 @@ gd = {};
             renderBoundVariables("caption");
         }
 
-        function renderRelationships( model, view )
+        function renderRelationships( relationshipGroups, view )
         {
-            function horizontalArrow(wrappedRelationship) {
-                var relationship = wrappedRelationship.relationship;
-                var length = relationship.start.distanceTo(relationship.end);
-                var arrowWidth = parsePixels( relationship.style( "border-width" ) );
-                if (wrappedRelationship.offset === 0)
-                {
-                    return gd.horizontalArrowOutline(
-                        relationship.start.radius.startRelationship(),
-                        (length - relationship.end.radius.endRelationship()),
-                        arrowWidth );
-                }
-                return gd.curvedArrowOutline(
-                    relationship.start.radius.startRelationship(),
-                    relationship.end.radius.endRelationship(),
-                    length,
-                    wrappedRelationship.offset,
-                    arrowWidth,
-                    arrowWidth * 4,
-                    arrowWidth * 4
-                );
-            }
-
-            function translateToStartNodeCenterAndRotateToRelationshipAngle(wrappedRelationship) {
-                var d = wrappedRelationship.relationship;
+            function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
                 var angle = d.start.angleTo(d.end);
                 return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
             }
@@ -1211,13 +1260,12 @@ gd = {};
                 return side * length / 2;
             }
 
-            function relationshipClasses(wrappedRelationship) {
-                var d = wrappedRelationship.relationship;
+            function relationshipClasses(d) {
                 return d.class().join(" ");
             }
 
             var relatedNodesGroup = view.selectAll("g.related-pair")
-                .data(model.groupedRelationshipList());
+                .data(relationshipGroups);
 
             relatedNodesGroup.exit().remove();
 
@@ -1225,21 +1273,7 @@ gd = {};
                 .attr("class", "related-pair");
 
             var relationshipGroup = relatedNodesGroup.selectAll( "g.relationship" )
-                .data( function ( relationships )
-                {
-                    var nominatedStart = relationships[0].start;
-                    var offsetStep = 30;
-                    var wrappedRelationships = [];
-                    for ( var i = 0; i < relationships.length; i++ )
-                    {
-                        wrappedRelationships.push( {
-                            relationship: relationships[i],
-                            offset: (relationships[i].start === nominatedStart ? 1 : -1) *
-                                offsetStep * (i - (relationships.length - 1) / 2)
-                        } );
-                    }
-                    return wrappedRelationships;
-                } );
+                .data( function(d) { return d; } );
 
             relationshipGroup.exit().remove();
 
@@ -1257,10 +1291,10 @@ gd = {};
                 .call(relationshipBehaviour);
 
             relationshipPath
-                .attr("d", horizontalArrow);
+                .attr( "d", field( "arrow" ) );
 
             function relationshipWithLabel(d) {
-                return [d.relationship].filter(method("label"));
+                return [d].filter(method("label"));
             }
 
             var relationshipLabel = relationshipGroup.selectAll("text.type")
@@ -1398,9 +1432,11 @@ gd = {};
             {
                 var view = d3.select( this );
 
+                var layoutModel = gd.layout( model );
+
                 renderNodes( model, view );
 
-                renderRelationships( model, view );
+                renderRelationships( layoutModel.relationshipGroups, view );
 
                 renderNodeProperties( model, view );
 
