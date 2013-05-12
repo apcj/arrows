@@ -108,6 +108,17 @@
         draw();
     } );
 
+    function onControlEnter(saveChange)
+    {
+        return function()
+        {
+            if ( d3.event.ctrlKey && d3.event.keyCode === 13 )
+            {
+                saveChange();
+            }
+        }
+    }
+
     function editNode()
     {
         var editor = d3.select(".pop-up-editor.node");
@@ -152,6 +163,9 @@
             draw();
             cancelModal();
         }
+
+        captionField.on("keypress", onControlEnter(saveChange) );
+        propertiesField.on("keypress", onControlEnter(saveChange) );
 
         editor.select("#edit_node_save").on("click", saveChange);
         editor.select("#edit_node_delete").on("click", deleteNode);
@@ -209,6 +223,9 @@
             draw();
             cancelModal();
         }
+
+        relationshipTypeField.on("keypress", onControlEnter(saveChange) );
+        propertiesField.on("keypress", onControlEnter(saveChange) );
 
         editor.select("#edit_relationship_save").on("click", saveChange);
         editor.select("#edit_relationship_reverse").on("click", reverseRelationship);
