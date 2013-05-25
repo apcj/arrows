@@ -12,7 +12,7 @@ suite.addBatch({
             var end = 100;
             var arrowWidth = 8;
             var arrowOutlinePath = gd.horizontalArrowOutline(start, end, arrowWidth);
-            assert.equal(arrowOutlinePath, "M 7 4 L 68 4 L 68 16 L 100 0 L 68 -16 L 68 -4 L 7 -4 Z");
+            assert.equal(arrowOutlinePath.outline, "M 7 4 L 68 4 L 68 16 L 100 0 L 68 -16 L 68 -4 L 7 -4 Z");
         },
         "arrow from right to left": function ( )
         {
@@ -20,7 +20,7 @@ suite.addBatch({
             var end = 7;
             var arrowWidth = 8;
             var arrowOutlinePath = gd.horizontalArrowOutline(start, end, arrowWidth);
-            assert.equal(arrowOutlinePath, "M 100 4 L 39 4 L 39 16 L 7 0 L 39 -16 L 39 -4 L 100 -4 Z");
+            assert.equal(arrowOutlinePath.outline, "M 100 4 L 39 4 L 39 16 L 7 0 L 39 -16 L 39 -4 L 100 -4 Z");
         }
     },
     "curved arrow": {
@@ -33,7 +33,7 @@ suite.addBatch({
             var headWidth = 16;
             var headLength = 16;
             var arrowOutlinePath = gd.curvedArrowOutline(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength);
-            assert.equal(arrowOutlinePath,
+            assert.equal(arrowOutlinePath.outline,
                 "M 58.93570183156151,11.94081444547556 L 59.99921081254002,4.011820269202127 " +
                     "A 649.7293323565336 649.7293323565336 0 0 0 224.0670051738528,5.116668518902473 " +
                     "L 223.58869109461165,1.1453695322232154 L 240.43051519981097,7.1747111886171595 " +
@@ -49,7 +49,7 @@ suite.addBatch({
             var headWidth = 16;
             var headLength = 16;
             var arrowOutlinePath = gd.curvedArrowOutline(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength);
-            assert.equal(arrowOutlinePath,
+            assert.equal(arrowOutlinePath.outline,
                 "M 98.90161804948521,15.312411540764543 L 99.80867450465975,7.363999838598744 " +
                     "A 504.7652782258458 504.7652782258458 0 0 0 224.14280083491312,6.138838231159152 " +
                     "L 223.61104634442384,2.1743411430224358 L 240.53254367794923,7.976317357338845 " +
@@ -65,7 +65,7 @@ suite.addBatch({
             var headWidth = 16;
             var headLength = 16;
             var arrowOutlinePath = gd.curvedArrowOutline(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength);
-            assert.equal(arrowOutlinePath,
+            assert.equal(arrowOutlinePath.outline,
                 "M 58.93570183156151,11.94081444547556 L 59.99921081254002,4.011820269202127 " +
                     "A 553.4442968453301 553.4442968453301 0 0 0 184.1194818347101,6.611014274974005 " +
                     "L 183.75416125022133,2.6277315997739654 L 200.417933119999,9.133014612219005 " +

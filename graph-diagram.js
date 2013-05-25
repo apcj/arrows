@@ -682,14 +682,22 @@ gd = {};
         var headRadius = arrowWidth * 2;
         var headLength = headRadius * 2;
         var shoulder = start < end ? end - headLength : end + headLength;
-        return ["M", start, shaftRadius,
-            "L", shoulder, shaftRadius,
-            "L", shoulder, headRadius,
-            "L", end, 0,
-            "L", shoulder, -headRadius,
-            "L", shoulder, -shaftRadius,
-            "L", start, -shaftRadius,
-            "Z"].join(" ");
+        return {
+            outline: [
+                "M", start, shaftRadius,
+                "L", shoulder, shaftRadius,
+                "L", shoulder, headRadius,
+                "L", end, 0,
+                "L", shoulder, -headRadius,
+                "L", shoulder, -shaftRadius,
+                "L", start, -shaftRadius,
+                "Z"
+            ].join(" "),
+            apex: {
+                x: start + (shoulder - start) / 2,
+                y: 0
+            }
+        };
     };
 
     gd.curvedArrowOutline = function(startRadius, endRadius, endCentre, minOffset, arrowWidth, headWidth, headLength)
@@ -782,7 +790,8 @@ gd = {};
         var shaftRadius = arrowWidth / 2;
         var headRadius = headWidth / 2;
 
-        return [
+        return {
+            outline: [
                 "M", startTangent(-shaftRadius),
                 "L", startTangent(shaftRadius),
                 "A", arcRadius - shaftRadius, arcRadius - shaftRadius, 0, 0, minOffset > 0 ? 0 : 1, endTangent(-shaftRadius),
@@ -791,7 +800,12 @@ gd = {};
                 "L", endTangent(headRadius),
                 "L", endTangent(shaftRadius),
                 "A", arcRadius + shaftRadius, arcRadius + shaftRadius, 0, 0, minOffset < 0 ? 0 : 1, startTangent(-shaftRadius)
-            ].join( " " );
+            ].join( " " ),
+            apex: {
+                x: cx,
+                y: cy > 0 ? cy - arcRadius : cy + arcRadius
+            }
+        };
     };
 
     gd.chooseNodeSpeechBubbleOrientation = function(focusNode, relatedNodes) {
@@ -1238,11 +1252,8 @@ gd = {};
                 return r.end.isLeftOf( r.start ) ? "rotate(180)" : null;
             }
 
-            function midwayBetweenStartAndEnd(d) {
-                var r = d.model;
-                var length = r.start.distanceTo(r.end);
-                var side = r.end.isLeftOf(r.start) ? -1 : 1;
-                return side * length / 2;
+            function side(r) {
+                return r.end.isLeftOf(r.start) ? -1 : 1;
             }
 
             function relationshipClasses(d) {
@@ -1277,7 +1288,7 @@ gd = {};
                 .call(relationshipBehaviour);
 
             relationshipPath
-                .attr( "d", field( "arrow" ) );
+                .attr( "d", function(d) { return d.arrow.outline; } );
 
             function relationshipWithRelationshipType(d) {
                 return [d].filter(function(d) { return d.model.relationshipType(); });
@@ -1297,8 +1308,8 @@ gd = {};
 
             relationshipType
                 .attr("transform", rotateIfRightToLeft)
-                .attr("x", midwayBetweenStartAndEnd)
-                .attr("y", 0 )
+                .attr("x", function(d) { return side( d.model ) * d.arrow.apex.x; } )
+                .attr("y", function(d) { return side( d.model ) * d.arrow.apex.y; } )
                 .attr( "font-size", function ( d ) { return d.model.style( "font-size" ); } )
                 .attr( "font-family", function ( d ) { return d.model.style( "font-family" ); } )
                 .text( function ( d ) { return d.model.relationshipType(); } );
