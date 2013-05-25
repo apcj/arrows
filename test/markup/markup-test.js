@@ -82,9 +82,9 @@ suite.addBatch({
                 assert.isNumber(node.y());
                 assert.equal(node.y(), 34);
             },
-            "with label": function(model) {
+            "with caption": function(model) {
                 var node = model.nodeList()[0];
-                assert.equal(node.label(), "A");
+                assert.equal(node.caption(), "A");
             },
             "with properties": function(model) {
                 var node = model.nodeList()[0];
@@ -154,8 +154,8 @@ suite.addBatch({
             "with class": function(model) {
                 assert.deepEqual(model.relationshipList()[0].class(), ["relationship", "diagram-specific-class"]);
             },
-            "with label": function(model) {
-                assert.equal(model.relationshipList()[0].label(), "RELATED_TO");
+            "with relationship type": function(model) {
+                assert.equal(model.relationshipList()[0].relationshipType(), "RELATED_TO");
             },
             "with properties": function(model) {
                 var relationship = model.relationshipList()[0];
@@ -202,7 +202,7 @@ suite.addBatch({
         "one node": {
             topic: function() {
                 var model = gd.model();
-                model.createNode("node_A").x(12).y(34).label("A" ).class("diagram-specific-class")
+                model.createNode("node_A").x(12).y(34).caption("A" ).class("diagram-specific-class")
                     .properties().set("name", "Alistair").set("location", "London");
 
                 var markup = d3.select("body").append("div");
@@ -223,7 +223,7 @@ suite.addBatch({
                 assert.equal(nodes.attr("data-x"), "12");
                 assert.equal(nodes.attr("data-y"), "34");
             },
-            "with label": function(nodes) {
+            "with caption": function(nodes) {
                 assert.equal(nodes.select("span.caption").text(), "A");
             },
             "with properties": function(nodes) {
@@ -239,7 +239,7 @@ suite.addBatch({
                 var model = gd.model();
                 var nodeA = model.createNode("node_A");
                 var nodeB = model.createNode("node_B");
-                model.createRelationship(nodeA, nodeB).label("RELATED TO" ).class("diagram-specific-class")
+                model.createRelationship(nodeA, nodeB).relationshipType("RELATED TO" ).class("diagram-specific-class")
                     .properties().set("name", "Alistair").set("location", "London");
 
                 var markup = d3.select("body").append("div");
@@ -259,7 +259,7 @@ suite.addBatch({
             "with class": function(relationships) {
                 assert.equal(relationships.attr("class"), "relationship diagram-specific-class");
             },
-            "with label": function(relationships) {
+            "with relationship type": function(relationships) {
                 assert.equal(relationships.select("span.type" ).text(),
                     "RELATED TO");
             },

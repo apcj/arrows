@@ -1,12 +1,12 @@
 (function()
 {
     var graphModel;
-    if (localStorage.getItem("graph-diagram-markup")) {
-        graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
-    } else {
+    if (!localStorage.getItem("graph-diagram-markup")) {
         graphModel = gd.model();
         graphModel.createNode().x( 50 ).y( 140 );
+        save( formatMarkup() );
     }
+    graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
 
     var svg = d3.select("#canvas")
         .append("svg:svg")
@@ -67,8 +67,7 @@
     function drag()
     {
         var shiftKey = window.event.shiftKey;
-        var dragTarget = d3.select( this );
-        var node = dragTarget[0][0].__data__;
+        var node = this.__data__.model;
         if ( !newNode && shiftKey )
         {
             newNode = graphModel.createNode().x( node.x() ).y( node.y() );
@@ -125,10 +124,10 @@
         appendModalBackdrop();
         editor.classed( "hide", false );
 
-        var node = this.__data__;
+        var node = this.__data__.model;
 
         var captionField = editor.select("#node_caption");
-        captionField.node().value = node.label() || "";
+        captionField.node().value = node.caption() || "";
         captionField.node().select();
 
         var propertiesField = editor.select("#node_properties");
@@ -138,7 +137,7 @@
 
         function saveChange()
         {
-            node.label( captionField.node().value );
+            node.caption( captionField.node().value );
             node.properties().clearAll();
             propertiesField.node().value.split("\n").forEach(function(line) {
                 var tokens = line.split(/: */);
@@ -177,10 +176,10 @@
         appendModalBackdrop();
         editor.classed( "hide", false );
 
-        var relationship = this.__data__.relationship;
+        var relationship = this.__data__.model;
 
         var relationshipTypeField = editor.select("#relationship_type");
-        relationshipTypeField.node().value = relationship.label() || "";
+        relationshipTypeField.node().value = relationship.relationshipType() || "";
         relationshipTypeField.node().select();
 
         var propertiesField = editor.select("#relationship_properties");
@@ -190,7 +189,7 @@
 
         function saveChange()
         {
-            relationship.label( relationshipTypeField.node().value );
+            relationship.relationshipType( relationshipTypeField.node().value );
             relationship.properties().clearAll();
             propertiesField.node().value.split("\n").forEach(function(line) {
                 var tokens = line.split(/: */);

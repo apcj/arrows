@@ -102,7 +102,7 @@ gd = {};
 
         var Node = function() {
             var position = {};
-            var label;
+            var caption;
             var classes = [];
             var properties = new Properties(model.stylePrototype.nodeProperties);
 
@@ -172,12 +172,12 @@ gd = {};
 
             this.radius = new Radius(gd.parameters.radius - gd.parameters.nodeStrokeWidth / 2);
 
-            this.label = function(labelText) {
+            this.caption = function(captionText) {
                 if (arguments.length == 1) {
-                    label = labelText;
+                    caption = captionText;
                     return this;
                 }
-                return label;
+                return caption;
             };
 
             this.properties = function() {
@@ -188,7 +188,7 @@ gd = {};
         };
 
         var Relationship = function(start, end) {
-            var label;
+            var relationshipType;
             var classes = [];
             var properties = new Properties(model.stylePrototype.relationshipProperties);
 
@@ -202,12 +202,12 @@ gd = {};
                 return ["relationship"].concat(classes);
             };
 
-            this.label = function(labelText) {
+            this.relationshipType = function(relationshipTypeText) {
                 if (arguments.length == 1) {
-                    label = labelText;
+                    relationshipType = relationshipTypeText;
                     return this;
                 }
-                return label;
+                return relationshipType;
             };
 
             this.start = start;
@@ -365,10 +365,8 @@ gd = {};
                 class: node.class,
                 x: node.ex(),
                 y: node.ey(),
-                caption: node.label(),
-                radius: node.radius,
-                style: node.style,
-                properties: gd.nodeSpeechBubble(graphModel)(node)
+                properties: gd.nodeSpeechBubble(graphModel)(node),
+                model: node
             }
         } );
 
@@ -404,13 +402,9 @@ gd = {};
                     offsetStep * (i - (group.length - 1) / 2);
 
                 relationships.push( {
-                    class: relationship.class,
-                    label: relationship.label,
-                    start: relationship.start,
-                    end: relationship.end,
-                    style: relationship.style,
                     arrow: horizontalArrow(relationship, offset),
-                    properties: gd.relationshipSpeechBubble()(relationship)
+                    properties: gd.relationshipSpeechBubble()(relationship),
+                    model: relationship
                 } );
             }
             return relationships;
@@ -603,7 +597,7 @@ gd = {};
                 node.x(nodeMarkup.attr("data-x"));
                 node.y(nodeMarkup.attr("data-y"));
                 nodeMarkup.select("span.caption").each(function() {
-                    node.label(d3.select(this).text());
+                    node.caption(d3.select(this).text());
                 });
                 nodeMarkup.select( "dl.properties" ).each( parseProperties( node ) );
 
@@ -617,7 +611,7 @@ gd = {};
                 var relationship = model.createRelationship(model.lookupNode(fromId), model.lookupNode(toId));
                 relationship.class(relationshipMarkup.attr("class") || "");
                 relationshipMarkup.select("span.type" ).each(function() {
-                    relationship.label(d3.select(this).text());
+                    relationship.relationshipType(d3.select(this).text());
                 });
                 relationshipMarkup.select( "dl.properties" ).each( parseProperties( relationship ) );
 
@@ -657,10 +651,10 @@ gd = {};
                     .attr("data-x", node.x())
                     .attr("data-y", node.y());
 
-                if (node.label()) {
+                if (node.caption()) {
                     li.append("span")
                         .attr("class", "caption")
-                        .text(node.label());
+                        .text(node.caption());
                 }
                 formatProperties( node, li );
             });
@@ -671,10 +665,10 @@ gd = {};
                     .attr("data-from", relationship.start.id)
                     .attr("data-to", relationship.end.id);
 
-                if (relationship.label()) {
+                if (relationship.relationshipType()) {
                     li.append("span")
                         .attr("class", "type")
-                        .text(relationship.label());
+                        .text(relationship.relationshipType());
                 }
                 formatProperties( relationship, li );
             });
@@ -941,8 +935,8 @@ gd = {};
             var node = nodes[i];
             var fontSize = node.style( "font-size" );
             var radius = 0;
-            if ( node.label() ) {
-                var width = gd.textDimensions.measure( node.label() || "", node );
+            if ( node.caption() ) {
+                var width = gd.textDimensions.measure( node.caption() || "", node );
                 var height = parsePixels( fontSize );
                 var padding = parsePixels( node.style( "padding" ) );
                 radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
@@ -1169,14 +1163,6 @@ gd = {};
         var relationshipBehaviour = function() {};
         var scaling = gd.scaling.sizeSvgToFitDiagram;
 
-        function method(methodName)
-        {
-            return function( d )
-            {
-                return d[methodName]();
-            }
-        }
-
         function field( fileName )
         {
             return function ( d )
@@ -1192,7 +1178,7 @@ gd = {};
         function renderNodes( nodes, view )
         {
             function nodeClasses(d) {
-                return d.class().join(" ") + " " + "node-id-" + d.id;
+                return d.model.class().join(" ") + " " + "node-id-" + d.model.id;
             }
 
             var circles = view.selectAll("circle.node")
@@ -1206,62 +1192,62 @@ gd = {};
 
             circles
                 .attr("r", function(node) {
-                    return node.radius.mid();
+                    return node.model.radius.mid();
                 })
                 .attr("fill", "white")
                 .attr("stroke", "black")
                 .attr("stroke-width", function(node) {
-                    return node.style("border-width");
+                    return node.model.style("border-width");
                 })
                 .attr("cx", field("x"))
                 .attr("cy", field("y"));
 
-            function renderBoundVariables(className) {
-                function boundVariableClasses(d) {
-                    return className + " " + d.class();
-                }
-
-                var boundVariables = view.selectAll("text." + className)
-                    .data(nodes.filter(field("caption")));
-
-                boundVariables.exit().remove();
-
-                boundVariables.enter().append("svg:text")
-                    .attr("class", boundVariableClasses)
-                    .attr("text-anchor", "middle")
-                    .attr("alignment-baseline", "central")
-                    .call(nodeBehaviour);
-
-                boundVariables
-                    .attr("x", field("x"))
-                    .attr("y", field("y"))
-                    .attr( "font-size", function ( node ) { return node.style( "font-size" ); } )
-                    .attr( "font-family", function ( node ) { return node.style( "font-family" ); } )
-                    .text(field("caption"));
+            function captionClasses(d) {
+                return "caption " + d.model.class();
             }
 
-            renderBoundVariables("caption");
+            var captions = view.selectAll("text.caption")
+                .data(nodes.filter(function(node) { return node.model.caption(); }));
+
+            captions.exit().remove();
+
+            captions.enter().append("svg:text")
+                .attr("class", captionClasses)
+                .attr("text-anchor", "middle")
+                .attr("alignment-baseline", "central")
+                .call(nodeBehaviour);
+
+            captions
+                .attr("x", field("x"))
+                .attr("y", field("y"))
+                .attr( "font-size", function ( node ) { return node.model.style( "font-size" ); } )
+                .attr( "font-family", function ( node ) { return node.model.style( "font-family" ); } )
+                .text(function(d) { return d.model.caption(); });
         }
 
         function renderRelationships( relationshipGroups, view )
         {
             function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
-                var angle = d.start.angleTo(d.end);
-                return "translate(" + d.start.ex() + "," + d.start.ey() + ") rotate(" + angle + ")";
+                var r = d.model;
+                var angle = r.start.angleTo(r.end);
+                return "translate(" + r.start.ex() + "," + r.start.ey() + ") rotate(" + angle + ")";
             }
 
             function rotateIfRightToLeft(d) {
-                return d.end.isLeftOf( d.start ) ? "rotate(180)" : null;
+                var r = d.model;
+                return r.end.isLeftOf( r.start ) ? "rotate(180)" : null;
             }
 
             function midwayBetweenStartAndEnd(d) {
-                var length = d.start.distanceTo(d.end);
-                var side = d.end.isLeftOf(d.start) ? -1 : 1;
+                var r = d.model;
+                var length = r.start.distanceTo(r.end);
+                var side = r.end.isLeftOf(r.start) ? -1 : 1;
                 return side * length / 2;
             }
 
             function relationshipClasses(d) {
-                return d.class().join(" ");
+                var r = d.model;
+                return r.class().join(" ");
             }
 
             var relatedNodesGroup = view.selectAll("g.related-pair")
@@ -1293,29 +1279,29 @@ gd = {};
             relationshipPath
                 .attr( "d", field( "arrow" ) );
 
-            function relationshipWithLabel(d) {
-                return [d].filter(method("label"));
+            function relationshipWithRelationshipType(d) {
+                return [d].filter(function(d) { return d.model.relationshipType(); });
             }
 
-            var relationshipLabel = relationshipGroup.selectAll("text.type")
-                .data(relationshipWithLabel);
+            var relationshipType = relationshipGroup.selectAll("text.type")
+                .data(relationshipWithRelationshipType);
 
-            relationshipLabel.exit().remove();
+            relationshipType.exit().remove();
 
-            relationshipLabel.enter().append("svg:text")
+            relationshipType.enter().append("svg:text")
                 .attr("class", "type")
                 .attr("text-anchor", "middle")
                 .attr("baseline-shift", "30%")
                 .attr("alignment-baseline", "alphabetic")
                 .call(relationshipBehaviour);
 
-            relationshipLabel
+            relationshipType
                 .attr("transform", rotateIfRightToLeft)
                 .attr("x", midwayBetweenStartAndEnd)
                 .attr("y", 0 )
-                .attr( "font-size", function ( relationship ) { return relationship.style( "font-size" ); } )
-                .attr( "font-family", function ( relationship ) { return relationship.style( "font-family" ); } )
-                .text(method("label"));
+                .attr( "font-size", function ( d ) { return d.model.style( "font-size" ); } )
+                .attr( "font-family", function ( d ) { return d.model.style( "font-family" ); } )
+                .text( function ( d ) { return d.model.relationshipType(); } );
         }
 
         function renderProperties( model, view, speechBubble, entities, descriminator )
