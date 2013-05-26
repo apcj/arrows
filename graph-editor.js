@@ -92,9 +92,13 @@
 
     function dragEnd()
     {
-        if ( newNode && newRelationship && newRelationship.end !== newNode )
+        if ( newNode )
         {
-            graphModel.deleteNode( newNode );
+            newNode.dragEnd();
+            if ( newRelationship && newRelationship.end !== newNode )
+            {
+                graphModel.deleteNode( newNode );
+            }
         }
         newNode = null;
         save( formatMarkup() );

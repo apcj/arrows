@@ -9,7 +9,8 @@ gd = {};
         nodeEndMargin: 11,
         speechBubbleMargin: 20,
         speechBubblePadding: 10,
-        speechBubbleStrokeWidth: 3
+        speechBubbleStrokeWidth: 3,
+        snapTolerance: 20
     };
 
     gd.model = function() {
@@ -102,6 +103,7 @@ gd = {};
 
         var Node = function() {
             var position = {};
+            var prototypePosition;
             var caption;
             var classes = [];
             var properties = new Properties(model.stylePrototype.nodeProperties);
@@ -146,9 +148,52 @@ gd = {};
                 return Math.sqrt(dx * dx + dy * dy) * internalScale;
             };
 
+            function snap( position, field, node )
+            {
+                var ideal = position[field];
+                var closestNode;
+                var closestDistance = Number.MAX_VALUE;
+                for (var nodeId in nodes) {
+                    if (nodes.hasOwnProperty(nodeId)) {
+                        var candidateNode = nodes[nodeId];
+                        if ( candidateNode != node )
+                        {
+                            var distance = Math.abs(candidateNode[field]() - ideal);
+                            if (distance < closestDistance)
+                            {
+                                closestNode = candidateNode;
+                                closestDistance = distance;
+                            }
+                        }
+                    }
+                }
+                if (closestDistance < gd.parameters.snapTolerance)
+                {
+                    return closestNode[field]();
+                }
+                else
+                {
+                    return position[field];
+                }
+            }
+
             this.drag = function(dx, dy) {
-                position.x += dx / internalScale;
-                position.y += dy / internalScale;
+                if (!prototypePosition)
+                {
+                    prototypePosition = {
+                        x: position.x,
+                        y: position.y
+                    }
+                }
+                prototypePosition.x += dx / internalScale;
+                prototypePosition.y += dy / internalScale;
+                position.x = snap(prototypePosition, "x", this);
+                position.y = snap(prototypePosition, "y", this);
+            };
+
+            this.dragEnd = function()
+            {
+                prototypePosition = undefined;
             };
 
             this.midwayTo = function(node) {
