@@ -484,17 +484,95 @@ gd = {};
             };
         };
 
-        scaling.centerOrScaleDiagramToFitSvg = function(graph, view) {
+        function effectiveBox( viewBox, viewSize )
+        {
+            if ( viewBox.width / viewSize.width > viewBox.height / viewSize.height )
+            {
+                return {
+                    x: viewBox.x,
+                    y: viewBox.y - ((viewBox.width * viewSize.height / viewSize.width) - viewBox.height) / 2,
+                    width: viewBox.width,
+                    height: viewBox.width * viewSize.height / viewSize.width
+                }
+            }
+            else
+            {
+                return {
+                    x: viewBox.x - ((viewBox.height * viewSize.width / viewSize.height) - viewBox.width) / 2,
+                    y: viewBox.y,
+                    width: viewBox.height * viewSize.width / viewSize.height,
+                    height: viewBox.height
+                }
+            }
+        }
+
+        function viewDimensions(view)
+        {
             var svgElement = view.node();
-            var viewDimensions = {
+            return {
                 width: svgElement.clientWidth,
                 height: svgElement.clientHeight
             };
-            var diagramExtent = smallestContainingBox( graph );
-            var box = scaling.centeredOrScaledViewBox( viewDimensions, diagramExtent );
+        }
+
+        scaling.centerOrScaleDiagramToFitSvg = function(graph, view) {
+            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( graph ) );
 
             view
                 .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
+        };
+
+        scaling.centerOrScaleDiagramToFitSvgSmooth = function(graph, view) {
+            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( graph ) );
+
+            view
+                .transition()
+                .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
+        };
+
+        function fitsInside( extent, box )
+        {
+            return extent.x >= box.x &&
+                extent.y >= box.y &&
+                extent.x + extent.width <= box.x + box.width &&
+                extent.y + extent.height <= box.y + box.height;
+        }
+
+        scaling.growButDoNotShrink = function(graph, view) {
+            var currentViewBoxAttr = view.attr("viewBox");
+            if ( currentViewBoxAttr === null )
+            {
+                scaling.centeredOrScaledViewBox(graph, view);
+            } else {
+                var currentDimensions = currentViewBoxAttr.split(" " ).map(parseFloat);
+                var currentBox = {
+                    x: currentDimensions[0],
+                    y: currentDimensions[1],
+                    width: currentDimensions[2],
+                    height: currentDimensions[3]
+                };
+                var diagramExtent = smallestContainingBox( graph );
+
+                var box;
+                if ( fitsInside(diagramExtent, effectiveBox( currentBox, viewDimensions( view ) ))) {
+                    box = currentBox;
+                }
+                else
+                {
+                    var idealBox = scaling.centeredOrScaledViewBox( viewDimensions(view), diagramExtent );
+                    box = {
+                      x: Math.min(currentBox.x, idealBox.x),
+                      y: Math.min(currentBox.y, idealBox.y),
+                      width: Math.max(currentBox.x + currentBox.width, idealBox.x + idealBox.width) -
+                          Math.min(currentBox.x, idealBox.x),
+                      height: Math.max(currentBox.y + currentBox.height, idealBox.y + idealBox.height) -
+                          Math.min(currentBox.y, idealBox.y)
+                    };
+                }
+
+                view
+                    .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
+            }
         };
 
         scaling.sizeSvgToFitDiagram = function(graph, view) {

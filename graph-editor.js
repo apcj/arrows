@@ -86,6 +86,7 @@
             node = newNode;
         }
         node.drag(d3.event.dx, d3.event.dy);
+        diagram.scaling(gd.scaling.growButDoNotShrink);
         draw();
     }
 
@@ -97,6 +98,7 @@
         }
         newNode = null;
         save( formatMarkup() );
+        diagram.scaling(gd.scaling.centerOrScaleDiagramToFitSvgSmooth);
         draw();
     }
 
