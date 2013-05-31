@@ -9,6 +9,7 @@ suite.addBatch({
     "simple node bounding box": function()
     {
         var node = gd.model().createNode().x( 100 ).y( 100 );
+        node.radius = new gd.Radius(50 ).border(4);
         assert.deepEqual( gd.scaling.nodeBox( node ), { x1: 46, y1: 46, x2: 154, y2: 154 } );
     },
     "convert width and height to x1 y2 x2 y2 format": {

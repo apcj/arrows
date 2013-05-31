@@ -2,7 +2,7 @@ function compareSvg( expected, actual, report )
 {
     if ( expected.tagName != actual.tagName )
     {
-        report( expected, actual, "different tag" );
+        report( expected, actual, "Expected <" + expected.tagName + "> got <" + actual.tagName + ">" );
         return;
     }
     if ( expected.childElementCount != actual.childElementCount )
@@ -82,10 +82,6 @@ d3.selectAll( ".example" ).each( function ()
     var view = exampleRow.append( "td" ).attr( "class", "actual-diagram" ).append( "svg:svg" );
 
     var models = gd.markup.parseAll( exampleRow.select( "ul.graph-diagram-markup" ) );
-    models.forEach( function ( model )
-    {
-        gd.updateTextDerivedDimensions( model );
-    } );
 
     view
         .data(models)

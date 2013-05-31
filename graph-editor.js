@@ -156,7 +156,6 @@
                 }
             });
             save( formatMarkup() );
-            gd.updateTextDerivedDimensions( graphModel );
             draw();
             cancelModal();
         }
@@ -208,7 +207,6 @@
                 }
             });
             save( formatMarkup() );
-            gd.updateTextDerivedDimensions( graphModel );
             draw();
             cancelModal();
         }
@@ -283,7 +281,6 @@
         var container = d3.select( "body" ).append( "div" );
         container.node().innerHTML = markup;
         var model = gd.markup.parse( container.select("ul.graph-diagram-markup") );
-        gd.updateTextDerivedDimensions( model );
         container.remove();
         return model;
     }

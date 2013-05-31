@@ -23,56 +23,6 @@ gd = {};
 
         var model = {};
 
-        var Radius = function(insideRadius) {
-
-            this.insideRadius = insideRadius;
-            this.borderWidth = gd.parameters.nodeStrokeWidth;
-            this.arrowMargin = gd.parameters.nodeStartMargin;
-
-            this.inside = function(insideRadius) {
-                if (arguments.length == 1)
-                {
-                    this.insideRadius = insideRadius;
-                    return this;
-                }
-                return this.insideRadius;
-            };
-
-            this.border = function(borderWidth) {
-                if (arguments.length == 1)
-                {
-                    this.borderWidth = borderWidth;
-                    return this;
-                }
-                return this.borderWidth;
-            };
-
-            this.margin = function(arrowMargin) {
-                if (arguments.length == 1)
-                {
-                    this.arrowMargin = arrowMargin;
-                    return this;
-                }
-                return this.arrowMargin;
-            };
-
-            this.mid = function() {
-                return this.insideRadius + this.borderWidth / 2;
-            };
-
-            this.outside = function() {
-                return this.insideRadius + this.borderWidth;
-            };
-
-            this.startRelationship = function() {
-                return this.insideRadius + this.borderWidth + this.arrowMargin;
-            };
-
-            this.endRelationship = function() {
-                return this.insideRadius + this.borderWidth + this.arrowMargin;
-            };
-        };
-
         var styleSet = function(stylePrototype) {
             var styles = {};
 
@@ -214,8 +164,6 @@ gd = {};
             this.isLeftOf = function(node) {
                 return this.x() < node.x();
             };
-
-            this.radius = new Radius(gd.parameters.radius - gd.parameters.nodeStrokeWidth / 2);
 
             this.caption = function(captionText) {
                 if (arguments.length == 1) {
@@ -406,10 +354,15 @@ gd = {};
 
         layoutModel.nodes = graphModel.nodeList().map( function ( node )
         {
+            var measurement = gd.wrapAndMeasureCaption( node );
+            node.radius = measurement.radius;
+
             return {
                 class: node.class,
                 x: node.ex(),
                 y: node.ey(),
+                captionLines: measurement.captionLines,
+                captionLineHeight: parsePixels( node.style( "font-size" ) ),
                 properties: gd.nodeSpeechBubble(graphModel)(node),
                 model: node
             }
@@ -1063,31 +1016,117 @@ gd = {};
         return parseFloat( fontSize.slice( 0, -2 ) );
     }
 
-    gd.updateTextDerivedDimensions = function ( model )
-    {
-        var nodes = model.nodeList();
+    gd.Radius = function(insideRadius) {
 
-        for ( var i = 0; i < nodes.length; i++ )
+        this.insideRadius = insideRadius;
+        this.borderWidth = gd.parameters.nodeStrokeWidth;
+        this.arrowMargin = gd.parameters.nodeStartMargin;
+
+        this.inside = function(insideRadius) {
+            if (arguments.length == 1)
+            {
+                this.insideRadius = insideRadius;
+                return this;
+            }
+            return this.insideRadius;
+        };
+
+        this.border = function(borderWidth) {
+            if (arguments.length == 1)
+            {
+                this.borderWidth = borderWidth;
+                return this;
+            }
+            return this.borderWidth;
+        };
+
+        this.margin = function(arrowMargin) {
+            if (arguments.length == 1)
+            {
+                this.arrowMargin = arrowMargin;
+                return this;
+            }
+            return this.arrowMargin;
+        };
+
+        this.mid = function() {
+            return this.insideRadius + this.borderWidth / 2;
+        };
+
+        this.outside = function() {
+            return this.insideRadius + this.borderWidth;
+        };
+
+        this.startRelationship = function() {
+            return this.insideRadius + this.borderWidth + this.arrowMargin;
+        };
+
+        this.endRelationship = function() {
+            return this.insideRadius + this.borderWidth + this.arrowMargin;
+        };
+    };
+
+    gd.wrapAndMeasureCaption = function()
+    {
+        return function ( node )
         {
-            var node = nodes[i];
+            function measure( text )
+            {
+                return gd.textDimensions.measure( text, node );
+            }
+
             var fontSize = node.style( "font-size" );
-            var radius = 0;
+            var insideRadius = 0;
+            var captionLines = [];
+
             if ( node.caption() ) {
-                var width = gd.textDimensions.measure( node.caption() || "", node );
+                var totalWidth = measure( node.caption() );
                 var height = parsePixels( fontSize );
+                var idealRadius = Math.sqrt( totalWidth * height / Math.PI );
+                var idealRows = idealRadius * 2 / height;
+                function idealLength( row )
+                {
+                    var rowOffset = height * (row - idealRows) / 2;
+                    return Math.sqrt( idealRadius * idealRadius - rowOffset * rowOffset) * 2;
+                }
+                var words = node.caption().split(" ");
+                var currentLine = words.shift();
+                while (words.length > 0)
+                {
+                    if ( measure(currentLine) > idealLength(captionLines.length) )
+                    {
+                        captionLines.push(currentLine);
+                        currentLine = words.shift();
+                    } else {
+                        currentLine += " " + words.shift();
+                    }
+                }
+                captionLines.push(currentLine);
+
+                for ( var row = 0; row < captionLines.length; row++ )
+                {
+                    var width = measure( captionLines[row] ) / 2;
+                    var middleRow = (captionLines.length - 1) / 2;
+                    var rowOffset = height * (row > middleRow ? (row - middleRow + 0.5) : (row - middleRow - 0.5));
+                    insideRadius = Math.max( Math.sqrt(width * width + rowOffset * rowOffset), insideRadius);
+                }
                 var padding = parsePixels( node.style( "padding" ) );
-                radius = Math.sqrt( (width / 2) * (width / 2) + (height / 2) * (height / 2) ) + padding;
             }
             var minRadius = parsePixels( node.style("min-width")) / 2;
-            if ( minRadius > radius )
+            if ( minRadius > insideRadius )
             {
-                radius = minRadius;
+                insideRadius = minRadius;
             }
-            node.radius.inside( radius );
-            node.radius.border( parsePixels( node.style( "border-width" ) ) );
-            node.radius.margin( parsePixels( node.style( "margin" ) ) );
+            var radius = new gd.Radius( insideRadius );
+            radius.border( parsePixels( node.style( "border-width" ) ) );
+            radius.margin( parsePixels( node.style( "margin" ) ) );
+
+            return {
+                radius: radius,
+                captionLines: captionLines
+            };
         }
-    };
+    }();
 
     gd.nodeSpeechBubble = function ( model )
     {
@@ -1340,11 +1379,25 @@ gd = {};
                 .attr("cy", field("y"));
 
             function captionClasses(d) {
-                return "caption " + d.model.class();
+                return "caption " + d.node.model.class();
             }
 
-            var captions = view.selectAll("text.caption")
+            var captionGroups = view.selectAll("g.caption")
                 .data(nodes.filter(function(node) { return node.model.caption(); }));
+
+            captionGroups.exit().remove();
+
+            captionGroups.enter().append("g")
+                .attr("class", "caption");
+
+            var captions = captionGroups.selectAll("text.caption")
+                .data( function ( node )
+                {
+                    return node.captionLines.map( function ( line )
+                    {
+                        return { node: node, caption: line }
+                    } );
+                } );
 
             captions.exit().remove();
 
@@ -1355,11 +1408,11 @@ gd = {};
                 .call(nodeBehaviour);
 
             captions
-                .attr("x", field("x"))
-                .attr("y", field("y"))
-                .attr( "font-size", function ( node ) { return node.model.style( "font-size" ); } )
-                .attr( "font-family", function ( node ) { return node.model.style( "font-family" ); } )
-                .text(function(d) { return d.model.caption(); });
+                .attr("x", function ( line ) { return line.node.model.x(); })
+                .attr("y", function ( line, i ) { return line.node.model.y() + (i - (line.node.captionLines.length - 1) / 2) * line.node.captionLineHeight; })
+                .attr( "font-size", function ( line ) { return line.node.model.style( "font-size" ); } )
+                .attr( "font-family", function ( line ) { return line.node.model.style( "font-family" ); } )
+                .text(function(d) { return d.caption; });
         }
 
         function renderRelationships( relationshipGroups, view )
@@ -1593,7 +1646,6 @@ gd = {};
                 var figure = d3.select( this );
                 var markup = figure.select( "ul.graph-diagram-markup" );
                 var model = gd.markup.parse( markup );
-                gd.updateTextDerivedDimensions( model );
                 figure.selectAll( "svg" )
                     .data( [model] )
                     .enter()
