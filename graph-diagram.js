@@ -350,37 +350,46 @@ gd = {};
 
     gd.layout = function(graphModel)
     {
-        var layoutModel = {};
+        var layoutModel = {
+            graphModel: graphModel,
+            nodes: [],
+            relationships: [],
+            relationshipGroups: []
+        };
 
-        layoutModel.nodes = graphModel.nodeList().map( function ( node )
+        var nodesById = {};
+
+        graphModel.nodeList().forEach( function ( node )
         {
             var measurement = gd.wrapAndMeasureCaption( node );
-            node.radius = measurement.radius;
 
-            return {
+            var layoutNode = {
                 class: node.class,
                 x: node.ex(),
                 y: node.ey(),
+                radius: measurement.radius,
                 captionLines: measurement.captionLines,
                 captionLineHeight: parsePixels( node.style( "font-size" ) ),
-                properties: gd.nodeSpeechBubble(graphModel)(node),
+                properties: gd.nodeSpeechBubble( graphModel )( node, measurement.radius ),
                 model: node
-            }
+            };
+            nodesById[node.id] = layoutNode;
+            layoutModel.nodes.push(layoutNode);
         } );
 
-        function horizontalArrow(relationship, offset) {
-            var length = relationship.start.distanceTo(relationship.end);
+        function horizontalArrow(relationship, start, end, offset) {
+            var length = start.model.distanceTo(end.model);
             var arrowWidth = parsePixels( relationship.style( "border-width" ) );
             if (offset === 0)
             {
                 return gd.horizontalArrowOutline(
-                    relationship.start.radius.startRelationship(),
-                    (length - relationship.end.radius.endRelationship()),
+                    start.radius.startRelationship(),
+                    (length - end.radius.endRelationship()),
                     arrowWidth );
             }
             return gd.curvedArrowOutline(
-                relationship.start.radius.startRelationship(),
-                relationship.end.radius.endRelationship(),
+                start.radius.startRelationship(),
+                end.radius.endRelationship(),
                 length,
                 offset,
                 arrowWidth,
@@ -389,23 +398,30 @@ gd = {};
             );
         }
 
-        layoutModel.relationshipGroups = graphModel.groupedRelationshipList().map( function( group ) {
+        graphModel.groupedRelationshipList().forEach( function( group ) {
             var nominatedStart = group[0].start;
             var offsetStep = 30;
-            var relationships = [];
+            var relationshipGroup = [];
             for ( var i = 0; i < group.length; i++ )
             {
                 var relationship = group[i];
                 var offset = (relationship.start === nominatedStart ? 1 : -1) *
                     offsetStep * (i - (group.length - 1) / 2);
 
-                relationships.push( {
-                    arrow: horizontalArrow(relationship, offset),
-                    properties: gd.relationshipSpeechBubble()(relationship),
+                var start = nodesById[relationship.start.id];
+                var end = nodesById[relationship.end.id];
+
+                var layoutRelationship = {
+                    start: start,
+                    end: end,
+                    arrow: horizontalArrow( relationship, start, end, offset ),
+                    properties: gd.relationshipSpeechBubble()( relationship ),
                     model: relationship
-                } );
+                };
+                relationshipGroup.push( layoutRelationship );
+                layoutModel.relationships.push(layoutRelationship);
             }
-            return relationships;
+            layoutModel.relationshipGroups.push(relationshipGroup);
         } );
 
         return layoutModel;
@@ -419,10 +435,10 @@ gd = {};
         {
             var margin = node.radius.outside();
             return {
-                x1: node.ex() - margin,
-                y1: node.ey() - margin,
-                x2: node.ex() + margin,
-                y2: node.ey() + margin
+                x1: node.model.ex() - margin,
+                y1: node.model.ey() - margin,
+                x2: node.model.ex() + margin,
+                y2: node.model.ey() + margin
             };
         };
 
@@ -453,16 +469,16 @@ gd = {};
             } );
         };
 
-        function smallestContainingBox(graph) {
-            function boundingBox( speechBubble )
+        function smallestContainingBox(layoutModel) {
+            function boundingBox( entity )
             {
-                return speechBubble.boundingBox;
+                return entity.properties.boundingBox;
             }
 
-            var bounds = scaling.boxUnion( graph.nodeList().map( scaling.nodeBox )
-                .concat( graph.nodeList().filter(gd.hasProperties ).map( gd.nodeSpeechBubble( graph ) ).map( boundingBox )
+            var bounds = scaling.boxUnion( layoutModel.nodes.map( scaling.nodeBox )
+                .concat( layoutModel.nodes.filter(gd.hasProperties ).map( boundingBox )
                 .map( scaling.boxNormalise ) )
-                .concat( graph.relationshipList().filter(gd.hasProperties ).map( gd.relationshipSpeechBubble() ).map( boundingBox )
+                .concat( layoutModel.relationships.filter(gd.hasProperties ).map( boundingBox )
                 .map( scaling.boxNormalise ) ) );
 
             return { x: bounds.x1, y: bounds.y1,
@@ -513,15 +529,15 @@ gd = {};
             };
         }
 
-        scaling.centerOrScaleDiagramToFitSvg = function(graph, view) {
-            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( graph ) );
+        scaling.centerOrScaleDiagramToFitSvg = function(layoutModel, view) {
+            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( layoutModel ) );
 
             view
                 .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
         };
 
-        scaling.centerOrScaleDiagramToFitSvgSmooth = function(graph, view) {
-            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( graph ) );
+        scaling.centerOrScaleDiagramToFitSvgSmooth = function(layoutModel, view) {
+            var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( layoutModel ) );
 
             view
                 .transition()
@@ -536,11 +552,11 @@ gd = {};
                 extent.y + extent.height <= box.y + box.height;
         }
 
-        scaling.growButDoNotShrink = function(graph, view) {
+        scaling.growButDoNotShrink = function(layoutModel, view) {
             var currentViewBoxAttr = view.attr("viewBox");
             if ( currentViewBoxAttr === null )
             {
-                scaling.centeredOrScaledViewBox(graph, view);
+                scaling.centeredOrScaledViewBox(layoutModel, view);
             } else {
                 var currentDimensions = currentViewBoxAttr.split(" " ).map(parseFloat);
                 var currentBox = {
@@ -549,7 +565,7 @@ gd = {};
                     width: currentDimensions[2],
                     height: currentDimensions[3]
                 };
-                var diagramExtent = smallestContainingBox( graph );
+                var diagramExtent = smallestContainingBox( layoutModel );
 
                 var box;
                 if ( fitsInside(diagramExtent, effectiveBox( currentBox, viewDimensions( view ) ))) {
@@ -573,13 +589,13 @@ gd = {};
             }
         };
 
-        scaling.sizeSvgToFitDiagram = function(graph, view) {
-            var box = smallestContainingBox( graph );
+        scaling.sizeSvgToFitDiagram = function(layoutModel, view) {
+            var box = smallestContainingBox( layoutModel );
 
             view
                 .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ))
-                .attr("width", box.width * graph.externalScale())
-                .attr("height", box.height * graph.externalScale());
+                .attr("width", box.width * layoutModel.graphModel.externalScale())
+                .attr("height", box.height * layoutModel.graphModel.externalScale());
         };
 
         return scaling;
@@ -1130,7 +1146,7 @@ gd = {};
 
     gd.nodeSpeechBubble = function ( model )
     {
-        return function ( node )
+        return function ( node, radius )
         {
             var relatedNodes = [];
             model.relationshipList().forEach( function ( relationship )
@@ -1166,19 +1182,19 @@ gd = {};
             var margin = parsePixels( properties.style( "margin" ) );
             var padding = parsePixels( properties.style( "padding" ) );
 
-            var diagonalRadius = node.radius.mid() * Math.sqrt( 2 ) / 2;
+            var diagonalRadius = radius.mid() * Math.sqrt( 2 ) / 2;
             var nodeOffsetOptions = {
                 diagonal:{ attach:{ x:diagonalRadius, y:diagonalRadius },
                     textCorner:{
                         x:margin + padding,
                         y:margin + padding
                     } },
-                horizontal:{ attach:{ x:node.radius.mid(), y:0 },
+                horizontal:{ attach:{ x:radius.mid(), y:0 },
                     textCorner:{
                         x:margin + padding,
                         y:-textSize.height / 2
                     } },
-                vertical:{ attach:{ x:0, y:node.radius.mid() },
+                vertical:{ attach:{ x:0, y:radius.mid() },
                     textCorner:{
                         x:-textSize.width / 2,
                         y:margin + padding
@@ -1328,9 +1344,9 @@ gd = {};
         return textDimensions;
     }();
 
-    gd.hasProperties = function ( node )
+    gd.hasProperties = function ( entity )
     {
-        return node.properties().list().length > 0;
+        return entity.model.properties().list().length > 0;
     };
 
     gd.diagram = function()
@@ -1368,7 +1384,7 @@ gd = {};
 
             circles
                 .attr("r", function(node) {
-                    return node.model.radius.mid();
+                    return node.radius.mid();
                 })
                 .attr("fill", "white")
                 .attr("stroke", "black")
@@ -1417,19 +1433,17 @@ gd = {};
 
         function renderRelationships( relationshipGroups, view )
         {
-            function translateToStartNodeCenterAndRotateToRelationshipAngle(d) {
-                var r = d.model;
-                var angle = r.start.angleTo(r.end);
-                return "translate(" + r.start.ex() + "," + r.start.ey() + ") rotate(" + angle + ")";
+            function translateToStartNodeCenterAndRotateToRelationshipAngle(r) {
+                var angle = r.start.model.angleTo(r.end.model);
+                return "translate(" + r.start.model.ex() + "," + r.start.model.ey() + ") rotate(" + angle + ")";
             }
 
-            function rotateIfRightToLeft(d) {
-                var r = d.model;
-                return r.end.isLeftOf( r.start ) ? "rotate(180)" : null;
+            function rotateIfRightToLeft(r) {
+                return r.end.model.isLeftOf( r.start.model ) ? "rotate(180)" : null;
             }
 
             function side(r) {
-                return r.end.isLeftOf(r.start) ? -1 : 1;
+                return r.end.model.isLeftOf(r.start.model) ? -1 : 1;
             }
 
             function relationshipClasses(d) {
@@ -1484,17 +1498,17 @@ gd = {};
 
             relationshipType
                 .attr("transform", rotateIfRightToLeft)
-                .attr("x", function(d) { return side( d.model ) * d.arrow.apex.x; } )
-                .attr("y", function(d) { return side( d.model ) * d.arrow.apex.y; } )
+                .attr("x", function(d) { return side( d ) * d.arrow.apex.x; } )
+                .attr("y", function(d) { return side( d ) * d.arrow.apex.y; } )
                 .attr( "font-size", function ( d ) { return d.model.style( "font-size" ); } )
                 .attr( "font-family", function ( d ) { return d.model.style( "font-family" ); } )
                 .text( function ( d ) { return d.model.relationshipType(); } );
         }
 
-        function renderProperties( model, view, speechBubble, entities, descriminator )
+        function renderProperties( entities, descriminator, view )
         {
             var speechBubbleGroup = view.selectAll( "g.speech-bubble." + descriminator + "-speech-bubble" )
-                .data( d3.values( entities ).filter( gd.hasProperties ).map( speechBubble( model ) ) );
+                .data( entities.filter( gd.hasProperties ).map( function(entity) { return entity.properties; } ) );
 
             speechBubbleGroup.exit().remove();
 
@@ -1589,16 +1603,6 @@ gd = {};
                 } );
         }
 
-        function renderNodeProperties( model, view )
-        {
-            renderProperties( model, view, gd.nodeSpeechBubble, model.nodeList(), "node" );
-        }
-
-        function renderRelationshipProperties( model, view )
-        {
-            renderProperties( model, view, gd.relationshipSpeechBubble, model.relationshipList(), "relationship" );
-        }
-
         var diagram = function ( selection )
         {
             selection.each( function ( model )
@@ -1608,14 +1612,12 @@ gd = {};
                 var layoutModel = gd.layout( model );
 
                 renderNodes( layoutModel.nodes, view );
-
                 renderRelationships( layoutModel.relationshipGroups, view );
 
-                renderNodeProperties( model, view );
+                renderProperties( layoutModel.nodes, "node", view );
+                renderProperties( layoutModel.relationships, "relationship", view );
 
-                renderRelationshipProperties( model, view );
-
-                scaling( model, view );
+                scaling( layoutModel, view );
             } );
         };
 
