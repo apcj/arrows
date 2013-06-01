@@ -60,16 +60,6 @@ suite.addBatch({
             assert.isTrue(node1.isLeftOf(node2));
             assert.isFalse(node2.isLeftOf(node1));
         }
-    },
-    "midway point": {
-        "find point that is midway to another node": function()  {
-            var model = gd.model();
-            var node1 = model.createNode().x(0).y(0);
-            var node2 = model.createNode().x(10).y(10);
-            var midway = node1.midwayTo(node2);
-            assert.equal(midway.x, 5);
-            assert.equal(midway.y, 5);
-        }
     }
 });
 

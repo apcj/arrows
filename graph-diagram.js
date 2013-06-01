@@ -146,13 +146,10 @@ gd = {};
                 prototypePosition = undefined;
             };
 
-            this.midwayTo = function(node) {
+            this.distance = function() {
                 var dx = node.x() - this.x();
                 var dy = node.y() - this.y();
-                return {
-                    x: (this.x() + dx / 2) * internalScale,
-                    y: (this.y() + dy / 2) * internalScale
-                };
+                return Math.sqrt(dx * dx + dy * dy) * internalScale;
             };
 
             this.angleTo = function(node) {
@@ -410,12 +407,13 @@ gd = {};
 
                 var start = nodesById[relationship.start.id];
                 var end = nodesById[relationship.end.id];
+                var arrow = horizontalArrow( relationship, start, end, offset );
 
                 var layoutRelationship = {
                     start: start,
                     end: end,
-                    arrow: horizontalArrow( relationship, start, end, offset ),
-                    properties: gd.relationshipSpeechBubble()( relationship ),
+                    arrow: arrow,
+                    properties: gd.relationshipSpeechBubble()( relationship, arrow.apex ),
                     model: relationship
                 };
                 relationshipGroup.push( layoutRelationship );
@@ -1243,7 +1241,7 @@ gd = {};
 
     gd.relationshipSpeechBubble = function ()
     {
-        return function ( relationship )
+        return function ( relationship, apex )
         {
             var properties = relationship.properties();
 
@@ -1286,7 +1284,14 @@ gd = {};
             };
             var textCorner = nodeOffsetOptions[orientation.style].textCorner;
 
-            var midPoint = relationship.start.midwayTo(relationship.end);
+            var dx = relationship.end.ex() - relationship.start.ex();
+            var dy = relationship.end.ey() - relationship.start.ey();
+            var h = Math.sqrt(dx * dx + dy * dy);
+
+            var midPoint = {
+                x: relationship.start.ex() + (apex.x * dx - apex.y * dy) / h,
+                y: relationship.start.ey() +(apex.x * dy + apex.y * dx) / h
+            };
 
             var translate = "translate(" + midPoint.x + "," + midPoint.y + ") ";
 

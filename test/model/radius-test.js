@@ -13,6 +13,7 @@ suite.addBatch({
             node.style("min-width", "92px");
             node.style("border-width", gd.parameters.nodeStrokeWidth + "px");
             node.style("margin", gd.parameters.nodeStartMargin + "px");
+            node.style("font-size", "20px");
             var caption = gd.wrapAndMeasureCaption( node );
             assert.equal(caption.radius.mid(), gd.parameters.radius);
             assert.equal(caption.radius.inside(), gd.parameters.radius - gd.parameters.nodeStrokeWidth / 2);
