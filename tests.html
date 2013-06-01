@@ -27,7 +27,11 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-54 -54 108 108" width="108" height="108">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -42,9 +46,13 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-54 -54 108 108" width="108" height="108">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -69,19 +77,24 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -54 438 108" width="438" height="108">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,0) rotate(0)">
-            <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R</text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,0) rotate(0)">
+              <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R</text>
+            </g>
           </g>
         </g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
+        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -112,47 +125,52 @@
 
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -254 438 508" width="438" height="508">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380"
-                cy="-200"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="200"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
-        </text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="-200" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B
-        </text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="200" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">C
-        </text></g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,0) rotate(-31.218402764346372)">
-            <path class="relationship"
-                  d="M 65 4 L 288.87562763149475 4 L 288.87562763149475 16 L 320.87562763149475 0 L 288.87562763149475 -16 L 288.87562763149475 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  x="176.93781381574738" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
-            </text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,0) rotate(-31.218402764346372)">
+              <path class="relationship"
+                    d="M 65 4 L 288.87562763149475 4 L 288.87562763149475 16 L 320.87562763149475 0 L 288.87562763149475 -16 L 288.87562763149475 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    x="176.93781381574738" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(380,-200) rotate(90)">
+              <path class="relationship" d="M 65 4 L 303 4 L 303 16 L 335 0 L 303 -16 L 303 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="184" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,0) rotate(31.218402764346372)">
+              <path class="relationship"
+                    d="M 65 4 L 288.87562763149475 4 L 288.87562763149475 16 L 320.87562763149475 0 L 288.87562763149475 -16 L 288.87562763149475 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    x="176.93781381574738" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
           </g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(380,-200) rotate(90)">
-            <path class="relationship" d="M 65 4 L 303 4 L 303 16 L 335 0 L 303 -16 L 303 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="184" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
-            </text>
-          </g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380"
+                  cy="-200"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="200"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
+          </text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="-200" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B
+          </text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="200" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">C
+          </text></g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,0) rotate(31.218402764346372)">
-            <path class="relationship"
-                  d="M 65 4 L 288.87562763149475 4 L 288.87562763149475 16 L 320.87562763149475 0 L 288.87562763149475 -16 L 288.87562763149475 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  x="176.93781381574738" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
-            </text>
-          </g>
-        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -174,15 +192,20 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-251.5 -54 305.5 108" width="305.5" height="108">
-        <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+        </g>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
         </g>
       </svg>
     </td>
@@ -202,22 +225,28 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-91.5 -141.5 183 395.5" width="183" height="395.5">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="200"></circle>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,0) rotate(90)">
-            <path class="relationship" d="M 65 4 L 103 4 L 103 16 L 135 0 L 103 -16 L 103 -4 L 65 -4 Z"></path>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,0) rotate(90)">
+              <path class="relationship" d="M 65 4 L 103 4 L 103 16 L 135 0 L 103 -16 L 103 -4 L 65 -4 Z"></path>
+            </g>
           </g>
         </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(0,-50) ">
-          <path class="speech-bubble-outline" transform="scale(1,-1) "
-                d="M 0 0 L -10 20 L -80 20 A 10 10 0 0 0 -90 30 L -90 80 A 10 10 0 0 0 -80 90 L 80 90 A 10 10 0 0 0 90 80 L 90 30 A 10 10 0 0 0 80 20 L 10 20 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="14" y="-55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="14" y="-55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar
-          </text>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="200"></circle>
+        </g>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(0,-50) ">
+            <path class="speech-bubble-outline" transform="scale(1,-1) "
+                  d="M 0 0 L -10 20 L -80 20 A 10 10 0 0 0 -90 30 L -90 80 A 10 10 0 0 0 -80 90 L 80 90 A 10 10 0 0 0 90 80 L 90 30 A 10 10 0 0 0 80 20 L 10 20 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="14" y="-55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="14" y="-55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar
+            </text>
+          </g>
         </g>
       </svg>
     </td>
@@ -237,21 +266,27 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-201.5 -54 255.5 408" width="255.5" height="408">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,0) rotate(90)">
-            <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,0) rotate(90)">
+              <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+            </g>
           </g>
         </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(0,134) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
+        </g>
+        <g class="layer properties">
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(0,134) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
         </g>
       </svg>
     </td>
@@ -272,9 +307,13 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-33 -83 416 166" width="416" height="166">
-        <circle class="node node-id-0" r="29" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="54" fill="white" stroke="black" stroke-width="8px" cx="150" cy="0"></circle>
-        <circle class="node node-id-2" r="79" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="29" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="54" fill="white" stroke="black" stroke-width="8px" cx="150" cy="0"></circle>
+          <circle class="node node-id-2" r="79" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
+        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -295,25 +334,29 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-44.796738985948195 -83 427.7967389859482 166" width="427.7967389859482" height="166">
-        <circle class="node node-id-0" r="40.796738985948195" fill="white" stroke="black" stroke-width="8px" cx="0"
-                cy="0"></circle>
-        <circle class="node node-id-1" r="54" fill="white" stroke="black" stroke-width="8px" cx="150" cy="0"></circle>
-        <circle class="node node-id-2" r="79" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
-          </text>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="40.796738985948195" fill="white" stroke="black" stroke-width="8px" cx="0"
+                  cy="0"></circle>
+          <circle class="node node-id-1" r="54" fill="white" stroke="black" stroke-width="8px" cx="150" cy="0"></circle>
+          <circle class="node node-id-2" r="79" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
+            </text>
+          </g>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
+            </text>
+          </g>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
+            </text>
+          </g>
         </g>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
-          </text>
-        </g>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">Aa
-          </text>
-        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -335,18 +378,22 @@
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-23.116216457830973 -68.1851310541067 391.3013475119377 136.3702621082134" width="391.3013475119377"
            height="136.3702621082134">
-        <circle class="node node-id-0" r="19.116216457830973" fill="white" stroke="black" stroke-width="8px" cx="0"
-                cy="0"></circle>
-        <circle class="node node-id-1" r="33.95413160150032" fill="white" stroke="black" stroke-width="8px" cx="150"
-                cy="0"></circle>
-        <circle class="node node-id-2" r="64.1851310541067" fill="white" stroke="black" stroke-width="8px" cx="300"
-                cy="0"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="25px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="100px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="19.116216457830973" fill="white" stroke="black" stroke-width="8px" cx="0"
+                  cy="0"></circle>
+          <circle class="node node-id-1" r="33.95413160150032" fill="white" stroke="black" stroke-width="8px" cx="150"
+                  cy="0"></circle>
+          <circle class="node node-id-2" r="64.1851310541067" fill="white" stroke="black" stroke-width="8px" cx="300"
+                  cy="0"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="25px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="100px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -367,24 +414,28 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-47 -56 403 112" width="403" height="112">
-        <circle class="node node-id-0" r="46.5" fill="white" stroke="black" stroke-width="1px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="48.5" fill="white" stroke="black" stroke-width="5px" cx="150" cy="0"></circle>
-        <circle class="node node-id-2" r="51" fill="white" stroke="black" stroke-width="10px" cx="300" cy="0"></circle>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
-          </text>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="46.5" fill="white" stroke="black" stroke-width="1px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="48.5" fill="white" stroke="black" stroke-width="5px" cx="150" cy="0"></circle>
+          <circle class="node node-id-2" r="51" fill="white" stroke="black" stroke-width="10px" cx="300" cy="0"></circle>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="0" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
+            </text>
+          </g>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
+            </text>
+          </g>
+          <g class="caption">
+            <text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
+            </text>
+          </g>
         </g>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="150" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
-          </text>
-        </g>
-        <g class="caption">
-          <text class="caption node" text-anchor="middle" alignment-baseline="central" x="300" y="0" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A
-          </text>
-        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -429,48 +480,53 @@
 
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -54 438 408" width="438" height="408">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="150"></circle>
-        <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="150"></circle>
-        <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="300"></circle>
-        <circle class="node node-id-5" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="300"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="150" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="150" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="300" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="300" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,0) rotate(0)">
-            <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
-                  font-size="25px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,0) rotate(0)">
+              <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
+                    font-size="25px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,150) rotate(0)">
+              <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,300) rotate(0)">
+              <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
+                    font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
           </g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,150) rotate(0)">
-            <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
-          </g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="150"></circle>
+          <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="150"></circle>
+          <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="300"></circle>
+          <circle class="node node-id-5" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="300"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="150" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="150" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="300" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="300" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,300) rotate(0)">
-            <path class="relationship" d="M 65 4 L 233 4 L 233 16 L 265 0 L 233 -16 L 233 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="149" y="0"
-                  font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
-          </g>
-        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -510,48 +566,53 @@
 
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -54 438 408" width="438" height="408">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="150"></circle>
-        <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="150"></circle>
-        <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="300"></circle>
-        <circle class="node node-id-5" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="300"></circle>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="150" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="150" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="300" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
-        <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="300" font-size="50px"
-              font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,0) rotate(0)">
-            <path class="relationship" d="M 65 0.5 L 261 0.5 L 261 2 L 265 0 L 261 -2 L 261 -0.5 L 65 -0.5 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="163" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,0) rotate(0)">
+              <path class="relationship" d="M 65 0.5 L 261 0.5 L 261 2 L 265 0 L 261 -2 L 261 -0.5 L 65 -0.5 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="163" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,150) rotate(0)">
+              <path class="relationship" d="M 65 2.5 L 245 2.5 L 245 10 L 265 0 L 245 -10 L 245 -2.5 L 65 -2.5 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="155" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(50,300) rotate(0)">
+              <path class="relationship" d="M 65 5 L 225 5 L 225 20 L 265 0 L 225 -20 L 225 -5 L 65 -5 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="145" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
+              </text>
+            </g>
           </g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,150) rotate(0)">
-            <path class="relationship" d="M 65 2.5 L 245 2.5 L 245 10 L 265 0 L 245 -10 L 245 -2.5 L 65 -2.5 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="155" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
-          </g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="0"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="150"></circle>
+          <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="150"></circle>
+          <circle class="node node-id-4" r="50" fill="white" stroke="black" stroke-width="8px" cx="50" cy="300"></circle>
+          <circle class="node node-id-5" r="50" fill="white" stroke="black" stroke-width="8px" cx="380" cy="300"></circle>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="0" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="150" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="150" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="50" y="300" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">A</text></g>
+          <g class="caption"><text class="caption node" text-anchor="middle" alignment-baseline="central" x="380" y="300" font-size="50px"
+                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">B</text></g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(50,300) rotate(0)">
-            <path class="relationship" d="M 65 5 L 225 5 L 225 20 L 265 0 L 225 -20 L 225 -5 L 65 -5 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="145" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">KNOWS
-            </text>
-          </g>
-        </g>
+        <g class="layer properties"></g>
       </svg>
     </td>
   </tr>
@@ -586,35 +647,40 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-409.5 -54 463.5 415.5" width="463.5" height="415.5">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="150"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -12.5 A 10 10 0 0 1 30 -22.5 L 110 -22.5 A 10 10 0 0 1 120 -12.5 L 120 12.5 A 10 10 0 0 1 110 22.5 L 30 22.5 A 10 10 0 0 1 20 12.5 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-64" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="25px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-64" y="0" alignment-baseline="central" font-size="25px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="150"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
         </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -50 A 10 10 0 0 1 30 -60 L 348 -60 A 10 10 0 0 1 358 -50 L 358 50 A 10 10 0 0 1 348 60 L 30 60 A 10 10 0 0 1 20 50 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-163" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-163" y="0" alignment-baseline="central"
-                font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -12.5 A 10 10 0 0 1 30 -22.5 L 110 -22.5 A 10 10 0 0 1 120 -12.5 L 120 12.5 A 10 10 0 0 1 110 22.5 L 30 22.5 A 10 10 0 0 1 20 12.5 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-64" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="25px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-64" y="0" alignment-baseline="central" font-size="25px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -50 A 10 10 0 0 1 30 -60 L 348 -60 A 10 10 0 0 1 358 -50 L 358 50 A 10 10 0 0 1 348 60 L 30 60 A 10 10 0 0 1 20 50 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-163" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-163" y="0" alignment-baseline="central"
+                  font-size="100px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
         </g>
       </svg>
     </td>
@@ -645,35 +711,40 @@
 
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-251.5 -54 305.5 408" width="305.5" height="408">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="150"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="1px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer relationships"></g>
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="150"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
         </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="5px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="10px"></path>
-          <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,0) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="1px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,150) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="5px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
+          <g class="speech-bubble node-speech-bubble" transform="translate(-50,300) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 190 -35 A 10 10 0 0 1 200 -25 L 200 25 A 10 10 0 0 1 190 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="10px"></path>
+            <text class="speech-bubble-content property-key" x="-96" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">foo:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-96" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">bar</text>
+          </g>
         </g>
       </svg>
     </td>
@@ -744,122 +815,128 @@
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-147.85533905932738 -126.85533905932738 595.7106781186548 553.7106781186548"
            width="595.7106781186548" height="553.7106781186548">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="300" cy="300"></circle>
-        <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,0) rotate(0)">
-            <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
-            </text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,0) rotate(0)">
+              <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(300,0) rotate(90)">
+              <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(300,300) rotate(180)">
+              <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    transform="rotate(180)" x="-134" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,300) rotate(-90)">
+              <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
+                    font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
           </g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(300,0) rotate(90)">
-            <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="300" cy="0"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="300" cy="300"></circle>
+          <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="300"></circle>
+        </g>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(-35.35533905932738,-35.35533905932738) ">
+            <path class="speech-bubble-outline" transform="scale(-1,-1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="-55" alignment-baseline="central"
+                  text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="-55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(300,300) rotate(180)">
-            <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  transform="rotate(180)" x="-134" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+          <g class="speech-bubble node-speech-bubble" transform="translate(335.3553390593274,-35.35533905932738) ">
+            <path class="speech-bubble-outline" transform="scale(1,-1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="-55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="-55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,300) rotate(-90)">
-            <path class="relationship" d="M 65 4 L 203 4 L 203 16 L 235 0 L 203 -16 L 203 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic" x="134" y="0"
-                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+          <g class="speech-bubble node-speech-bubble" transform="translate(335.3553390593274,335.3553390593274) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-35.35533905932738,-35.35533905932738) ">
-          <path class="speech-bubble-outline" transform="scale(-1,-1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="-55" alignment-baseline="central"
-                text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="-55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(335.3553390593274,-35.35533905932738) ">
-          <path class="speech-bubble-outline" transform="scale(1,-1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="-55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="-55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(335.3553390593274,335.3553390593274) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-35.35533905932738,335.3553390593274) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(134,0) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
-                text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(300,134) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(166,300) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
-                text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(0,166) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
+          <g class="speech-bubble node-speech-bubble" transform="translate(-35.35533905932738,335.3553390593274) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(134,0) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
+                  text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(300,134) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(166,300) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
+                  text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(0,166) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
         </g>
       </svg>
     </td>
@@ -923,129 +1000,135 @@
     </td>
     <td class="expected-diagram">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="-412.5 -391.5 825 783" width="825" height="783">
-        <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="-250" cy="0"></circle>
-        <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="250"></circle>
-        <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="250" cy="0"></circle>
-        <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="-250"></circle>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(-250,0) rotate(45)">
-            <path class="relationship"
-                  d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  x="160.7766952966369" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
-            </text>
+        <g class="layer relationships">
+          <g class="related-pair">
+            <g class="relationship" transform="translate(-250,0) rotate(45)">
+              <path class="relationship"
+                    d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    x="160.7766952966369" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,250) rotate(-45)">
+              <path class="relationship"
+                    d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    x="160.7766952966369" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(250,0) rotate(-135)">
+              <path class="relationship"
+                    d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    transform="rotate(180)" x="-160.7766952966369" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
+          </g>
+          <g class="related-pair">
+            <g class="relationship" transform="translate(0,-250) rotate(135)">
+              <path class="relationship"
+                    d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
+              <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
+                    transform="rotate(180)" x="-160.7766952966369" y="0" font-size="50px"
+                    font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+              </text>
+            </g>
           </g>
         </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,250) rotate(-45)">
-            <path class="relationship"
-                  d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  x="160.7766952966369" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+        <g class="layer nodes">
+          <circle class="node node-id-0" r="50" fill="white" stroke="black" stroke-width="8px" cx="-250" cy="0"></circle>
+          <circle class="node node-id-1" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="250"></circle>
+          <circle class="node node-id-2" r="50" fill="white" stroke="black" stroke-width="8px" cx="250" cy="0"></circle>
+          <circle class="node node-id-3" r="50" fill="white" stroke="black" stroke-width="8px" cx="0" cy="-250"></circle>
+        </g>
+        <g class="layer properties">
+          <g class="speech-bubble node-speech-bubble" transform="translate(-300,0) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(250,0) rotate(-135)">
-            <path class="relationship"
-                  d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  transform="rotate(180)" x="-160.7766952966369" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+          <g class="speech-bubble node-speech-bubble" transform="translate(0,300) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
+                  text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="related-pair">
-          <g class="relationship" transform="translate(0,-250) rotate(135)">
-            <path class="relationship"
-                  d="M 65 4 L 256.5533905932738 4 L 256.5533905932738 16 L 288.5533905932738 0 L 256.5533905932738 -16 L 256.5533905932738 -4 L 65 -4 Z"></path>
-            <text class="type" text-anchor="middle" baseline-shift="30%" alignment-baseline="alphabetic"
-                  transform="rotate(180)" x="-160.7766952966369" y="0" font-size="50px"
-                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">R
+          <g class="speech-bubble node-speech-bubble" transform="translate(300,0) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="0" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="0" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
             </text>
           </g>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(-300,0) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(0,300) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="13.5" y="55" alignment-baseline="central"
-                text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="13.5" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(300,0) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L 20 -10 L 20 -25 A 10 10 0 0 1 30 -35 L 101 -35 A 10 10 0 0 1 111 -25 L 111 25 A 10 10 0 0 1 101 35 L 30 35 A 10 10 0 0 1 20 25 L 20 10 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="0" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="0" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble node-speech-bubble" transform="translate(0,-300) ">
-          <path class="speech-bubble-outline" transform="scale(1,-1) "
-                d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="13.5" y="-55" alignment-baseline="central"
-                text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="13.5" y="-55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(-136.31370849898474,113.68629150101525) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(113.68629150101525,136.31370849898474) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(136.31370849898474,-113.68629150101525) ">
-          <path class="speech-bubble-outline" transform="scale(-1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
-        </g>
-        <g class="speech-bubble relationship-speech-bubble" transform="translate(-113.68629150101525,-136.31370849898474) ">
-          <path class="speech-bubble-outline" transform="scale(1,1) "
-                d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
-                fill="none" stroke="black" stroke-width="3px"></path>
-          <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
-                font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
-          <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
-                font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
-          </text>
+          <g class="speech-bubble node-speech-bubble" transform="translate(0,-300) ">
+            <path class="speech-bubble-outline" transform="scale(1,-1) "
+                  d="M 0 0 L -10 20 L -35.5 20 A 10 10 0 0 0 -45.5 30 L -45.5 80 A 10 10 0 0 0 -35.5 90 L 35.5 90 A 10 10 0 0 0 45.5 80 L 45.5 30 A 10 10 0 0 0 35.5 20 L 10 20 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="13.5" y="-55" alignment-baseline="central"
+                  text-anchor="end" font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="13.5" y="-55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(-136.31370849898474,113.68629150101525) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(113.68629150101525,136.31370849898474) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(136.31370849898474,-113.68629150101525) ">
+            <path class="speech-bubble-outline" transform="scale(-1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="-52" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="-52" y="55" alignment-baseline="central"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
+          <g class="speech-bubble relationship-speech-bubble" transform="translate(-113.68629150101525,-136.31370849898474) ">
+            <path class="speech-bubble-outline" transform="scale(1,1) "
+                  d="M 0 0 L 30 20 L 101 20 A 10 10 0 0 1 111 30 L 111 80 A 10 10 0 0 1 101 90 L 30 90 A 10 10 0 0 1 20 80 L 20 30 Z"
+                  fill="white" stroke="black" stroke-width="3px"></path>
+            <text class="speech-bubble-content property-key" x="79" y="55" alignment-baseline="central" text-anchor="end"
+                  font-size="50px" font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">k:&nbsp;</text>
+            <text class="speech-bubble-content property-value" x="79" y="55" alignment-baseline="central" font-size="50px"
+                  font-family="'Gill Sans', 'Gill Sans MT', Calibri, sans-serif">v
+            </text>
+          </g>
         </g>
       </svg>
     </td>

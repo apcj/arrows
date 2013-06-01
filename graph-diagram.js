@@ -1543,7 +1543,7 @@ gd = {};
                 {
                     return speechBubble.outlinePath;
                 } )
-                .attr( "fill", "none" )
+                .attr( "fill", "white" )
                 .attr( "stroke", "black" )
                 .attr( "stroke-width", function ( speechBubble )
                 {
@@ -1616,11 +1616,21 @@ gd = {};
 
                 var layoutModel = gd.layout( model );
 
-                renderNodes( layoutModel.nodes, view );
-                renderRelationships( layoutModel.relationshipGroups, view );
+                function layer(name)
+                {
+                    var layer = view.selectAll( "g.layer." + name ).data( [name] );
 
-                renderProperties( layoutModel.nodes, "node", view );
-                renderProperties( layoutModel.relationships, "relationship", view );
+                    layer.enter().append("g")
+                        .attr("class", "layer " + name);
+
+                    return layer;
+                }
+
+                renderRelationships( layoutModel.relationshipGroups, layer("relationships") );
+                renderNodes( layoutModel.nodes, layer("nodes") );
+
+                renderProperties( layoutModel.nodes, "node", layer("properties") );
+                renderProperties( layoutModel.relationships, "relationship", layer("properties") );
 
                 scaling( layoutModel, view );
             } );
