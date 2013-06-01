@@ -369,7 +369,7 @@ gd = {};
                 y: node.ey(),
                 radius: measurement.radius,
                 captionLines: measurement.captionLines,
-                captionLineHeight: parsePixels( node.style( "font-size" ) ),
+                captionLineHeight: measurement.captionLineHeight,
                 properties: gd.nodeSpeechBubble( graphModel )( node, measurement.radius ),
                 model: node
             };
@@ -1091,18 +1091,17 @@ gd = {};
                 return gd.textDimensions.measure( text, node );
             }
 
-            var fontSize = node.style( "font-size" );
+            var lineHeight = parsePixels( node.style( "font-size" ) );
             var insideRadius = 0;
             var captionLines = [];
 
             if ( node.caption() ) {
                 var totalWidth = measure( node.caption() );
-                var height = parsePixels( fontSize );
-                var idealRadius = Math.sqrt( totalWidth * height / Math.PI );
-                var idealRows = idealRadius * 2 / height;
+                var idealRadius = Math.sqrt( totalWidth * lineHeight / Math.PI );
+                var idealRows = idealRadius * 2 / lineHeight;
                 function idealLength( row )
                 {
-                    var rowOffset = height * (row - idealRows) / 2;
+                    var rowOffset = lineHeight * (row - idealRows) / 2;
                     return Math.sqrt( idealRadius * idealRadius - rowOffset * rowOffset) * 2;
                 }
                 var words = node.caption().split(" ");
@@ -1123,7 +1122,7 @@ gd = {};
                 {
                     var width = measure( captionLines[row] ) / 2;
                     var middleRow = (captionLines.length - 1) / 2;
-                    var rowOffset = height * (row > middleRow ? (row - middleRow + 0.5) : (row - middleRow - 0.5));
+                    var rowOffset = lineHeight * (row > middleRow ? (row - middleRow + 0.5) : (row - middleRow - 0.5));
                     insideRadius = Math.max( Math.sqrt(width * width + rowOffset * rowOffset), insideRadius);
                 }
                 var padding = parsePixels( node.style( "padding" ) );
@@ -1139,7 +1138,8 @@ gd = {};
 
             return {
                 radius: radius,
-                captionLines: captionLines
+                captionLines: captionLines,
+                captionLineHeight: lineHeight
             };
         }
     }();
