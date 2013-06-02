@@ -5,8 +5,9 @@
   <script type="text/javascript" src="graph-diagram.js"></script>
   <link rel="stylesheet" href="lib/bootstrap.css" type="text/css">
   <link rel="stylesheet" href="graph-diagram.css" type="text/css">
-  <link rel="stylesheet" href="graph-style-chunky.css" type="text/css">
+  <link rel="stylesheet" class="graph-style" href="graph-style-chunky.css" type="text/css">
   <link rel="stylesheet" href="graph-editor.css" type="text/css">
+  <script type="text/javascript" src="graph-editor.js"></script>
   <title>Arrow Tool</title>
 </head>
 <body>
@@ -15,6 +16,7 @@
   <button class="btn" id="add_node_button"><i class="icon-plus"></i> Node</button>
   <button class="btn" id="exportMarkupButton">Export Markup</button>
   <button class="btn" id="exportSvgButton">Export SVG</button>
+  <button class="btn" id="chooseStyleButton">Choose Style</button>
   <label for="internalScale">Internal Scale</label>
   <input id="internalScale" type="range" min="0.1" max="5" value="1" step="0.01">
 </div>
@@ -31,6 +33,25 @@
   <div class="modal-footer">
     <a href="#" class="btn cancel">Cancel</a>
     <a href="#" class="btn btn-primary" id="save_markup">Save</a>
+  </div>
+</div>
+<div class="modal hide choose-style">
+  <div class="modal-header">
+    <h3>Choose Style</h3>
+  </div>
+  <div class="modal-body">
+    <label class="radio">
+      <input type="radio" name="styleChoice" value="graph-style-chunky.css" checked>
+      Chunky
+    </label>
+    <label class="radio">
+      <input type="radio" name="styleChoice" value="graph-style-bootstrap.css">
+      Bootstrap
+    </label>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn cancel">Cancel</a>
+    <a href="#" class="btn btn-primary" id="saveStyle">Save</a>
   </div>
 </div>
 <div class="modal hide pop-up-editor node" tabindex="-1">
@@ -93,7 +114,6 @@
 
 <div id="canvas"></div>
 
-<script type="text/javascript" src="graph-editor.js"></script>
 
 </body>
 </html>

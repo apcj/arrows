@@ -1,10 +1,16 @@
-(function()
+window.onload = function()
 {
     var graphModel;
-    if (!localStorage.getItem("graph-diagram-markup")) {
+    if ( !localStorage.getItem( "graph-diagram-markup" ) )
+    {
         graphModel = gd.model();
-        graphModel.createNode().x( 50 ).y( 140 );
+        graphModel.createNode().x( 0 ).y( 0 );
         save( formatMarkup() );
+    }
+    if ( localStorage.getItem( "graph-diagram-style" ) )
+    {
+        d3.select( "link.graph-style" )
+            .attr( "href", localStorage.getItem( "graph-diagram-style" ) );
     }
     graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
 
@@ -36,6 +42,7 @@
     function save( markup )
     {
         localStorage.setItem( "graph-diagram-markup", markup );
+        localStorage.setItem( "graph-diagram-style", d3.select( "link.graph-style" ).attr( "href" ) );
     }
 
     var newNode = null;
@@ -305,6 +312,23 @@
         window.open( "data:image/svg+xml;base64," + btoa( modifiedSvg ) );
     };
 
+    var chooseStyle = function()
+    {
+        appendModalBackdrop();
+        d3.select( ".modal.choose-style" ).classed( "hide", false );
+    };
+
+    d3.select("#saveStyle" ).on("click", function() {
+        var selectedStyle = d3.selectAll("input[name=styleChoice]" )[0]
+            .filter(function(input) { return input.checked; })[0].value;
+        d3.select("link.graph-style")
+            .attr("href", selectedStyle);
+
+        graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
+        draw();
+        cancelModal();
+    });
+
     function changeInternalScale() {
         graphModel.internalScale(d3.select("#internalScale").node().value);
         draw();
@@ -315,10 +339,11 @@
     d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
+    d3.select( "#chooseStyleButton" ).on( "click", chooseStyle );
     d3.selectAll( ".modal-dialog" ).on( "click", function ()
     {
         d3.event.stopPropagation();
     } );
 
     draw();
-})();
+};
