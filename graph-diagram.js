@@ -376,7 +376,7 @@ gd = {};
 
         function horizontalArrow(relationship, start, end, offset) {
             var length = start.model.distanceTo(end.model);
-            var arrowWidth = parsePixels( relationship.style( "border-width" ) );
+            var arrowWidth = parsePixels( relationship.style( "width" ) );
             if (offset === 0)
             {
                 return gd.horizontalArrowOutline(
@@ -397,7 +397,7 @@ gd = {};
 
         graphModel.groupedRelationshipList().forEach( function( group ) {
             var nominatedStart = group[0].start;
-            var offsetStep = 30;
+            var offsetStep = parsePixels( group[0].style( "margin" ) );
             var relationshipGroup = [];
             for ( var i = 0; i < group.length; i++ )
             {
@@ -626,13 +626,16 @@ gd = {};
         function copyStyles( entity, markup )
         {
             var computedStyle = window.getComputedStyle(markup.node() );
+            copyStyle( entity, computedStyle, "width" );
             copyStyle( entity, computedStyle, "min-width" );
             copyStyle( entity, computedStyle, "font-family" );
             copyStyle( entity, computedStyle, "font-size" );
             copyStyle( entity, computedStyle, "margin", "margin-top" );
             copyStyle( entity, computedStyle, "padding", "padding-top" );
+            copyStyle( entity, computedStyle, "background-color" );
             copyStyle( entity, computedStyle, "border-width", "border-top-width" );
             copyStyle( entity, computedStyle, "border-style", "border-top-style" );
+            copyStyle( entity, computedStyle, "border-color", "border-top-color" );
         }
 
         markup.parse = function(selection) {
@@ -1094,6 +1097,7 @@ gd = {};
             var captionLines = [];
 
             if ( node.caption() ) {
+                var padding = parsePixels( node.style( "padding" ) );
                 var totalWidth = measure( node.caption() );
                 var idealRadius = Math.sqrt( totalWidth * lineHeight / Math.PI );
                 var idealRows = idealRadius * 2 / lineHeight;
@@ -1121,9 +1125,8 @@ gd = {};
                     var width = measure( captionLines[row] ) / 2;
                     var middleRow = (captionLines.length - 1) / 2;
                     var rowOffset = lineHeight * (row > middleRow ? (row - middleRow + 0.5) : (row - middleRow - 0.5));
-                    insideRadius = Math.max( Math.sqrt(width * width + rowOffset * rowOffset), insideRadius);
+                    insideRadius = padding + Math.max( Math.sqrt(width * width + rowOffset * rowOffset), insideRadius);
                 }
-                var padding = parsePixels( node.style( "padding" ) );
             }
             var minRadius = parsePixels( node.style("min-width")) / 2;
             if ( minRadius > insideRadius )
@@ -1391,8 +1394,12 @@ gd = {};
                 .attr("r", function(node) {
                     return node.radius.mid();
                 })
-                .attr("fill", "white")
-                .attr("stroke", "black")
+                .attr("fill", function(node) {
+                    return node.model.style("background-color");
+                })
+                .attr("stroke", function(node) {
+                    return node.model.style("border-color");
+                })
                 .attr("stroke-width", function(node) {
                     return node.model.style("border-width");
                 })
@@ -1483,7 +1490,16 @@ gd = {};
                 .call(relationshipBehaviour);
 
             relationshipPath
-                .attr( "d", function(d) { return d.arrow.outline; } );
+                .attr( "d", function(d) { return d.arrow.outline; } )
+                .attr( "fill", function(node) {
+                    return node.model.style("background-color");
+                })
+                .attr("stroke", function(node) {
+                    return node.model.style("border-color");
+                })
+                .attr("stroke-width", function(node) {
+                    return node.model.style("border-width");
+                });
 
             function relationshipWithRelationshipType(d) {
                 return [d].filter(function(d) { return d.model.relationshipType(); });
@@ -1543,8 +1559,14 @@ gd = {};
                 {
                     return speechBubble.outlinePath;
                 } )
-                .attr( "fill", "white" )
-                .attr( "stroke", "black" )
+                .attr( "fill", function ( speechBubble )
+                {
+                    return speechBubble.style( "background-color" );
+                } )
+                .attr( "stroke", function ( speechBubble )
+                {
+                    return speechBubble.style( "border-color" );
+                } )
                 .attr( "stroke-width", function ( speechBubble )
                 {
                     return speechBubble.style( "border-width" );

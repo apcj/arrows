@@ -7,17 +7,22 @@
     margin: 11px;
     padding: 15px;
     min-width: 92px;
+    background-color: white;
     border: 8px solid black;
 }
 
 .graph-diagram-markup .relationship {
     font-size: 50px;
-    border: 8px solid black;
+    width: 8px;
+    margin: 30px;
+    background-color: black;
+    border: none;
 }
 
 .graph-diagram-markup .properties {
     font-size: 50px;
     margin: 20px;
     padding: 10px;
+    background-color: white;
     border: 3px solid black;
 }

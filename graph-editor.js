@@ -325,6 +325,7 @@ window.onload = function()
             .attr("href", selectedStyle);
 
         graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
+        save(formatMarkup());
         draw();
         cancelModal();
     });
