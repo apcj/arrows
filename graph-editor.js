@@ -20,17 +20,72 @@ window.onload = function()
 
     var diagram = gd.diagram()
         .scaling(gd.scaling.centerOrScaleDiagramToFitSvg)
-        .nodeBehaviour(function ( newNodes )
-        {
-            newNodes
+        .overlay(function(layoutModel, view) {
+            var nodeOverlays = view.selectAll("circle.node.overlay")
+                .data(layoutModel.nodes);
+
+            nodeOverlays.exit().remove();
+
+            nodeOverlays.enter().append("circle")
+                .attr("class", "node overlay")
                 .call( d3.behavior.drag().on( "drag", drag ).on( "dragend", dragEnd ) )
                 .on( "dblclick", editNode );
 
-        } ).relationshipBehaviour( function ( newRelationships )
-        {
-            newRelationships
+            nodeOverlays
+                .attr("r", function(node) {
+                    return node.radius.outside();
+                })
+                .attr("stroke", "none")
+                .attr("fill", "rgba(255, 255, 255, 0)")
+                .attr("cx", function(node) {
+                    return node.x;
+                })
+                .attr("cy", function(node) {
+                    return node.y;
+                });
+
+            var nodeRings = view.selectAll("circle.node.ring")
+                .data(layoutModel.nodes);
+
+            nodeRings.exit().remove();
+
+            nodeRings.enter().append("circle")
+                .attr("class", "node ring")
+                .call( d3.behavior.drag().on( "drag", dragRing ).on( "dragend", dragEnd ) );
+
+            nodeRings
+                .attr("r", function(node) {
+                    return node.radius.outside() + 5;
+                })
+                .attr("fill", "none")
+                .attr("stroke", "rgba(255, 255, 255, 0)")
+                .attr("stroke-width", "10px")
+                .attr("cx", function(node) {
+                    return node.x;
+                })
+                .attr("cy", function(node) {
+                    return node.y;
+                });
+
+            var relationshipsOverlays = view.selectAll("path.relationship.overlay")
+                .data(layoutModel.relationships);
+
+            relationshipsOverlays.exit().remove();
+
+            relationshipsOverlays.enter().append("path")
+                .attr("class", "relationship overlay")
+                .attr("fill", "rgba(255, 255, 255, 0)")
+                .attr("stroke", "rgba(255, 255, 255, 0)")
+                .attr("stroke-width", "10px")
                 .on( "dblclick", editRelationship );
-        } );
+
+            relationshipsOverlays
+                .attr("transform", function(r) {
+                    var angle = r.start.model.angleTo(r.end.model);
+                    return "translate(" + r.start.model.ex() + "," + r.start.model.ey() + ") rotate(" + angle + ")";
+                } )
+                .attr("d", function(d) { return d.arrow.outline; } );
+        });
 
     function draw()
     {
@@ -73,25 +128,29 @@ window.onload = function()
 
     function drag()
     {
-        var shiftKey = window.event.shiftKey;
         var node = this.__data__.model;
-        if ( !newNode && shiftKey )
+        node.drag(d3.event.dx, d3.event.dy);
+        diagram.scaling(gd.scaling.growButDoNotShrink);
+        draw();
+    }
+
+    function dragRing()
+    {
+        var node = this.__data__.model;
+        if ( !newNode )
         {
             newNode = graphModel.createNode().x( node.x() ).y( node.y() );
             newRelationship = graphModel.createRelationship( node, newNode );
         }
-        if ( newNode )
+        var connectionNode = findClosestOverlappingNode( newNode );
+        if ( connectionNode )
         {
-            var connectionNode = findClosestOverlappingNode( newNode );
-            if ( connectionNode )
-            {
-                newRelationship.end = connectionNode
-            } else
-            {
-                newRelationship.end = newNode;
-            }
-            node = newNode;
+            newRelationship.end = connectionNode
+        } else
+        {
+            newRelationship.end = newNode;
         }
+        node = newNode;
         node.drag(d3.event.dx, d3.event.dy);
         diagram.scaling(gd.scaling.growButDoNotShrink);
         draw();

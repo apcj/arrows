@@ -1359,8 +1359,7 @@ gd = {};
 
     gd.diagram = function()
     {
-        var nodeBehaviour = function() {};
-        var relationshipBehaviour = function() {};
+        var overlay = function(layoutModel, view) {};
         var scaling = gd.scaling.sizeSvgToFitDiagram;
 
         function field( fileName )
@@ -1387,8 +1386,7 @@ gd = {};
             circles.exit().remove();
 
             circles.enter().append("svg:circle")
-                .attr("class", nodeClasses)
-                .call(nodeBehaviour);
+                .attr("class", nodeClasses);
 
             circles
                 .attr("r", function(node) {
@@ -1432,8 +1430,7 @@ gd = {};
             captions.enter().append("svg:text")
                 .attr("class", captionClasses)
                 .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "central")
-                .call(nodeBehaviour);
+                .attr("alignment-baseline", "central");
 
             captions
                 .attr("x", function ( line ) { return line.node.model.x(); })
@@ -1486,8 +1483,7 @@ gd = {};
                 .data(singleton);
 
             relationshipPath.enter().append("svg:path")
-                .attr("class", relationshipClasses)
-                .call(relationshipBehaviour);
+                .attr("class", relationshipClasses);
 
             relationshipPath
                 .attr( "d", function(d) { return d.arrow.outline; } )
@@ -1514,8 +1510,7 @@ gd = {};
                 .attr("class", "type")
                 .attr("text-anchor", "middle")
                 .attr("baseline-shift", "30%")
-                .attr("alignment-baseline", "alphabetic")
-                .call(relationshipBehaviour);
+                .attr("alignment-baseline", "alphabetic");
 
             relationshipType
                 .attr("transform", rotateIfRightToLeft)
@@ -1654,17 +1649,14 @@ gd = {};
                 renderProperties( layoutModel.nodes, "node", layer("properties") );
                 renderProperties( layoutModel.relationships, "relationship", layer("properties") );
 
+                overlay( layoutModel, layer("overlay") );
+
                 scaling( layoutModel, view );
             } );
         };
 
-        diagram.nodeBehaviour = function(behaviour) {
-            nodeBehaviour = behaviour;
-            return diagram;
-        };
-
-        diagram.relationshipBehaviour = function(behaviour) {
-            relationshipBehaviour = behaviour;
+        diagram.overlay = function(behaviour) {
+            overlay = behaviour;
             return diagram;
         };
 
