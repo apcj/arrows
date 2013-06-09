@@ -2,21 +2,6 @@
     display: none;
 }
 
-.graph-diagram-markup .node {
-    padding: 2px;
-    border: 1px solid black;
-}
-
-.graph-diagram-markup .relationship {
-    border: 2px solid black;
-}
-
-.graph-diagram-markup .properties {
-    margin: 5px;
-    padding: 2px;
-    border: 1px solid black;
-}
-
 #textMeasuringCanvas {
     display: none;
 }
