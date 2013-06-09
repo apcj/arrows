@@ -139,7 +139,7 @@ window.onload = function()
         var node = this.__data__.model;
         if ( !newNode )
         {
-            newNode = graphModel.createNode().x( node.x() ).y( node.y() );
+            newNode = graphModel.createNode().x( d3.event.x ).y( d3.event.y );
             newRelationship = graphModel.createRelationship( node, newNode );
         }
         var connectionNode = findClosestOverlappingNode( newNode );
