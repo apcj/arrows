@@ -475,9 +475,9 @@ gd = {};
 
             var bounds = scaling.boxUnion( layoutModel.nodes.map( scaling.nodeBox )
                 .concat( layoutModel.nodes.filter(gd.hasProperties ).map( boundingBox )
-                .map( scaling.boxNormalise ) )
+                    .map( scaling.boxNormalise ) )
                 .concat( layoutModel.relationships.filter(gd.hasProperties ).map( boundingBox )
-                .map( scaling.boxNormalise ) ) );
+                    .map( scaling.boxNormalise ) ) );
 
             return { x: bounds.x1, y: bounds.y1,
                 width: (bounds.x2 - bounds.x1), height: (bounds.y2 - bounds.y1) }
@@ -534,6 +534,19 @@ gd = {};
                 .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
         };
 
+        scaling.centerOrScaleDiagramToFitWindow = function(layoutModel, view) {
+            var windowDimensions = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            var box = scaling.centeredOrScaledViewBox( windowDimensions, smallestContainingBox( layoutModel ) );
+
+            view
+                .attr("width", windowDimensions.width)
+                .attr("height", windowDimensions.height)
+                .attr("viewBox", [box.x, box.y, box.width, box.height].join( " " ));
+        };
+
         scaling.centerOrScaleDiagramToFitSvgSmooth = function(layoutModel, view) {
             var box = scaling.centeredOrScaledViewBox( viewDimensions(view), smallestContainingBox( layoutModel ) );
 
@@ -573,12 +586,12 @@ gd = {};
                 {
                     var idealBox = scaling.centeredOrScaledViewBox( viewDimensions(view), diagramExtent );
                     box = {
-                      x: Math.min(currentBox.x, idealBox.x),
-                      y: Math.min(currentBox.y, idealBox.y),
-                      width: Math.max(currentBox.x + currentBox.width, idealBox.x + idealBox.width) -
-                          Math.min(currentBox.x, idealBox.x),
-                      height: Math.max(currentBox.y + currentBox.height, idealBox.y + idealBox.height) -
-                          Math.min(currentBox.y, idealBox.y)
+                        x: Math.min(currentBox.x, idealBox.x),
+                        y: Math.min(currentBox.y, idealBox.y),
+                        width: Math.max(currentBox.x + currentBox.width, idealBox.x + idealBox.width) -
+                            Math.min(currentBox.x, idealBox.x),
+                        height: Math.max(currentBox.y + currentBox.height, idealBox.y + idealBox.height) -
+                            Math.min(currentBox.y, idealBox.y)
                     };
                 }
 
@@ -653,13 +666,13 @@ gd = {};
             copyStyles(model.stylePrototype.node, nodePrototype);
             copyStyles(model.stylePrototype.nodeProperties, nodePropertiesPrototype);
             nodePrototype.remove();
-            
+
             var relationshipPrototype = selection.append("li" ).attr("class", "relationship");
             var relationshipPropertiesPrototype = relationshipPrototype.append("dl" ).attr("class", "properties");
             copyStyles(model.stylePrototype.relationship, relationshipPrototype);
             copyStyles(model.stylePrototype.relationshipProperties, relationshipPropertiesPrototype);
             relationshipPrototype.remove();
-            
+
             function parseProperties(entity)
             {
                 return function() {
@@ -949,7 +962,7 @@ gd = {};
             SOUTH     : { style: "vertical",   mirrorX:  1, mirrorY:  1, angle:   90 },
             SOUTH_WEST: { style: "diagonal",   mirrorX: -1, mirrorY:  1, angle:  135 },
             WEST:       { style: "horizontal", mirrorX: -1, mirrorY:  1, angle:  180 }
-    };
+        };
 
         var relationshipAngle = relationship.start.angleTo(relationship.end);
 
@@ -1433,8 +1446,8 @@ gd = {};
                 .attr("alignment-baseline", "central");
 
             captions
-                .attr("x", function ( line ) { return line.node.model.x(); })
-                .attr("y", function ( line, i ) { return line.node.model.y() + (i - (line.node.captionLines.length - 1) / 2) * line.node.captionLineHeight; })
+                .attr("x", function ( line ) { return line.node.model.ex(); })
+                .attr("y", function ( line, i ) { return line.node.model.ey() + (i - (line.node.captionLines.length - 1) / 2) * line.node.captionLineHeight; })
                 .attr( "font-size", function ( line ) { return line.node.model.style( "font-size" ); } )
                 .attr( "font-family", function ( line ) { return line.node.model.style( "font-family" ); } )
                 .text(function(d) { return d.caption; });
@@ -1670,7 +1683,9 @@ gd = {};
 
     gd.figure = function ()
     {
-        return function ( selection )
+        var diagram = gd.diagram();
+
+        var figure = function ( selection )
         {
             selection.each( function ()
             {
@@ -1681,8 +1696,16 @@ gd = {};
                     .data( [model] )
                     .enter()
                     .append( "svg" )
-                    .call( gd.diagram() );
+                    .call( diagram );
             } );
-        }
+        };
+
+        figure.scaling = function(scalingFunction)
+        {
+            diagram.scaling(scalingFunction);
+            return figure;
+        };
+
+        return figure;
     };
 })();
