@@ -381,7 +381,7 @@ window.onload = function()
         var selectedStyle = d3.selectAll("input[name=styleChoice]" )[0]
             .filter(function(input) { return input.checked; })[0].value;
         d3.select("link.graph-style")
-            .attr("href", selectedStyle);
+            .attr("href", "style/" + selectedStyle);
 
         graphModel = parseMarkup( localStorage.getItem( "graph-diagram-markup" ) );
         save(formatMarkup());
