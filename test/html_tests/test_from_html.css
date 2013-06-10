@@ -1,0 +1,31 @@
+.markup {
+    display: none;
+}
+
+pre {
+    white-space: nowrap;
+}
+
+.examples.table {
+    width: auto;
+}
+
+.example .result {
+    opacity: 0.65;
+}
+
+.example.pass .result {
+    background-color: #51a351;
+}
+
+.example.fail .result {
+    background-color: #bd362f;
+}
+
+.example.pass .expected-diagram svg {
+    display: none;
+}
+
+.examples.all-pass .expected-diagram, .examples.all-pass .errors {
+    display: none;
+}
