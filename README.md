@@ -40,7 +40,7 @@ There's also a complete working example in [example.html](http://www.apcjones.co
 
 ## How do I draw a graph?
 
-What? You can't hold x/y coordinates in your head an type the markup straight in? 
+What? You can't hold x/y coordinates in your head and type the markup straight in?
 Don't worry, there's a graphical editor. It's in `index.html`.
 This whole repository is hosted by GitHub Pages, so you'll find the editor hosted at
 [http://www.apcjones.com/arrows/](http://www.apcjones.com/arrows/).
