@@ -365,10 +365,7 @@ window.onload = function()
     var exportSvg = function ()
     {
         var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());
-        var svgStartTag = "<svg xmlns=\"http://www.w3.org/2000/svg\"";
-        var modifiedSvg = rawSvg.replace( /<svg( [^>]*>)/, svgStartTag + "$1" ).replace(/&nbsp;/g, "\u00A0");
-        console.log(modifiedSvg);
-        window.open( "data:image/svg+xml;base64," + btoa( modifiedSvg ) );
+        window.open( "data:image/svg+xml;base64," + btoa( rawSvg ) );
     };
 
     var chooseStyle = function()
