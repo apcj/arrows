@@ -1240,7 +1240,7 @@ gd = {};
                 properties:properties.list().map( function ( property )
                 {
                     return {
-                        keyText:property.key + ":\u00A0",
+                        keyText:property.key + ": ",
                         valueText:property.value,
                         textOrigin:textOrigin,
                         style:node.properties().style
@@ -1331,7 +1331,7 @@ gd = {};
                 properties:properties.list().map( function ( property )
                 {
                     return {
-                        keyText:property.key + ":\u00A0",
+                        keyText:property.key + ": ",
                         valueText:property.value,
                         textOrigin:textOrigin,
                         style:relationship.properties().style
@@ -1604,6 +1604,7 @@ gd = {};
                 .attr( "text-anchor", "end" )
                 .attr( "font-size", function ( property ) { return property.style( "font-size" ); } )
                 .attr( "font-family", function ( property ) { return property.style( "font-family" ); } )
+                .attr( "xml:space", "preserve" )
                 .text( function ( property )
                 {
                     return property.keyText;
