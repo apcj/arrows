@@ -645,6 +645,7 @@ gd = {};
             copyStyle( entity, computedStyle, "font-size" );
             copyStyle( entity, computedStyle, "margin", "margin-top" );
             copyStyle( entity, computedStyle, "padding", "padding-top" );
+            copyStyle( entity, computedStyle, "color" );
             copyStyle( entity, computedStyle, "background-color" );
             copyStyle( entity, computedStyle, "border-width", "border-top-width" );
             copyStyle( entity, computedStyle, "border-style", "border-top-style" );
@@ -1448,6 +1449,7 @@ gd = {};
             captions
                 .attr("x", function ( line ) { return line.node.model.ex(); })
                 .attr("y", function ( line, i ) { return line.node.model.ey() + (i - (line.node.captionLines.length - 1) / 2) * line.node.captionLineHeight; })
+                .attr( "fill", function ( line ) { return line.node.model.style( "color" ); } )
                 .attr( "font-size", function ( line ) { return line.node.model.style( "font-size" ); } )
                 .attr( "font-family", function ( line ) { return line.node.model.style( "font-family" ); } )
                 .text(function(d) { return d.caption; });
