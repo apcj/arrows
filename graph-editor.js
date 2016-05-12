@@ -368,6 +368,32 @@ window.onload = function()
         window.open( "data:image/svg+xml;base64," + btoa( rawSvg ) );
     };
 
+    var openConsoleWithCypher = function (evt)
+    {
+        var cypher = d3.select(".export-cypher .modal-body textarea.code").node().value;
+        cypher = cypher.replace(/\n  /g," ");
+        var url="http://console.neo4j.org"+
+            "?init=" + encodeURIComponent(cypher)+
+            "&query=" + encodeURIComponent("start n=node(*) return n");
+        d3.select( "#open_console" )
+                    .attr( "href", url );
+        return true;
+    };
+
+    d3.select( "#open_console" ).on( "click", openConsoleWithCypher );
+
+    var exportCypher = function ()
+    {
+        appendModalBackdrop();
+        d3.select( ".modal.export-cypher" ).classed( "hide", false );
+
+        var statement = gd.cypher(graphModel);
+        d3.select( ".export-cypher .modal-body textarea.code" )
+            .attr( "rows", statement.split( "\n" ).length )
+            .node().value = statement;
+    };
+
+
     var chooseStyle = function()
     {
         appendModalBackdrop();
@@ -396,6 +422,7 @@ window.onload = function()
     d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
     d3.select( "#exportSvgButton" ).on( "click", exportSvg );
+	d3.select( "#exportCypherButton" ).on( "click", exportCypher );
     d3.select( "#chooseStyleButton" ).on( "click", chooseStyle );
     d3.selectAll( ".modal-dialog" ).on( "click", function ()
     {
