@@ -92,6 +92,7 @@ window.onload = function()
         svg
             .data([graphModel])
             .call(diagram);
+        updateSvgDownloadLink();
     }
 
     function save( markup )
@@ -362,11 +363,10 @@ window.onload = function()
 
     d3.select( "#save_markup" ).on( "click", useMarkupFromMarkupEditor );
 
-    var exportSvg = function ()
-    {
-        var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());
-        window.open( "data:image/svg+xml;base64," + btoa( rawSvg ) );
-    };
+    function updateSvgDownloadLink() {
+      var rawSvg = new XMLSerializer().serializeToString(d3.select("#canvas svg" ).node());
+      d3.select("#downloadSvgButton").attr('href', "data:image/svg+xml;base64," + btoa( rawSvg ));
+    }
 
     var openConsoleWithCypher = function (evt)
     {
@@ -421,8 +421,7 @@ window.onload = function()
     d3.select(window).on("resize", draw);
     d3.select("#internalScale" ).on("change", changeInternalScale);
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
-    d3.select( "#exportSvgButton" ).on( "click", exportSvg );
-	d3.select( "#exportCypherButton" ).on( "click", exportCypher );
+	  d3.select( "#exportCypherButton" ).on( "click", exportCypher );
     d3.select( "#chooseStyleButton" ).on( "click", chooseStyle );
     d3.selectAll( ".modal-dialog" ).on( "click", function ()
     {
