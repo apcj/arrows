@@ -214,7 +214,7 @@ window.onload = function()
             node.properties().clearAll();
             propertiesField.node().value.split("\n").forEach(function(line) {
                 var index = line.indexOf(":");
-                if(index !== -1) {
+                if (index !== -1) {
                     var key = line.substring(0, index).trim();
                     var value = line.substring(index + 1).trim();
                     if (key.length > 0 && value.length > 0) {
