@@ -332,6 +332,44 @@ window.onload = function()
             .on( "click", cancelModal );
     }
 
+    var exportToArrowsApp = function ()
+    {
+        let relationshipIdSeq = 0
+
+        const arrowsAppModel = {
+            diagramName: 'Imported from https://www.apcjones.com/arrows/',
+            graph: {
+                nodes: graphModel.nodeList().map(node => ({
+                    id: 'n' + node.id,
+                    position: {
+                        x: node.x(),
+                        y: node.y()
+                    },
+                    caption: node.caption(),
+                    properties: Object.fromEntries(node.properties().list().map(property => [
+                        property.key,
+                        property.value
+                    ]))
+                })),
+                relationships: graphModel.relationshipList().map(relationship => ({
+                    id: 'n' + relationshipIdSeq++,
+                    fromId: 'n' + relationship.start.id,
+                    toId: 'n' + relationship.end.id,
+                    type: relationship.relationshipType() || '',
+                    properties: Object.fromEntries(relationship.properties().list().map(property => [
+                        property.key,
+                        property.value
+                    ]))
+                })),
+                style: {}
+            }
+        }
+
+        const jsonString = JSON.stringify(arrowsAppModel)
+        const url = "https://arrows.app/#/import/json=" + btoa(jsonString)
+        window.open(url)
+    }
+
     var exportMarkup = function ()
     {
         appendModalBackdrop();
@@ -420,6 +458,7 @@ window.onload = function()
 
     d3.select(window).on("resize", draw);
     d3.select("#internalScale" ).on("change", changeInternalScale);
+    d3.select( "#exportToArrowsAppButton" ).on( "click", exportToArrowsApp );
     d3.select( "#exportMarkupButton" ).on( "click", exportMarkup );
 	  d3.select( "#exportCypherButton" ).on( "click", exportCypher );
     d3.select( "#chooseStyleButton" ).on( "click", chooseStyle );
